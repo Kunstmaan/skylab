@@ -4,9 +4,10 @@ namespace Kunstmaan\Skylab;
 
 use Cilex\Provider\Console\ContainerAwareApplication as BaseApplication;
 
-class Application extends BaseApplication {
+class Application extends BaseApplication
+{
 
-    public static $logo = '<info>
+    public static $logo = '<fg=green;options=bold>
   ___________           .__        ___.
  /   _____/  | _____.__.|  | _____ \_ |__
  \_____  \|  |/ <   |  ||  | \__  \ | __ \
@@ -14,7 +15,7 @@ class Application extends BaseApplication {
 /_______  /__|_ \/ ____||____(____  /___  /
         \/     \/\/               \/    \/
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~ by Kunstmaan.be
-</info>
+</fg=green;options=bold>
 ';
 
     public function getHelp()

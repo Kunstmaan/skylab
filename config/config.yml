@@ -1,2 +1,28 @@
 projects:
     path:       "/home/projects"
+
+users:
+    superuser:      root
+    wwwuser:        www-data
+    postgresuser:   postgres
+
+apache:
+    admin:      support@kunstmaan.be
+
+
+skeletons:
+    base:       Kunstmaan\Skylab\Skeleton\BaseSkeleton
+    mysql:      Kunstmaan\Skylab\Skeleton\MySQLSkeleton
+    apache:     Kunstmaan\Skylab\Skeleton\ApacheSkeleton
+    php5:       Kunstmaan\Skylab\Skeleton\PHPSkeleton
+    symfony:    Kunstmaan\Skylab\Skeleton\SymfonySkeleton
+    awstats:    Kunstmaan\Skylab\Skeleton\AwstatsSkeleton
+    anacron:    Kunstmaan\Skylab\Skeleton\AnacronSkeleton
+    fcron:      false
+    logrotate:  Kunstmaan\Skylab\Skeleton\LogrotateSkeleton
+    nagios:     false
+    mon:        false
+    pingdom:    Kunstmaan\Skylab\Skeleton\PingdomSkeleton
+    postgres:   Kunstmaan\Skylab\Skeleton\PostgreSQLSkeleton
+    tomcat:     Kunstmaan\Skylab\Skeleton\TomcatSkeleton
+    smartcms:   Kunstmaan\Skylab\Skeleton\JavaSkeleton

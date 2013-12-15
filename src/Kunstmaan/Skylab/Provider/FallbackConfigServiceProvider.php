@@ -6,15 +6,16 @@ use Cilex\Application;
 use Cilex\ServiceProviderInterface;
 use Symfony\Component\Yaml;
 
-class FallbackConfigServiceProvider implements ServiceProviderInterface {
+class FallbackConfigServiceProvider implements ServiceProviderInterface
+{
 
     public function register(Application $app)
     {
         $app['config'] = $app->share(
             function () use ($app) {
                 $config = array();
-                foreach($app['config.paths'] as $path){
-                    if (!file_exists($path)){
+		foreach ($app['config.paths'] as $path) {
+		    if (!file_exists($path)) {
                         continue;
                     }
                     $parser = new Yaml\Parser();

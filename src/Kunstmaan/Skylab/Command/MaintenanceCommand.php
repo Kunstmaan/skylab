@@ -1,9 +1,7 @@
 <?php
 namespace Kunstmaan\Skylab\Command;
 
-use Cilex\Command\Command;
 use Kunstmaan\Skylab\Helper\OutputUtil;
-
 use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -12,7 +10,7 @@ use Symfony\Component\Finder\SplFileInfo;
 /**
  * MaintenanceCommand
  */
-class MaintenanceCommand extends Command
+class MaintenanceCommand extends AbstractCommand
 {
 
     /**
@@ -22,31 +20,32 @@ class MaintenanceCommand extends Command
     {
         $this
             ->setName('maintenance')
-            ->setDescription('Run maintenance on all projects');
+	    ->setDescription('Run maintenance on all Skylab projects');
     }
 
     /**
-     * @param InputInterface  $input  The command inputstream
+     * @param InputInterface $input The command inputstream
      * @param OutputInterface $output The command outputstream
      *
      * @return int|void
      * @throws \RuntimeException
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        OutputUtil::logo($output, OutputInterface::VERBOSITY_NORMAL, "Executing the 'maintenance' command");
+	$projects = $this->filesystem->getProjects();
 
-        $projects = $this->getService('filesystem')->getProjects();
-        /** @var $projectFile SplFileInfo */
         foreach ($projects as $projectFile) {
+	    /** @var $projectFile SplFileInfo */
             $projectname = $projectFile->getFilename();
-            OutputUtil::log($output, OutputInterface::VERBOSITY_NORMAL, "Running maintenance on project <info>$projectname</info>");
-          /*  $project = $this->projectConfig->loadProjectConfig($projectname, $output);
-            foreach ($project->getDependencies() as $skeletonName => $skeletonClass) {
-                OutputUtil::log($output, OutputInterface::VERBOSITY_NORMAL, "Running maintenance of the $skeletonName skeleton");
-                $skeleton = $this->skeleton->findSkeleton($skeletonName);
-                $skeleton->maintenance($this->getContainer(), $project, $output);
-            }*/
+	    OutputUtil::logStep($output, OutputInterface::VERBOSITY_NORMAL, "Running maintenance on project $projectname");
+	    $project = $this->projectConfig->loadProjectConfig($projectname, $output);
+	    foreach ($project["skeletons"] as $skeleton) {
+		OutputUtil::log($output, OutputInterface::VERBOSITY_NORMAL, "Skeleton: <info>$skeleton</info>");
+		$skeleton = $this->skeleton->findSkeleton($skeleton, $output);
+		if ($skeleton){
+		    $skeleton->maintenance($this->getContainer(), $project, $output);
+		}
+	    }
         }
     }
 }

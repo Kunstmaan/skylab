@@ -4,36 +4,26 @@ $startTime = microtime(true);
 
 require_once __DIR__.'/vendor/autoload.php';
 
-$app = new \Cilex\Application('skylab', '1.0', array('console.class' => 'Kunstmaan\Skylab\Application'));
+$app = new \Cilex\Application('skylab', '1.0', array('console.class' => 'Kunstmaan\Skylab\Application', 'skylab.starttime' => $startTime));
 
 $app->register(new \Kunstmaan\Skylab\Provider\FallbackConfigServiceProvider(),
-               array('config.paths' => array(__DIR__."/config/config.yml","/etc/skylab.yml")));
-
+    array('config.paths' => array(__DIR__."/config/config.yml","/etc/skylab.yml")
+));
 $app->register(new \Kunstmaan\Skylab\Provider\FileSystemProvider());
-
-
-
-$app->command(new \Kunstmaan\Skylab\Command\MaintenanceCommand());
-
-
-/*
-$app->register(new \Kunstmaan\kServer\Provider\ProcessProvider());
-$app->register(new \Kunstmaan\kServer\Provider\SkeletonProvider($output));
-$app->register(new \Kunstmaan\kServer\Provider\ProjectConfigProvider());
-$app->register(new \Kunstmaan\kServer\Provider\PermissionsProvider());
-$app->register(new \Kunstmaan\kServer\Provider\DialogProvider($output));
+$app->register(new \Kunstmaan\Skylab\Provider\ProjectConfigProvider());
+$app->register(new \Kunstmaan\Skylab\Provider\ProcessProvider());
+$app->register(new \Kunstmaan\Skylab\Provider\SkeletonProvider());
+$app->register(new \Kunstmaan\Skylab\Provider\PermissionsProvider());
+$app->register(new \Kunstmaan\Skylab\Provider\DialogProvider());
 $app->register(new \Cilex\Provider\TwigServiceProvider(), array(
     'twig.path' => '/',
 ));
 
-
-$app->command(new \Kunstmaan\kServer\Command\NewProjectCommand($output));
-$app->command(new \Kunstmaan\kServer\Command\SetPermissionsCommand($output));
-$app->command(new \Kunstmaan\kServer\Command\MaintenanceCommand($output));
-$app->command(new \Kunstmaan\kServer\Command\BackupCommand($output));
-$app->command(new \Kunstmaan\kServer\Command\RemoveProjectCommand($output));
-$app->command(new \Kunstmaan\kServer\Command\ApplySkeletonCommand($output));*/
+$app->command(new \Kunstmaan\Skylab\Command\NewProjectCommand());
+$app->command(new \Kunstmaan\Skylab\Command\SetPermissionsCommand());
+$app->command(new \Kunstmaan\Skylab\Command\MaintenanceCommand());
+$app->command(new \Kunstmaan\Skylab\Command\BackupCommand());
+$app->command(new \Kunstmaan\Skylab\Command\RemoveProjectCommand());
+$app->command(new \Kunstmaan\Skylab\Command\ApplySkeletonCommand());
 
 $app->run();
-
-echo '<info>Memory usage: '.round(memory_get_usage() / 1024 / 1024, 2).'MB (peak: '.round(memory_get_peak_usage() / 1024 / 1024, 2).'MB), time: '.round(microtime(true) - $startTime, 2).'s';
