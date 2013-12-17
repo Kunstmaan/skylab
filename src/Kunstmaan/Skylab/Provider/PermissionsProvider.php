@@ -112,45 +112,53 @@ class PermissionsProvider implements ServiceProviderInterface
     }
 
     /**
-     * @param Project $project The project
+     * @param \ArrayObject $project The project
      * @param OutputInterface $output The command output stream
      */
-    public function applyOwnership(Project $project, OutputInterface $output)
+    public function applyOwnership(\ArrayObject $project, OutputInterface $output)
     {
 	if (is_null($this->process)) {
 	    $this->process = $this->app["process"];
 	}
 	/** @var $filesystem FileSystemProvider */
 	$filesystem = $this->app['filesystem'];
-	foreach ($project->getPermissionDefinitions() as $pd) {
-	    $thePath = $filesystem->getProjectDirectory($project->getName()) . $pd->getPath();
-	    $dirContainsNFS = $this->process->executeCommand("mount | grep nfs | grep $thePath", $output);
+	/** @var ProjectConfigProvider $projectconfig */
+	$projectconfig = $this->app['projectconfig'];
+	foreach ($project["permissions"] as $pd) {
+	    $thePath = $filesystem->getProjectDirectory($project["name"]) . $pd->getPath();
+	    $dirContainsNFS = $this->process->executeCommand("mount | grep nfs | grep -q $thePath", $output);
 	    if (empty($dirContainsNFS)) {
-		$this->process->executeCommand('chown ' . $pd->getOwnership() . ' ' . $thePath, $output);
+		$owner = $projectconfig->searchReplacer($pd->getOwnership(), $project);
+		if (PHP_OS == "Darwin") {
+		    $owner = str_replace(".", ":", $owner);
+		}
+		$this->process->executeSudoCommand('chown ' . $owner . ' ' . $thePath, $output);
 	    } else {
-		OutputUtil::log($output, OutputInterface::VERBOSITY_VERBOSE, "!", $thePath . " or " . $thePath . "/working-copy is on an NFS share, do not chown");
+		OutputUtil::log($output, OutputInterface::VERBOSITY_VERBOSE, "!", $thePath . " is on an NFS share, do not chown");
 	    }
 	}
     }
 
     /**
-     * @param Project $project The project
+     * @param \ArrayObject $project The project
      * @param OutputInterface $output The command output stream
      */
-    public function applyPermissions(Project $project, OutputInterface $output)
+    public function applyPermissions(\ArrayObject $project, OutputInterface $output)
     {
 	if (is_null($this->process)) {
 	    $this->process = $this->app["process"];
 	}
 	/** @var $filesystem FileSystemProvider */
 	$filesystem = $this->app['filesystem'];
+	/** @var ProjectConfigProvider $projectconfig */
+	$projectconfig = $this->app['projectconfig'];
 	if ($this->app["config"]["permissions"]["develmode"]) {
-	    $this->process->executeCommand('chmod -R 777 ' . $filesystem->getProjectDirectory($project->getName()), $output);
-	    $this->process->executeCommand('chmod -R 700 ' . $filesystem->getProjectDirectory($project->getName()) . '/.ssh/', $output);
+	    $this->process->executeSudoCommand('chmod -R 777 ' . $filesystem->getProjectDirectory($project->getName()), $output);
+	    $this->process->executeSudoCommand('chmod -R 700 ' . $filesystem->getProjectDirectory($project->getName()) . '/.ssh/', $output);
 	} else {
-	    foreach ($project->getPermissionDefinitions() as $pd) {
+	    foreach ($project["permissions"] as $pd) {
 		foreach ($pd->getAcl() as $acl) {
-		    $this->process->executeCommand('setfacl ' . $acl . ' ' . $filesystem->getProjectDirectory($project->getName()) . $pd->getPath(), $output);
+		    $this->process->executeSudoCommand('setfacl ' . $projectconfig->searchReplacer($acl, $project) . ' ' . $filesystem->getProjectDirectory($project->getName()) . $pd->getPath(), $output);
 		}
 	    }
 	}

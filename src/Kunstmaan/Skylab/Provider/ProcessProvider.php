@@ -59,9 +59,9 @@ class ProcessProvider implements ServiceProviderInterface
     public function executeSudoCommand($command, OutputInterface $output, $silent = false, $sudoAs = null)
     {
 	if (empty($sudoAs)) {
-	    $command = 'sudo ' . $command;
+	    $command = 'sudo -p "Please enter your sudo password:" ' . $command;
 	} else {
-	    $command = 'sudo -u ' . $sudoAs . ' ' . $command;
+	    $command = 'sudo -p "Please enter your sudo password:" -u ' . $sudoAs . ' ' . $command;
 	}
 
 	return $this->executeCommand($command, $output, $silent);

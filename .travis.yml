@@ -14,3 +14,5 @@ before_script:
 script:
     - ./skylab
     - ./skylab maintenance
+    - ./skylab new test
+    - ./skylab maintenance
