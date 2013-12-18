@@ -6,13 +6,13 @@ php:
 
 before_script:
     - sudo mkdir -p /home/projects
+    - sudo mkdir -p /home/backupped-projects
     - echo '' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
     - composer install --dev --prefer-source
     - git config --global user.name travis-ci
     - git config --global user.email travis@example.com
 
 script:
-    - ./skylab
-    - ./skylab maintenance
-    - ./skylab new test
-    - ./skylab maintenance
+    - ./skylab new test -vvv
+    - ./skylab maintenance -vvv
+    - ./skylab remove test --force -vvv

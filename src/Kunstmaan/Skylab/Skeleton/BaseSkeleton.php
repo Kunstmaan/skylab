@@ -190,7 +190,9 @@ class BaseSkeleton extends AbstractSkeleton
      */
     public function postRemove(Application $app, \ArrayObject $project, OutputInterface $output)
     {
-	// TODO: Implement postRemove() method.
+	/** @var $permission PermissionsProvider */
+	$permission = $app["permission"];
+	$permission->removeUser($project["name"], $project["name"], $output);
     }
 
 

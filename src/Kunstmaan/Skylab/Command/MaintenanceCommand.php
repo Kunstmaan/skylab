@@ -5,6 +5,7 @@ use Kunstmaan\Skylab\Helper\OutputUtil;
 use RuntimeException;
 use Symfony\Component\Console\Helper\ProgressHelper;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -19,9 +20,10 @@ class MaintenanceCommand extends AbstractCommand
      */
     protected function configure()
     {
-        $this
-            ->setName('maintenance')
-	    ->setDescription('Run maintenance on all Skylab projects');
+	$this
+	    ->setName('maintenance')
+	    ->setDescription('Run maintenance on all Skylab projects')
+	    ->addOption("--hideLogo", null, InputOption::VALUE_NONE, 'If set, no logo or statistics will be shown');
     }
 
     /**

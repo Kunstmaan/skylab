@@ -92,19 +92,6 @@ class FileSystemProvider implements ServiceProviderInterface
     }
 
     /**
-     * @param Project $project The project
-     * @param OutputInterface $output The command output stream
-     */
-    public function createProjectConfigDirectory(Project $project, OutputInterface $output)
-    {
-	$projectDirectory = $this->getProjectDirectory($project->getName());
-	if (is_null($this->process)) {
-	    $this->process = $this->app["process"];
-	}
-	$this->process->executeCommand('mkdir -p ' . $projectDirectory . '/working-copy/kconfig', $output);
-    }
-
-    /**
      * @param \ArrayObject $project The project
      * @param OutputInterface $output The command output stream
      * @param string $path The relative path in the project folder
@@ -119,15 +106,15 @@ class FileSystemProvider implements ServiceProviderInterface
     }
 
     /**
-     * @param Project $project The project
+     * @param \ArrayObject $project The project
      * @param OutputInterface $output The command output stream
      * @param string $path The relative path in the project folder
      *
      * @return string
      */
-    public function getDirectory(Project $project, OutputInterface $output, $path)
+    public function getDirectory(\ArrayObject $project, OutputInterface $output, $path)
     {
-	$projectDirectory = $this->getProjectDirectory($project->getName());
+	$projectDirectory = $this->getProjectDirectory($project["name"]);
 	if (is_null($this->process)) {
 	    $this->process = $this->app["process"];
 	}
@@ -136,36 +123,34 @@ class FileSystemProvider implements ServiceProviderInterface
     }
 
     /**
-     * @param Project $project The project
+     * @param \ArrayObject $project The project
      * @param OutputInterface $output The command output stream
      */
-    public function runTar(Project $project, OutputInterface $output)
+    public function runTar(\ArrayObject $project, OutputInterface $output)
     {
 	if (is_null($this->process)) {
 	    $this->process = $this->app["process"];
 	}
 	$this->process->executeCommand('mkdir -p ' . $this->app["config"]["projects"]["backuppath"], $output);
-	$projectDirectory = $this->getProjectDirectory($project->getName());
+	$projectDirectory = $this->getProjectDirectory($project["name"]);
 	$excluded = '';
-	if (!is_null($project->getExcludedFromBackup())) {
-	    foreach ($project->getExcludedFromBackup() as $excl) {
-		$excluded = $excluded . " --exclude='" . $excl . "'";
-	    }
+	foreach ($project["backupexcludes"] as $backupexclude) {
+	    $excluded = $excluded . " --exclude='" . $backupexclude . "'";
 	}
-	$this->process->executeCommand('nice -n 19 tar --create --absolute-names ' . $excluded . ' --file ' . $this->app["config"]["projects"]["backuppath"] . '/' . $project->getName() . '.tar.gz --totals --gzip ' . $projectDirectory . '/ 2>&1', $output);
+	$this->process->executeCommand('nice -n 19 tar --create --absolute-names ' . $excluded . ' --file ' . $this->app["config"]["projects"]["backuppath"] . '/' . $project["name"] . '.tar.gz --totals --gzip ' . $projectDirectory . '/ 2>&1', $output);
     }
 
     /**
-     * @param Project $project The project
+     * @param \ArrayObject $project The project
      * @param OutputInterface $output The command output stream
      */
-    public function removeProjectDirectory(Project $project, OutputInterface $output)
+    public function removeProjectDirectory(\ArrayObject $project, OutputInterface $output)
     {
-	$projectDirectory = $this->getProjectDirectory($project->getName());
+	$projectDirectory = $this->getProjectDirectory($project["name"]);
 	if (is_null($this->process)) {
 	    $this->process = $this->app["process"];
 	}
-	$this->process->executeCommand("rm -Rf " . $projectDirectory, $output);
+	$this->process->executeSudoCommand("rm -Rf " . $projectDirectory, $output);
     }
 
     /**

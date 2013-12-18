@@ -4,6 +4,7 @@ namespace Kunstmaan\Skylab\Command;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -20,7 +21,8 @@ class SetPermissionsCommand extends AbstractCommand
 	$this
 	    ->setName('permissions')
 	    ->setDescription('Set the permissions of a kServer project')
-	    ->addArgument('name', InputArgument::REQUIRED, 'The name of the project');
+	    ->addArgument('name', InputArgument::REQUIRED, 'The name of the project')
+	    ->addOption("--hideLogo", null, InputOption::VALUE_NONE, 'If set, no logo or statistics will be shown');
     }
 
     /**

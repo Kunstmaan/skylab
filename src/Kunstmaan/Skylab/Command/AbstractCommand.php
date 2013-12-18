@@ -54,10 +54,17 @@ abstract class AbstractCommand extends Command
 	$this->permission = $this->getService('permission');
 	$this->dialog = $this->getService('dialog');
 
-	OutputUtil::logo($output, OutputInterface::VERBOSITY_NORMAL, "Executing " . get_class($this));
+	if (!$input->getOption('hideLogo')) {
+	    OutputUtil::logo($output, OutputInterface::VERBOSITY_NORMAL, "Executing " . get_class($this));
+	}
+
+	$this->process->executeCommand('sudo -p "Please enter your sudo password: " -v', $output, true);
+
 	$this->doExecute($input, $output);
 	$app = $this->getContainer();
-	OutputUtil::logStatistics($output, OutputInterface::VERBOSITY_NORMAL, $app['skylab.starttime']);
+	if (!$input->getOption('hideLogo')) {
+	    OutputUtil::logStatistics($output, OutputInterface::VERBOSITY_NORMAL, $app['skylab.starttime']);
+	}
     }
 
     abstract protected function doExecute(InputInterface $input, OutputInterface $output);

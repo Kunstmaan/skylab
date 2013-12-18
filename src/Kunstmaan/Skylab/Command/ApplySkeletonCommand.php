@@ -23,7 +23,8 @@ class ApplySkeletonCommand extends AbstractCommand
 	    ->setDescription('Apply a skeleton to a Skylab project')
 	    ->addArgument('project', InputArgument::OPTIONAL, 'The name of the kServer project')
 	    ->addArgument('skeleton', InputArgument::OPTIONAL, 'The name of the skeleton')
-	    ->addOption("list", "l", InputOption::VALUE_NONE, 'Lists all available skeletons');
+	    ->addOption("list", "l", InputOption::VALUE_NONE, 'Lists all available skeletons')
+	    ->addOption("--hideLogo", null, InputOption::VALUE_NONE, 'If set, no logo or statistics will be shown');
     }
 
     /**

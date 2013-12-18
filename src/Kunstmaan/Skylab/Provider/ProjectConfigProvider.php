@@ -225,7 +225,7 @@ class ProjectConfigProvider implements ServiceProviderInterface
 	$filesystem = $this->app['filesystem'];
 
 	$configPath = $filesystem->getProjectConfigDirectory($project["name"]) . "config.xml";
-	OutputUtil::log($output, OutputInterface::VERBOSITY_NORMAL, "Writing the project config to " . $configPath);
+	OutputUtil::log($output, OutputInterface::VERBOSITY_VERBOSE, "%", "Writing the project config to " . $configPath);
 
 	$config = new \SimpleXMLElement('<?xml version="1.0" ?><config></config>');
 	/* @var $skeletonProvider SkeletonProvider */

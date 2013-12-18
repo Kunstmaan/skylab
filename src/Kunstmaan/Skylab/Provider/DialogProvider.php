@@ -5,6 +5,7 @@ use Cilex\Application;
 use RuntimeException;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * DialogProvider
@@ -38,15 +39,15 @@ class DialogProvider extends AbstractProvider
      * @param string $argumentname The argument name
      * @param string $message The message
      * @param InputInterface $input The command input stream
-     *
-     * @return string
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @throws \RuntimeException
+     * @return string
      */
-    public function askFor($argumentname, $message, InputInterface $input)
+    public function askFor($argumentname, $message, InputInterface $input, OutputInterface $output)
     {
 	$name = $input->getArgument($argumentname);
 	if (is_null($name)) {
-	    $name = $this->dialog->ask($this->output, '<question>' . $message . ': </question>');
+	    $name = $this->dialog->ask($output, '<question>' . $message . ': </question>');
 	}
 	if (is_null($name)) {
 	    throw new RuntimeException("A $argumentname is required, what am I, psychic?");
@@ -57,10 +58,11 @@ class DialogProvider extends AbstractProvider
 
     /**
      * @param string $question The question text
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @param bool $default The default action
      */
-    public function askConfirmation($question, $default = true)
+    public function askConfirmation($question, OutputInterface $output, $default = true)
     {
-	$this->dialog->askConfirmation($this->output, $question, $default);
+	$this->dialog->askConfirmation($output, $question, $default);
     }
 }

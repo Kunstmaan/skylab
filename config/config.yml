@@ -1,5 +1,6 @@
 projects:
     path:       "/home/projects"
+    backuppath: "/home/backupped-projects"
 
 users:
     superuser:      root

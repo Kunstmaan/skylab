@@ -33,7 +33,7 @@ class ProcessProvider implements ServiceProviderInterface
      */
     public function executeCommand($command, OutputInterface $output, $silent = false)
     {
-	OutputUtil::log($output, OutputInterface::VERBOSITY_VERBOSE, "$", $command);
+	if (!$silent) { OutputUtil::log($output, OutputInterface::VERBOSITY_VERBOSE, "$", $command); }
 	$process = new Process($command);
 	$process->setTimeout(3600);
 	$process->run();
