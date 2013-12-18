@@ -20,7 +20,7 @@ class PermissionDefinition
     /**
      * @var string[]
      */
-    private $acl;
+    private $acl = array();
 
     /**
      * @param string $acl

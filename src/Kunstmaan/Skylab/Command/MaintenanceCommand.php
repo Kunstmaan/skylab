@@ -3,6 +3,7 @@ namespace Kunstmaan\Skylab\Command;
 
 use Kunstmaan\Skylab\Helper\OutputUtil;
 use RuntimeException;
+use Symfony\Component\Console\Helper\ProgressHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\SplFileInfo;
@@ -33,10 +34,9 @@ class MaintenanceCommand extends AbstractCommand
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
 	$projects = $this->filesystem->getProjects();
-
-        foreach ($projects as $projectFile) {
+	foreach ($projects as $projectFile) {
 	    /** @var $projectFile SplFileInfo */
-            $projectname = $projectFile->getFilename();
+	    $projectname = $projectFile->getFilename();
 	    OutputUtil::logStep($output, OutputInterface::VERBOSITY_NORMAL, "Running maintenance on project $projectname");
 	    $project = $this->projectConfig->loadProjectConfig($projectname, $output);
 	    foreach ($project["skeletons"] as $skeleton) {
@@ -45,7 +45,9 @@ class MaintenanceCommand extends AbstractCommand
 		if ($skeleton){
 		    $skeleton->maintenance($this->getContainer(), $project, $output);
 		}
+		OutputUtil::newLine($output);
 	    }
-        }
+	}
+
     }
 }

@@ -4,7 +4,7 @@ projects:
 users:
     superuser:      root
     supergroup:     root
-    wwwuser:        www-data
+    wwwuser:        _www
     postgresuser:   postgres
 
 apache:

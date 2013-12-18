@@ -66,4 +66,13 @@ class ProcessProvider implements ServiceProviderInterface
 
 	return $this->executeCommand($command, $output, $silent);
     }
+
+    /**
+     * @param string $cmd
+     * @return bool
+     */
+    public function commandExists($cmd)
+    {
+	return shell_exec("hash ".$cmd." 2>&1") == '';
+    }
 }

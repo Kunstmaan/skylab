@@ -23,20 +23,29 @@ class OutputUtil
      * @param int $verbosity The minimum verbosity level
      * @param string $action The action
      * @param string $txt The actual command
-     *
+     * @param string $indent
      * @return string
      */
     public static function log(OutputInterface $output, $verbosity, $action, $txt = null, $indent = "")
     {
-        if ($output->getVerbosity() >= $verbosity) {
-            if (is_null($txt)) {
-		$output->writeln('<info>' . $indent . '   ></info> ' . $action);
-            } else {
-		$output->writeln('<info>' . $indent . '   ' . $action . '</info> <comment>' . $txt . '</comment>');
-            }
-        }
+	if ($output->getVerbosity() >= $verbosity) {
+	    if (is_null($txt)) {
+		$output->write('<info>' . $indent . '   ></info> ' . $action . " ");
+	    } else {
+		OutputUtil::newLine($output);
+		$output->write('<info>' . $indent . '   ' . $action . '</info> <comment>' . $txt . '</comment> ');
+	    }
+	} else {
+	    $output->write("<fg=blue;options=bold>.</fg=blue;options=bold>");
+	}
+	return $txt;
+    }
 
-        return $txt;
+    /**
+     * @param OutputInterface $output
+     */
+    public static function newLine(OutputInterface $output){
+	$output->writeln('');
     }
 
     /**
