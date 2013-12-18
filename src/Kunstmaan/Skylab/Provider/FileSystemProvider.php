@@ -88,7 +88,7 @@ class FileSystemProvider implements ServiceProviderInterface
 	if (is_null($this->process)) {
 	    $this->process = $this->app["process"];
 	}
-	$this->process->executeCommand('mkdir -p ' . $projectDirectory, $output);
+	$this->process->executeSudoCommand('mkdir -p ' . $projectDirectory, $output);
     }
 
     /**
@@ -102,7 +102,7 @@ class FileSystemProvider implements ServiceProviderInterface
 	if (is_null($this->process)) {
 	    $this->process = $this->app["process"];
 	}
-	$this->process->executeCommand('mkdir -p ' . $projectDirectory . '/' . $path, $output);
+	$this->process->executeSudoCommand('mkdir -p ' . $projectDirectory . '/' . $path, $output);
     }
 
     /**
@@ -131,13 +131,13 @@ class FileSystemProvider implements ServiceProviderInterface
 	if (is_null($this->process)) {
 	    $this->process = $this->app["process"];
 	}
-	$this->process->executeCommand('mkdir -p ' . $this->app["config"]["projects"]["backuppath"], $output);
+	$this->process->executeSudoCommand('mkdir -p ' . $this->app["config"]["projects"]["backuppath"], $output);
 	$projectDirectory = $this->getProjectDirectory($project["name"]);
 	$excluded = '';
 	foreach ($project["backupexcludes"] as $backupexclude) {
 	    $excluded = $excluded . " --exclude='" . $backupexclude . "'";
 	}
-	$this->process->executeCommand('nice -n 19 tar --create --absolute-names ' . $excluded . ' --file ' . $this->app["config"]["projects"]["backuppath"] . '/' . $project["name"] . '.tar.gz --totals --gzip ' . $projectDirectory . '/ 2>&1', $output);
+	$this->process->executeSudoCommand('nice -n 19 tar --create --absolute-names ' . $excluded . ' --file ' . $this->app["config"]["projects"]["backuppath"] . '/' . $project["name"] . '.tar.gz --totals --gzip ' . $projectDirectory . '/ 2>&1', $output);
     }
 
     /**

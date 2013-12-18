@@ -237,7 +237,7 @@ class ProjectConfigProvider implements ServiceProviderInterface
 	    $skeleton = $skeletonProvider->findSkeleton($skeletonname, $output);
 	    $config = $skeleton->writeConfig($this->app, $project, $config, $output);
 	}
-	$this->writeToFile($config, $configPath);
+	$this->writeToFile($config, $configPath, $output);
     }
 
     /**
@@ -255,12 +255,17 @@ class ProjectConfigProvider implements ServiceProviderInterface
     /**
      * @param $xml
      * @param $path
+     * @param OutputInterface $output
      */
-    private function writeToFile($xml, $path)
+    private function writeToFile($xml, $path, OutputInterface $output)
     {
+	/* @var $process ProcessProvider */
+	$process = $this->app['process'];
+
 	$dom = dom_import_simplexml($xml)->ownerDocument;
 	$dom->preserveWhiteSpace = false;
 	$dom->formatOutput = true;
+	$process->executeSudoCommand('chmod -R 777 ' . dirname($path), $output);
 	file_put_contents($path, $dom->saveXML());
     }
 
@@ -281,7 +286,7 @@ class ProjectConfigProvider implements ServiceProviderInterface
 	foreach ($project["permissions"] as $permission) {
 	    $ownership = $this->addVar($ownership, $permission->getPath(), $permission->getOwnership());
 	}
-	$this->writeToFile($ownership, $ownershipPath);
+	$this->writeToFile($ownership, $ownershipPath, $output);
     }
 
     /**
@@ -319,7 +324,7 @@ class ProjectConfigProvider implements ServiceProviderInterface
 		$var = $this->addItem($var, $acl);
 	    }
 	}
-	$this->writeToFile($permissions, $permissionsPath);
+	$this->writeToFile($permissions, $permissionsPath, $output);
     }
 
     /**
@@ -339,7 +344,7 @@ class ProjectConfigProvider implements ServiceProviderInterface
 	foreach ($project["backupexcludes"] as $backupexclude) {
 	    $var = $this->addItem($var, $backupexclude);
 	}
-	$this->writeToFile($backup, $backupPath);
+	$this->writeToFile($backup, $backupPath, $output);
     }
 
 }
