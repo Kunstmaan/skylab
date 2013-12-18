@@ -60,6 +60,12 @@ abstract class AbstractCommand extends Command
 
 	$this->process->executeCommand('sudo -p "Please enter your sudo password: " -v', $output, true);
 
+	if (defined('SKYLAB_DEV_WARNING_TIME') && $this->getName() !== 'self-update') {
+	    if (time() > SKYLAB_DEV_WARNING_TIME) {
+		OutputUtil::logWarning($output, OutputInterface::VERBOSITY_NORMAL, 'Warning: This build of Skylab is over 30 days old. It is recommended to update it by running "'.$_SERVER['PHP_SELF'].' self-update" to get the latest version.');
+	    }
+	}
+
 	$this->doExecute($input, $output);
 	$app = $this->getContainer();
 	if (!$input->getOption('hideLogo')) {

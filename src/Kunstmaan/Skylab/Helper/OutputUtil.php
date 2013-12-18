@@ -75,6 +75,18 @@ class OutputUtil
     }
 
     /**
+     * @param OutputInterface $output The command output stream
+     * @param int $verbosity The minimum verbosity level
+     * @param string $msg The error message
+     */
+    public static function logWarning(OutputInterface $output, $verbosity, $msg)
+    {
+	if ($output->getVerbosity() >= $verbosity) {
+	    $output->writeln("<fg=black;bg=yellow;options=bold>\n\n" . $msg . "\n</fg=black;bg=yellow;options=bold>\n\n");
+	}
+    }
+
+    /**
      * @param OutputInterface $output
      * @param $verbosity
      * @param $startTime

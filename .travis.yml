@@ -13,6 +13,8 @@ before_script:
     - git config --global user.email travis@example.com
 
 script:
+    - ./compile --version v0.0.0-travis
+    - php skylab.phar self-update
     - ./skylab new test -vvv
     - ./skylab maintenance -vvv
     - ./skylab remove test --force -vvv

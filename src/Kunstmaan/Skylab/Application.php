@@ -7,6 +7,9 @@ use Cilex\Provider\Console\ContainerAwareApplication as BaseApplication;
 class Application extends BaseApplication
 {
 
+    const VERSION = '@package_version@';
+    const RELEASE_DATE = '@release_date@';
+
     public static $logo = '<fg=green;options=bold>
   ___________           .__        ___.
  /   _____/  | _____.__.|  | _____ \_ |__
@@ -17,6 +20,11 @@ class Application extends BaseApplication
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~ by Kunstmaan.be
 </fg=green;options=bold>
 ';
+
+    public function __construct($name = 'UNKNOWN', $version = 'UNKNOWN')
+    {
+	parent::__construct('Skylab', Application::VERSION);
+    }
 
     public function getHelp()
     {
