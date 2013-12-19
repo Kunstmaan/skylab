@@ -23,7 +23,16 @@ class NewProjectCommand extends AbstractCommand
         ->setName('new')
         ->setDescription('Create a new Skylab project')
         ->addArgument('name', InputArgument::OPTIONAL, 'The name of the project. All lowercase, no spaces or special characters. Keep it short, yet descriptive')
-        ->addOption("--hideLogo", null, InputOption::VALUE_NONE, 'If set, no logo or statistics will be shown');
+        ->addOption("--hideLogo", null, InputOption::VALUE_NONE, 'If set, no logo or statistics will be shown')
+        ->setHelp(<<<EOT
+The <info>new</info> command creates a new project. It will setup the directory structure and apply the "base" skeleton
+which is responsible for setting up users, permissions and ownership.
+
+<info>php skylab.phar new</info>
+<info>php skylab.phar new testproject</info>
+
+EOT
+);
     }
 
     /**

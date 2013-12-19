@@ -1,0 +1,83 @@
+#!/usr/bin/env php
+<?php
+require_once __DIR__.'/vendor/autoload.php';
+
+?>
+# Skylab
+
+Skylab is a 100% backwards compatible PHP port of the Python based hosting scripts used at Kunstmaan. By using the Cilex,
+Symfony Components and lot's of good code samples from the Composer project we hope to create an application where
+everyone in our organisation can work with, and if issues or new needed features should arise, be able to work on.
+
+Kunstmaan wouldn't be Kunstmaan is we didn't open-source this, so here it is. [MIT licensed](./LICENSE).
+
+## Installation
+
+### Skylab chef recipe
+
+TO DO: factor out the generic code needed for Skylab from our big chef recipe
+
+### Skylab application
+
+TO DO: create an installer like composer
+
+## Commands
+
+<?php
+
+
+describeCommand(new \Kunstmaan\Skylab\Command\NewProjectCommand());
+describeCommand(new \Kunstmaan\Skylab\Command\SetPermissionsCommand());
+describeCommand(new \Kunstmaan\Skylab\Command\MaintenanceCommand());
+describeCommand(new \Kunstmaan\Skylab\Command\BackupCommand());
+describeCommand(new \Kunstmaan\Skylab\Command\RemoveProjectCommand());
+describeCommand(new \Kunstmaan\Skylab\Command\ApplySkeletonCommand());
+describeCommand(new \Kunstmaan\Skylab\Command\SelfUpdateCommand());
+
+function describeCommand(\Kunstmaan\Skylab\Command\AbstractCommand $command){
+    echo "### " . get_class_name($command) . "\n\n";
+    echo "Usage: ```php skylab.phar " . $command->getSynopsis() . "```\n\n";
+    echo str_replace("</info>", "```", str_replace("<info>", "```", $command->getProcessedHelp())) . "\n";
+    echo "Full details at [doc/".get_class_name($command).".md](doc/".get_class_name($command).".md)\n\n";
+    system("mkdir -p doc");
+    system("SU=true  ./skylab help " . $command->getName() . " --format=md > doc/".get_class_name($command).".md");
+    system('printf "\n\n" >> doc/' .get_class_name($command).".md");
+    system("echo '*Documentation generated on " . date_format(new DateTime(), "Y-m-d H:i:s") . "*' >> doc/".get_class_name($command).".md");
+}
+
+function get_class_name($object = null)
+{
+    if (!is_object($object) && !is_string($object)) {
+        return false;
+    }
+    $class = explode('\\', (is_string($object) ? $object : get_class($object)));
+    return $class[count($class) - 1];
+}
+
+?>
+
+## Compiling a new version
+
+1. First, make sure everything works and the Travis tests are green [![Build Status](https://travis-ci.org/Kunstmaan/skylab.png?branch=master)](https://travis-ci.org/Kunstmaan/skylab)
+1. Generate an updated changelog using ```git changelog``` from [git-extras](https://github.com/visionmedia/git-extras)
+1. Commit this new changelog
+1. Create a new release from the Github interface, add the new changelog part in the description and name the release for [the next brightst star in this list](http://en.wikipedia.org/wiki/List_of_brightest_stars)
+1. Compile a new version ```./compile --version 0.1.2```
+1. Add the new phar file to the release on GitHub
+
+## Modifying the documentation
+
+1. Most text is in ```gen-doc```, edit what you want there.
+1. Everything in doc/ is generated, same goes for everything in README.md under Commands
+1. Run ```./gen-doc > README.md``` to update the docs
+1. Send a pull request
+
+## Contributing
+
+1. Fork Skylab
+1. Do your thing, and send a Pull Request. But please make sure Travis is green and your code has been run through php-cs-fixer!
+
+
+<?php
+
+echo "*Documentation generated on " . date_format(new DateTime(), "Y-m-d H:i:s") . "*";
