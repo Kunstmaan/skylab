@@ -41,7 +41,7 @@ class SkeletonProvider implements ServiceProviderInterface
     public function applySkeleton(\ArrayObject $project, AbstractSkeleton $skeleton, OutputInterface $output)
     {
     OutputUtil::log($output, OutputInterface::VERBOSITY_NORMAL, "Applying <info>" . $skeleton->getName() . "</info> to <info>" . $project["name"] . "</info>");
-    $project["skeletons"][] = $skeleton->getName();
+    $project["skeletons"][$skeleton->getName()] = $skeleton->getName();
     $this->resolveDependencies($project, $output);
     $skeleton->create($this->app, $project, $output);
     OutputUtil::newLine($output);

@@ -167,28 +167,12 @@ class FileSystemProvider implements ServiceProviderInterface
     }
 
     /**
-     * @param Project         $project The project
-     * @param OutputInterface $output  The command output stream
-     */
-    public function createCompiledVhostConfigDirectory(Project $project, OutputInterface $output)
-    {
-    if (is_null($this->process)) {
-        $this->process = $this->app["process"];
-    }
-    $this->process->executeCommand('mkdir -p /etc/apache2/vhost.d/' . $project->getName(), $output);
-    $this->process->executeCommand('mkdir -p /etc/apache2/vhost.d/' . $project->getName() . "/shared", $output);
-    $this->process->executeCommand('mkdir -p /etc/apache2/vhost.d/' . $project->getName() . "/nossl", $output);
-    $this->process->executeCommand('mkdir -p /etc/apache2/vhost.d/' . $project->getName() . "/ssl", $output);
-    }
-
-    /**
-     * @param Project         $project The project
-     * @param OutputInterface $output  The command output stream
-     *
+     * @param  \ArrayObject    $project
+     * @param  OutputInterface $output
      * @return string
      */
-    public function getCompiledVhostConfigDirectory(Project $project, OutputInterface $output)
+    public function getApacheConfigTemplateDir(\ArrayObject $project, OutputInterface $output)
     {
-    return '/etc/apache2/vhost.d/' . $project->getName();
+        return __DIR__ . "/../../../../templates/apache/apache.d/";
     }
 }

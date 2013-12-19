@@ -85,7 +85,7 @@ class ProjectConfigProvider implements ServiceProviderInterface
         switch ($tag) {
         case "project.skeletons":
             foreach ($var->item as $skel) {
-            $config["skeletons"][] = (string) $skel["value"];
+            $config["skeletons"][(string) $skel["value"]] = (string) $skel["value"];
             }
             break;
         case "project.aliases":
@@ -244,6 +244,24 @@ class ProjectConfigProvider implements ServiceProviderInterface
         $config = $skeleton->writeConfig($this->app, $project, $config, $output);
     }
     $this->writeToFile($config, $configPath, $output);
+    }
+
+    /**
+     * @param \SimpleXMLElement $node
+     * @param $name
+     * @param array $items
+     * @return \SimpleXMLElement
+     *
+     */
+    public function addVarWithItems(\SimpleXMLElement $node, $name, array $items)
+    {
+        $var = $node->addChild('var');
+        $var->addAttribute("name", $name);
+        foreach($items as $value){
+            $item = $var->addChild('item');
+            $item->addAttribute("value", $value);
+        }
+        return $node;
     }
 
     /**
