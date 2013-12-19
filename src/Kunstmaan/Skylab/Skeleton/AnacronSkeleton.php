@@ -2,6 +2,8 @@
 namespace Kunstmaan\Skylab\Skeleton;
 
 use Cilex\Application;
+use Kunstmaan\Skylab\Provider\FileSystemProvider;
+use Kunstmaan\Skylab\Provider\ProcessProvider;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -29,7 +31,6 @@ class AnacronSkeleton extends AbstractSkeleton
      */
     public function create(Application $app, \ArrayObject $project, OutputInterface $output)
     {
-    // TODO: Implement create() method.
     }
 
     /**
@@ -41,7 +42,27 @@ class AnacronSkeleton extends AbstractSkeleton
      */
     public function maintenance(Application $app, \ArrayObject $project, OutputInterface $output)
     {
-    // TODO: Implement maintenance() method.
+        /** @var $filesystem FileSystemProvider */
+        $filesystem = $app["filesystem"];
+        /** @var ProcessProvider $process */
+        $process = $app["process"];
+        $cronjobscript =  $filesystem->getProjectConfigDirectory($project["name"])."anacronjobs";
+        // cleanup
+        $process->executeSudoCommand("rm -f " . $cronjobscript, $output);
+        $process->executeSudoCommand("crontab -r -u " . $project["name"], $output, true);
+        // generate anacronjobs file
+        $cronjobs = $filesystem->getDotDFiles($filesystem->getProjectConfigDirectory($project["name"])."fcron.d/");
+        foreach ($cronjobs as $cronjob) {
+            $process->executeSudoCommand("cat " . $cronjob->getRealPath() . " >> " . $cronjobscript, $output);
+            $process->executeSudoCommand("sed -i -e '\$a\\' " . $cronjobscript, $output);
+        }
+        if (file_exists($filesystem->getProjectDirectory($project["name"]) . "data/current/app/config/anacrontab")) {
+            $process->executeSudoCommand($filesystem->getProjectDirectory($project["name"]) . "data/current/app/config/anacrontab >> " . $cronjobscript, $output);
+            $process->executeSudoCommand("sed -i -e '\$a\\' " . $cronjobscript, $output);
+        }
+        $process->executeSudoCommand('printf "\n" >> ' . $cronjobscript, $output);
+        // load the anacrontab file
+        $process->executeSudoCommand("crontab -u " . $project["name"] . " " . $filesystem->getProjectConfigDirectory($project["name"])."anacrontab", $output);
     }
 
     /**
@@ -53,7 +74,6 @@ class AnacronSkeleton extends AbstractSkeleton
      */
     public function preBackup(Application $app, \ArrayObject $project, OutputInterface $output)
     {
-    // TODO: Implement preBackup() method.
     }
 
     /**
@@ -65,7 +85,6 @@ class AnacronSkeleton extends AbstractSkeleton
      */
     public function postBackup(Application $app, \ArrayObject $project, OutputInterface $output)
     {
-    // TODO: Implement postBackup() method.
     }
 
     /**
@@ -77,8 +96,10 @@ class AnacronSkeleton extends AbstractSkeleton
      */
     public function preRemove(Application $app, \ArrayObject $project, OutputInterface $output)
     {
-    // TODO: Implement preRemove() method.
-    }
+        /** @var ProcessProvider $process */
+        $process = $app["process"];
+        // cleanup
+        $process->executeSudoCommand("crontab -r -u " . $project["name"], $output, true);    }
 
     /**
      * @param Application     $app     The application
@@ -89,7 +110,6 @@ class AnacronSkeleton extends AbstractSkeleton
      */
     public function postRemove(Application $app, \ArrayObject $project, OutputInterface $output)
     {
-    // TODO: Implement postRemove() method.
     }
 
     /**
@@ -112,7 +132,7 @@ class AnacronSkeleton extends AbstractSkeleton
      */
     public function dependsOn(Application $app, \ArrayObject $project, OutputInterface $output)
     {
-    // TODO: Implement dependsOn() method.
+        return array("base");
     }
 
 }

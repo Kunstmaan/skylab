@@ -6,6 +6,7 @@ use Cilex\ServiceProviderInterface;
 use Kunstmaan\Skylab\Entity\Project;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 /**
  * FileSystemProvider
@@ -35,12 +36,24 @@ class FileSystemProvider implements ServiceProviderInterface
     }
 
     /**
-     * @return array
+     * @return SplFileInfo[]
      */
     public function getProjects()
     {
         $finder = new Finder();
         $finder->directories()->sortByName()->in($this->app["config"]["projects"]["path"])->depth('== 0');
+
+        return iterator_to_array($finder);
+    }
+
+    /**
+     * @param $path
+     * @return SplFileInfo[]
+     */
+    public function getDotDFiles($path)
+    {
+        $finder = new Finder();
+        $finder->files()->sortByName()->in($path)->depth('== 0');
 
         return iterator_to_array($finder);
     }

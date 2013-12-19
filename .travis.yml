@@ -13,8 +13,9 @@ before_script:
     - git config --global user.email travis@example.com
 
 script:
-    - ./compile --version v0.0.0-travis
+    - ./compile --version 0.0.0
     - php skylab.phar self-update
     - ./skylab new test -vvv
+    - ./skylab apply anacron -vvv
     - ./skylab maintenance -vvv
     - ./skylab remove test --force -vvv
