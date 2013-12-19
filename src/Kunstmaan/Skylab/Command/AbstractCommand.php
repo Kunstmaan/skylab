@@ -47,33 +47,32 @@ abstract class AbstractCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-	$this->filesystem = $this->getService('filesystem');
-	$this->projectConfig = $this->getService('projectconfig');
-	$this->skeleton = $this->getService('skeleton');
-	$this->process = $this->getService('process');
-	$this->permission = $this->getService('permission');
-	$this->dialog = $this->getService('dialog');
+    $this->filesystem = $this->getService('filesystem');
+    $this->projectConfig = $this->getService('projectconfig');
+    $this->skeleton = $this->getService('skeleton');
+    $this->process = $this->getService('process');
+    $this->permission = $this->getService('permission');
+    $this->dialog = $this->getService('dialog');
 
-	if (!$input->getOption('hideLogo')) {
-	    OutputUtil::logo($output, OutputInterface::VERBOSITY_NORMAL, "Executing " . get_class($this));
-	}
+    if (!$input->getOption('hideLogo')) {
+        OutputUtil::logo($output, OutputInterface::VERBOSITY_NORMAL, "Executing " . get_class($this));
+    }
 
-	$this->process->executeCommand('sudo -p "Please enter your sudo password: " -v', $output, true);
+    $this->process->executeCommand('sudo -p "Please enter your sudo password: " -v', $output, true);
 
-	if (defined('SKYLAB_DEV_WARNING_TIME') && $this->getName() !== 'self-update') {
-	    if (time() > SKYLAB_DEV_WARNING_TIME) {
-		OutputUtil::logWarning($output, OutputInterface::VERBOSITY_NORMAL, 'Warning: This build of Skylab is over 30 days old. It is recommended to update it by running "'.$_SERVER['PHP_SELF'].' self-update" to get the latest version.');
-	    }
-	}
+    if (defined('SKYLAB_DEV_WARNING_TIME') && $this->getName() !== 'self-update') {
+        if (time() > SKYLAB_DEV_WARNING_TIME) {
+        OutputUtil::logWarning($output, OutputInterface::VERBOSITY_NORMAL, 'Warning: This build of Skylab is over 30 days old. It is recommended to update it by running "'.$_SERVER['PHP_SELF'].' self-update" to get the latest version.');
+        }
+    }
 
-	$this->doExecute($input, $output);
-	$app = $this->getContainer();
-	if (!$input->getOption('hideLogo')) {
-	    OutputUtil::logStatistics($output, OutputInterface::VERBOSITY_NORMAL, $app['skylab.starttime']);
-	}
+    $this->doExecute($input, $output);
+    $app = $this->getContainer();
+    if (!$input->getOption('hideLogo')) {
+        OutputUtil::logStatistics($output, OutputInterface::VERBOSITY_NORMAL, $app['skylab.starttime']);
+    }
     }
 
     abstract protected function doExecute(InputInterface $input, OutputInterface $output);
-
 
 }

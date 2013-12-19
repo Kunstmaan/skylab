@@ -53,6 +53,7 @@ class SelfUpdateCommand extends AbstractCommand
 
             if (!file_exists($tempFilename)) {
                 OutputUtil::logError($output, OutputInterface::VERBOSITY_NORMAL, 'The download of the new Skylab version failed for an unexpected reason');
+
                 return 1;
             }
 
@@ -69,6 +70,7 @@ class SelfUpdateCommand extends AbstractCommand
                     throw $e;
                 }
                 OutputUtil::logError($output, OutputInterface::VERBOSITY_NORMAL, 'The download is corrupted (' . $e->getMessage() . '). Please re-run the self-update command to try again.');
+
                 return 1;
             }
         } else {
@@ -78,8 +80,8 @@ class SelfUpdateCommand extends AbstractCommand
 
     /**
      * @param $url
-     * @param string $contentType
-     * @param string $filename
+     * @param  string $contentType
+     * @param  string $filename
      * @return mixed
      */
     private function getSslPage($url, $contentType = null, $filename = null)

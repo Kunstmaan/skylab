@@ -9,5 +9,4 @@ use Cilex\ServiceProviderInterface;
 abstract class AbstractProvider implements ServiceProviderInterface
 {
 
-
 }

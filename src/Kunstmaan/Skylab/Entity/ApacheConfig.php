@@ -27,7 +27,7 @@ class ApacheConfig
      */
     public function setUrl($url)
     {
-	$this->url = $url;
+    $this->url = $url;
     }
 
     /**
@@ -35,7 +35,7 @@ class ApacheConfig
      */
     public function getUrl()
     {
-	return $this->url;
+    return $this->url;
     }
 
     /**
@@ -43,7 +43,7 @@ class ApacheConfig
      */
     public function setAliases(array $aliases)
     {
-	$this->aliases = $aliases;
+    $this->aliases = $aliases;
     }
 
     /**
@@ -51,7 +51,7 @@ class ApacheConfig
      */
     public function getAliases()
     {
-	return $this->aliases;
+    return $this->aliases;
     }
 
     /**
@@ -59,7 +59,7 @@ class ApacheConfig
      */
     public function setWebDir($webDir)
     {
-	$this->webDir = $webDir;
+    $this->webDir = $webDir;
     }
 
     /**
@@ -67,7 +67,7 @@ class ApacheConfig
      */
     public function getWebDir()
     {
-	return $this->webDir;
+    return $this->webDir;
     }
 
 }

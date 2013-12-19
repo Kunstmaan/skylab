@@ -52,10 +52,10 @@ class FileSystemProvider implements ServiceProviderInterface
      */
     public function projectExists($projectname)
     {
-	$finder = new Finder();
-	$finder->directories()->sortByName()->in($this->app["config"]["projects"]["path"])->depth('== 0')->name($projectname);
+    $finder = new Finder();
+    $finder->directories()->sortByName()->in($this->app["config"]["projects"]["path"])->depth('== 0')->name($projectname);
 
-	return $finder->count() != 0;
+    return $finder->count() != 0;
     }
 
     /**
@@ -65,7 +65,7 @@ class FileSystemProvider implements ServiceProviderInterface
      */
     public function getProjectDirectory($projectname)
     {
-	return $this->app["config"]["projects"]["path"] . '/' . $projectname;
+    return $this->app["config"]["projects"]["path"] . '/' . $projectname;
     }
 
     /**
@@ -75,107 +75,107 @@ class FileSystemProvider implements ServiceProviderInterface
      */
     public function getProjectConfigDirectory($projectname)
     {
-	return $this->getProjectDirectory($projectname) . "/conf/";
+    return $this->getProjectDirectory($projectname) . "/conf/";
     }
 
     /**
-     * @param string $projectname The project name
-     * @param OutputInterface $output The command output stream
+     * @param string          $projectname The project name
+     * @param OutputInterface $output      The command output stream
      */
     public function createProjectDirectory($projectname, OutputInterface $output)
     {
-	$projectDirectory = $this->getProjectDirectory($projectname);
-	if (is_null($this->process)) {
-	    $this->process = $this->app["process"];
-	}
-	$this->process->executeSudoCommand('mkdir -p ' . $projectDirectory, $output);
+    $projectDirectory = $this->getProjectDirectory($projectname);
+    if (is_null($this->process)) {
+        $this->process = $this->app["process"];
+    }
+    $this->process->executeSudoCommand('mkdir -p ' . $projectDirectory, $output);
     }
 
     /**
-     * @param \ArrayObject $project The project
-     * @param OutputInterface $output The command output stream
-     * @param string $path The relative path in the project folder
+     * @param \ArrayObject    $project The project
+     * @param OutputInterface $output  The command output stream
+     * @param string          $path    The relative path in the project folder
      */
     public function createDirectory(\ArrayObject $project, OutputInterface $output, $path)
     {
-	$projectDirectory = $this->getProjectDirectory($project["name"]);
-	if (is_null($this->process)) {
-	    $this->process = $this->app["process"];
-	}
-	$this->process->executeSudoCommand('mkdir -p ' . $projectDirectory . '/' . $path, $output);
+    $projectDirectory = $this->getProjectDirectory($project["name"]);
+    if (is_null($this->process)) {
+        $this->process = $this->app["process"];
+    }
+    $this->process->executeSudoCommand('mkdir -p ' . $projectDirectory . '/' . $path, $output);
     }
 
     /**
-     * @param \ArrayObject $project The project
-     * @param OutputInterface $output The command output stream
-     * @param string $path The relative path in the project folder
+     * @param \ArrayObject    $project The project
+     * @param OutputInterface $output  The command output stream
+     * @param string          $path    The relative path in the project folder
      *
      * @return string
      */
     public function getDirectory(\ArrayObject $project, OutputInterface $output, $path)
     {
-	$projectDirectory = $this->getProjectDirectory($project["name"]);
-	if (is_null($this->process)) {
-	    $this->process = $this->app["process"];
-	}
+    $projectDirectory = $this->getProjectDirectory($project["name"]);
+    if (is_null($this->process)) {
+        $this->process = $this->app["process"];
+    }
 
-	return $projectDirectory . '/' . $path;
+    return $projectDirectory . '/' . $path;
     }
 
     /**
-     * @param \ArrayObject $project The project
-     * @param OutputInterface $output The command output stream
+     * @param \ArrayObject    $project The project
+     * @param OutputInterface $output  The command output stream
      */
     public function runTar(\ArrayObject $project, OutputInterface $output)
     {
-	if (is_null($this->process)) {
-	    $this->process = $this->app["process"];
-	}
-	$this->process->executeSudoCommand('mkdir -p ' . $this->app["config"]["projects"]["backuppath"], $output);
-	$projectDirectory = $this->getProjectDirectory($project["name"]);
-	$excluded = '';
-	foreach ($project["backupexcludes"] as $backupexclude) {
-	    $excluded = $excluded . " --exclude='" . $backupexclude . "'";
-	}
-	$this->process->executeSudoCommand('nice -n 19 tar --create --absolute-names ' . $excluded . ' --file ' . $this->app["config"]["projects"]["backuppath"] . '/' . $project["name"] . '.tar.gz --totals --gzip ' . $projectDirectory . '/ 2>&1', $output);
+    if (is_null($this->process)) {
+        $this->process = $this->app["process"];
+    }
+    $this->process->executeSudoCommand('mkdir -p ' . $this->app["config"]["projects"]["backuppath"], $output);
+    $projectDirectory = $this->getProjectDirectory($project["name"]);
+    $excluded = '';
+    foreach ($project["backupexcludes"] as $backupexclude) {
+        $excluded = $excluded . " --exclude='" . $backupexclude . "'";
+    }
+    $this->process->executeSudoCommand('nice -n 19 tar --create --absolute-names ' . $excluded . ' --file ' . $this->app["config"]["projects"]["backuppath"] . '/' . $project["name"] . '.tar.gz --totals --gzip ' . $projectDirectory . '/ 2>&1', $output);
     }
 
     /**
-     * @param \ArrayObject $project The project
-     * @param OutputInterface $output The command output stream
+     * @param \ArrayObject    $project The project
+     * @param OutputInterface $output  The command output stream
      */
     public function removeProjectDirectory(\ArrayObject $project, OutputInterface $output)
     {
-	$projectDirectory = $this->getProjectDirectory($project["name"]);
-	if (is_null($this->process)) {
-	    $this->process = $this->app["process"];
-	}
-	$this->process->executeSudoCommand("rm -Rf " . $projectDirectory, $output);
+    $projectDirectory = $this->getProjectDirectory($project["name"]);
+    if (is_null($this->process)) {
+        $this->process = $this->app["process"];
+    }
+    $this->process->executeSudoCommand("rm -Rf " . $projectDirectory, $output);
     }
 
     /**
-     * @param Project $project The project
-     * @param OutputInterface $output The command output stream
+     * @param Project         $project The project
+     * @param OutputInterface $output  The command output stream
      */
     public function createCompiledVhostConfigDirectory(Project $project, OutputInterface $output)
     {
-	if (is_null($this->process)) {
-	    $this->process = $this->app["process"];
-	}
-	$this->process->executeCommand('mkdir -p /etc/apache2/vhost.d/' . $project->getName(), $output);
-	$this->process->executeCommand('mkdir -p /etc/apache2/vhost.d/' . $project->getName() . "/shared", $output);
-	$this->process->executeCommand('mkdir -p /etc/apache2/vhost.d/' . $project->getName() . "/nossl", $output);
-	$this->process->executeCommand('mkdir -p /etc/apache2/vhost.d/' . $project->getName() . "/ssl", $output);
+    if (is_null($this->process)) {
+        $this->process = $this->app["process"];
+    }
+    $this->process->executeCommand('mkdir -p /etc/apache2/vhost.d/' . $project->getName(), $output);
+    $this->process->executeCommand('mkdir -p /etc/apache2/vhost.d/' . $project->getName() . "/shared", $output);
+    $this->process->executeCommand('mkdir -p /etc/apache2/vhost.d/' . $project->getName() . "/nossl", $output);
+    $this->process->executeCommand('mkdir -p /etc/apache2/vhost.d/' . $project->getName() . "/ssl", $output);
     }
 
     /**
-     * @param Project $project The project
-     * @param OutputInterface $output The command output stream
+     * @param Project         $project The project
+     * @param OutputInterface $output  The command output stream
      *
      * @return string
      */
     public function getCompiledVhostConfigDirectory(Project $project, OutputInterface $output)
     {
-	return '/etc/apache2/vhost.d/' . $project->getName();
+    return '/etc/apache2/vhost.d/' . $project->getName();
     }
 }

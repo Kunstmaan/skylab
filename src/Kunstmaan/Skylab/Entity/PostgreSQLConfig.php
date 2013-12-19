@@ -32,7 +32,7 @@ class PostgreSQLConfig
      */
     public function setHost($host)
     {
-	$this->host = $host;
+    $this->host = $host;
     }
 
     /**
@@ -40,7 +40,7 @@ class PostgreSQLConfig
      */
     public function getHost()
     {
-	return $this->host;
+    return $this->host;
     }
 
     /**
@@ -48,7 +48,7 @@ class PostgreSQLConfig
      */
     public function setPassword($password)
     {
-	$this->password = $password;
+    $this->password = $password;
     }
 
     /**
@@ -56,7 +56,7 @@ class PostgreSQLConfig
      */
     public function getPassword()
     {
-	return $this->password;
+    return $this->password;
     }
 
     /**
@@ -64,7 +64,7 @@ class PostgreSQLConfig
      */
     public function setPort($port)
     {
-	$this->port = $port;
+    $this->port = $port;
     }
 
     /**
@@ -72,7 +72,7 @@ class PostgreSQLConfig
      */
     public function getPort()
     {
-	return $this->port;
+    return $this->port;
     }
 
     /**
@@ -80,7 +80,7 @@ class PostgreSQLConfig
      */
     public function setUser($user)
     {
-	$this->user = $user;
+    $this->user = $user;
     }
 
     /**
@@ -88,7 +88,7 @@ class PostgreSQLConfig
      */
     public function getUser()
     {
-	return $this->user;
+    return $this->user;
     }
 
 }

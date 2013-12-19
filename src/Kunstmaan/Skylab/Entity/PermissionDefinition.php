@@ -27,7 +27,7 @@ class PermissionDefinition
      */
     public function addAcl($acl)
     {
-	$this->acl[] = $acl;
+    $this->acl[] = $acl;
     }
 
     /**
@@ -35,7 +35,7 @@ class PermissionDefinition
      */
     public function getAcl()
     {
-	return $this->acl;
+    return $this->acl;
     }
 
     /**
@@ -43,7 +43,7 @@ class PermissionDefinition
      */
     public function setOwnership($ownership)
     {
-	$this->ownership = $ownership;
+    $this->ownership = $ownership;
     }
 
     /**
@@ -51,7 +51,7 @@ class PermissionDefinition
      */
     public function getOwnership()
     {
-	return $this->ownership;
+    return $this->ownership;
     }
 
     /**
@@ -59,7 +59,7 @@ class PermissionDefinition
      */
     public function setPath($path)
     {
-	$this->path = $path;
+    $this->path = $path;
     }
 
     /**
@@ -67,7 +67,7 @@ class PermissionDefinition
      */
     public function getPath()
     {
-	return $this->path;
+    return $this->path;
     }
 
 }
