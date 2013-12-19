@@ -31,6 +31,11 @@ class AnacronSkeleton extends AbstractSkeleton
      */
     public function create(Application $app, \ArrayObject $project, OutputInterface $output)
     {
+        /** @var $filesystem FileSystemProvider */
+        $filesystem = $app["filesystem"];
+        /** @var ProcessProvider $process */
+        $process = $app["process"];
+        $process->executeSudoCommand("mkdir -p " . $filesystem->getProjectConfigDirectory($project["name"])."fcron.d/", $output);
     }
 
     /**
