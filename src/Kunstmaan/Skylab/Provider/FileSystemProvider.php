@@ -88,7 +88,7 @@ class FileSystemProvider implements ServiceProviderInterface
      */
     public function getProjectConfigDirectory($projectname)
     {
-    return $this->getProjectDirectory($projectname) . "/conf/";
+    return $this->getProjectDirectory($projectname) . "/conf";
     }
 
     /**

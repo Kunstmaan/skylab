@@ -35,7 +35,7 @@ class AnacronSkeleton extends AbstractSkeleton
         $filesystem = $app["filesystem"];
         /** @var ProcessProvider $process */
         $process = $app["process"];
-        $process->executeSudoCommand("mkdir -p " . $filesystem->getProjectConfigDirectory($project["name"])."fcron.d/", $output);
+        $process->executeSudoCommand("mkdir -p " . $filesystem->getProjectConfigDirectory($project["name"])."/fcron.d/", $output);
     }
 
     /**
@@ -51,12 +51,12 @@ class AnacronSkeleton extends AbstractSkeleton
         $filesystem = $app["filesystem"];
         /** @var ProcessProvider $process */
         $process = $app["process"];
-        $cronjobscript =  $filesystem->getProjectConfigDirectory($project["name"])."anacronjobs";
+        $cronjobscript =  $filesystem->getProjectConfigDirectory($project["name"])."/anacronjobs";
         // cleanup
         $process->executeSudoCommand("rm -f " . $cronjobscript, $output);
         $process->executeSudoCommand("crontab -r -u " . $project["name"], $output, true);
         // generate anacronjobs file
-        $cronjobs = $filesystem->getDotDFiles($filesystem->getProjectConfigDirectory($project["name"])."fcron.d/");
+        $cronjobs = $filesystem->getDotDFiles($filesystem->getProjectConfigDirectory($project["name"])."/fcron.d/");
         foreach ($cronjobs as $cronjob) {
             $process->executeSudoCommand("cat " . $cronjob->getRealPath() . " >> " . $cronjobscript, $output);
             $process->executeSudoCommand("sed -i -e '\$a\\' " . $cronjobscript, $output);
@@ -67,7 +67,7 @@ class AnacronSkeleton extends AbstractSkeleton
         }
         $process->executeSudoCommand('printf "\n" >> ' . $cronjobscript, $output);
         // load the anacrontab file
-        $process->executeSudoCommand("crontab -u " . $project["name"] . " " . $filesystem->getProjectConfigDirectory($project["name"])."anacrontab", $output);
+        $process->executeSudoCommand("crontab -u " . $project["name"] . " " . $filesystem->getProjectConfigDirectory($project["name"])."/anacrontab", $output);
     }
 
     /**

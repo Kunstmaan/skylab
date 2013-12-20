@@ -46,10 +46,10 @@ class ApacheSkeleton extends AbstractSkeleton
         /** @var DialogHelper $dialog */
         $dialog = $app['console']->getHelperSet()->get('dialog');
         $process->executeSudoCommand("mkdir -p /etc/apache2/conf/projects.d/", $output);
-        $process->executeSudoCommand("mkdir -p " . $filesystem->getProjectDirectory($project["name"]) . "apachelogs", $output);
-        $process->executeSudoCommand("mkdir -p " . $filesystem->getProjectConfigDirectory($project["name"]) . "apache.d", $output);
-        $process->executeSudoCommand("mkdir -p " . $filesystem->getProjectDirectory($project["name"]) . "stats", $output);
-        $process->executeSudoCommand("chmod -R 777 " . $filesystem->getProjectConfigDirectory($project["name"]) . "apache.d/", $output);
+        $process->executeSudoCommand("mkdir -p " . $filesystem->getProjectDirectory($project["name"]) . "/apachelogs", $output);
+        $process->executeSudoCommand("mkdir -p " . $filesystem->getProjectConfigDirectory($project["name"]) . "/apache.d", $output);
+        $process->executeSudoCommand("mkdir -p " . $filesystem->getProjectDirectory($project["name"]) . "/stats", $output);
+        $process->executeSudoCommand("chmod -R 777 " . $filesystem->getProjectConfigDirectory($project["name"]) . "/apache.d/", $output);
         // render templates
         $finder = new Finder();
         $finder->files()->in($filesystem->getApacheConfigTemplateDir($project, $output))->name("*.conf.twig");
@@ -57,7 +57,7 @@ class ApacheSkeleton extends AbstractSkeleton
         foreach ($finder as $config) {
             OutputUtil::log($output, OutputInterface::VERBOSITY_VERBOSE, "%", "Rendering " . $config->getRealPath());
             $shared = $twig->render($config->getRealPath(), array());
-            file_put_contents($filesystem->getProjectConfigDirectory($project["name"]) . "apache.d/" . str_replace(".conf.twig", "", $config->getFilename()), $shared);
+            file_put_contents($filesystem->getProjectConfigDirectory($project["name"]) . "/apache.d/" . str_replace(".conf.twig", "", $config->getFilename()), $shared);
         }
         // update config
         {

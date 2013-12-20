@@ -76,7 +76,7 @@ class ProjectConfigProvider implements ServiceProviderInterface
     {
     /* @var $filesystem FileSystemProvider */
     $filesystem = $this->app['filesystem'];
-    $configPath = $filesystem->getProjectConfigDirectory($projectname) . "config.xml";
+    $configPath = $filesystem->getProjectConfigDirectory($projectname) . "/config.xml";
     OutputUtil::log($output, OutputInterface::VERBOSITY_VERBOSE, "%", "Loading the project config from " . $configPath);
 
     $xml = simplexml_load_file($configPath);
@@ -111,7 +111,7 @@ class ProjectConfigProvider implements ServiceProviderInterface
     {
     /* @var $filesystem FileSystemProvider */
     $filesystem = $this->app['filesystem'];
-    $configPath = $filesystem->getProjectConfigDirectory($projectname) . "ownership.xml";
+    $configPath = $filesystem->getProjectConfigDirectory($projectname) . "/ownership.xml";
     OutputUtil::log($output, OutputInterface::VERBOSITY_VERBOSE, "%", "Loading the project ownership from " . $configPath);
 
     $xml = simplexml_load_file($configPath);
@@ -164,7 +164,7 @@ class ProjectConfigProvider implements ServiceProviderInterface
     {
     /* @var $filesystem FileSystemProvider */
     $filesystem = $this->app['filesystem'];
-    $configPath = $filesystem->getProjectConfigDirectory($projectname) . "permissions.xml";
+    $configPath = $filesystem->getProjectConfigDirectory($projectname) . "/permissions.xml";
     OutputUtil::log($output, OutputInterface::VERBOSITY_VERBOSE, "%", "Loading the project permissions from " . $configPath);
 
     $xml = simplexml_load_file($configPath);
@@ -196,7 +196,7 @@ class ProjectConfigProvider implements ServiceProviderInterface
     {
     /* @var $filesystem FileSystemProvider */
     $filesystem = $this->app['filesystem'];
-    $configPath = $filesystem->getProjectConfigDirectory($projectname) . "backup.xml";
+    $configPath = $filesystem->getProjectConfigDirectory($projectname) . "/backup.xml";
     OutputUtil::log($output, OutputInterface::VERBOSITY_VERBOSE, "%", "Loading the project backup excludes from " . $configPath);
     $xml = simplexml_load_file($configPath);
     foreach ($xml->var[0]->item as $item) {
@@ -230,7 +230,7 @@ class ProjectConfigProvider implements ServiceProviderInterface
     /* @var $filesystem FileSystemProvider */
     $filesystem = $this->app['filesystem'];
 
-    $configPath = $filesystem->getProjectConfigDirectory($project["name"]) . "config.xml";
+    $configPath = $filesystem->getProjectConfigDirectory($project["name"]) . "/config.xml";
     OutputUtil::log($output, OutputInterface::VERBOSITY_VERBOSE, "%", "Writing the project config to " . $configPath);
 
     $config = new \SimpleXMLElement('<?xml version="1.0" ?><config></config>');
@@ -302,7 +302,7 @@ class ProjectConfigProvider implements ServiceProviderInterface
     /* @var $filesystem FileSystemProvider */
     $filesystem = $this->app['filesystem'];
 
-    $ownershipPath = $filesystem->getProjectConfigDirectory($project["name"]) . "ownership.xml";
+    $ownershipPath = $filesystem->getProjectConfigDirectory($project["name"]) . "/ownership.xml";
     OutputUtil::log($output, OutputInterface::VERBOSITY_VERBOSE, "%", "Writing the project's ownership config to " . $ownershipPath);
 
     $ownership = new \SimpleXMLElement('<?xml version="1.0" ?><config></config>');
@@ -337,7 +337,7 @@ class ProjectConfigProvider implements ServiceProviderInterface
     /* @var $filesystem FileSystemProvider */
     $filesystem = $this->app['filesystem'];
 
-    $permissionsPath = $filesystem->getProjectConfigDirectory($project["name"]) . "permissions.xml";
+    $permissionsPath = $filesystem->getProjectConfigDirectory($project["name"]) . "/permissions.xml";
     OutputUtil::log($output, OutputInterface::VERBOSITY_VERBOSE, "%", "Writing the project's permissions config to " . $permissionsPath);
 
     $permissions = new \SimpleXMLElement('<?xml version="1.0" ?><config></config>');
@@ -360,7 +360,7 @@ class ProjectConfigProvider implements ServiceProviderInterface
     {
     /* @var $filesystem FileSystemProvider */
     $filesystem = $this->app['filesystem'];
-    $backupPath = $filesystem->getProjectConfigDirectory($project["name"]) . "backup.xml";
+    $backupPath = $filesystem->getProjectConfigDirectory($project["name"]) . "/backup.xml";
     OutputUtil::log($output, OutputInterface::VERBOSITY_VERBOSE, "%", "Writing the project's backup excludes config to " . $backupPath);
 
     $backup = new \SimpleXMLElement('<?xml version="1.0" ?><config></config>');
