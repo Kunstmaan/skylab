@@ -3,7 +3,6 @@ namespace Kunstmaan\Skylab\Skeleton;
 
 use Cilex\Application;
 use Kunstmaan\Skylab\Helper\OutputUtil;
-use Kunstmaan\Skylab\Provider\DialogProvider;
 use Kunstmaan\Skylab\Provider\FileSystemProvider;
 use Kunstmaan\Skylab\Provider\ProcessProvider;
 use Kunstmaan\Skylab\Provider\ProjectConfigProvider;

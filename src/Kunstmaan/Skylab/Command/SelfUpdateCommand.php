@@ -18,6 +18,13 @@ class SelfUpdateCommand extends AbstractCommand
             ->addOption("--hideLogo", null, InputOption::VALUE_NONE, 'If set, no logo or statistics will be shown');
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
+     * @throws \Symfony\Component\Yaml\Exception\RuntimeException
+     * @throws \Exception
+     */
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
         $cacheDir = sys_get_temp_dir();
@@ -76,6 +83,7 @@ class SelfUpdateCommand extends AbstractCommand
         } else {
             OutputUtil::log($output, OutputInterface::VERBOSITY_NORMAL, 'You are running the latest release: ' . $latest["tag_name"]);
         }
+        return 0;
     }
 
     /**
@@ -109,5 +117,6 @@ class SelfUpdateCommand extends AbstractCommand
         } else {
             return $result;
         }
+        return;
     }
 }

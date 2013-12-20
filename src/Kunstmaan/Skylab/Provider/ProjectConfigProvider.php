@@ -34,23 +34,6 @@ class ProjectConfigProvider implements ServiceProviderInterface
      * @param string          $projectname The project name
      * @param OutputInterface $output      The command output stream
      *
-     * @return Project
-     */
-    public function createNewProjectConfig($projectname, OutputInterface $output)
-    {
-    /** @var $filesystem FileSystemProvider */
-    $filesystem = $this->app['filesystem'];
-    $configPath = $filesystem->getProjectConfigDirectory($projectname) . "/project.yml";
-    OutputUtil::log($output, OutputInterface::VERBOSITY_NORMAL, "Creating new Project object named $projectname in $configPath");
-    $project = new Project($projectname, $configPath);
-
-    return $project;
-    }
-
-    /**
-     * @param string          $projectname The project name
-     * @param OutputInterface $output      The command output stream
-     *
      * @return \ArrayObject
      */
     public function loadProjectConfig($projectname, OutputInterface $output)
@@ -80,7 +63,8 @@ class ProjectConfigProvider implements ServiceProviderInterface
     OutputUtil::log($output, OutputInterface::VERBOSITY_VERBOSE, "%", "Loading the project config from " . $configPath);
 
     $xml = simplexml_load_file($configPath);
-    foreach ($xml->var as $var) {
+        /** @noinspection PhpUndefinedFieldInspection */
+        foreach ($xml->var as $var) {
         $tag = (string) $var["name"];
         switch ($tag) {
         case "project.skeletons":

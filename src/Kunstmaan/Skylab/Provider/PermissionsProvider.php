@@ -4,7 +4,6 @@ namespace Kunstmaan\Skylab\Provider;
 use Cilex\Application;
 use Cilex\ServiceProviderInterface;
 use Kunstmaan\Skylab\Entity\PermissionDefinition;
-use Kunstmaan\Skylab\Entity\Project;
 use Kunstmaan\Skylab\Helper\OutputUtil;
 use Symfony\Component\Console\Output\OutputInterface;
 
