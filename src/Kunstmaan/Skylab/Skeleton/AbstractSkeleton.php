@@ -45,11 +45,11 @@ abstract class AbstractSkeleton
      */
     public function __construct(Application $app)
     {
-    $this->filesystem = $app['filesystem'];
-    $this->permission = $app['permission'];
-    $this->process = $app['process'];
-    $this->projectConfig = $app['projectconfig'];
-    $this->skeleton = $app['skeleton'];
+        $this->filesystem = $app['filesystem'];
+        $this->permission = $app['permission'];
+        $this->process = $app['process'];
+        $this->projectConfig = $app['projectconfig'];
+        $this->skeleton = $app['skeleton'];
     }
 
     /**
@@ -58,71 +58,71 @@ abstract class AbstractSkeleton
     abstract public function getName();
 
     /**
-     * @param Application     $app     The application
-     * @param \ArrayObject    $project
-     * @param OutputInterface $output  The command output stream
+     * @param Application $app The application
+     * @param \ArrayObject $project
+     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
     abstract public function create(Application $app, \ArrayObject $project, OutputInterface $output);
 
     /**
-     * @param Application     $app     The application
-     * @param \ArrayObject    $project
-     * @param OutputInterface $output  The command output stream
+     * @param Application $app The application
+     * @param \ArrayObject $project
+     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
     abstract public function maintenance(Application $app, \ArrayObject $project, OutputInterface $output);
 
     /**
-     * @param Application     $app     The application
-     * @param \ArrayObject    $project
-     * @param OutputInterface $output  The command output stream
+     * @param Application $app The application
+     * @param \ArrayObject $project
+     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
     abstract public function preBackup(Application $app, \ArrayObject $project, OutputInterface $output);
 
     /**
-     * @param Application     $app     The application
-     * @param \ArrayObject    $project
-     * @param OutputInterface $output  The command output stream
+     * @param Application $app The application
+     * @param \ArrayObject $project
+     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
     abstract public function postBackup(Application $app, \ArrayObject $project, OutputInterface $output);
 
     /**
-     * @param Application     $app     The application
-     * @param \ArrayObject    $project
-     * @param OutputInterface $output  The command output stream
+     * @param Application $app The application
+     * @param \ArrayObject $project
+     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
     abstract public function preRemove(Application $app, \ArrayObject $project, OutputInterface $output);
 
     /**
-     * @param Application     $app     The application
-     * @param \ArrayObject    $project
-     * @param OutputInterface $output  The command output stream
+     * @param Application $app The application
+     * @param \ArrayObject $project
+     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
     abstract public function postRemove(Application $app, \ArrayObject $project, OutputInterface $output);
 
     /**
-     * @param  \Cilex\Application                                $app
-     * @param  \ArrayObject                                      $project
-     * @param  \SimpleXMLElement                                 $config  The configuration array
+     * @param  \Cilex\Application $app
+     * @param  \ArrayObject $project
+     * @param  \SimpleXMLElement $config The configuration array
      * @param  \Symfony\Component\Console\Output\OutputInterface $output
      * @return \SimpleXMLElement
      */
     abstract public function writeConfig(Application $app, \ArrayObject $project, \SimpleXMLElement $config, OutputInterface $output);
 
     /**
-     * @param  \Cilex\Application                                $app
-     * @param  \ArrayObject                                      $project
+     * @param  \Cilex\Application $app
+     * @param  \ArrayObject $project
      * @param  \Symfony\Component\Console\Output\OutputInterface $output
      * @return string[]
      */

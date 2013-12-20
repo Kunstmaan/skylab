@@ -30,39 +30,39 @@ class DialogProvider extends AbstractProvider
      */
     public function register(Application $app)
     {
-    $app['dialog'] = $this;
-    $this->app = $app;
-    $this->dialog = $this->app['console']->getHelperSet()->get('dialog');
+        $app['dialog'] = $this;
+        $this->app = $app;
+        $this->dialog = $this->app['console']->getHelperSet()->get('dialog');
     }
 
     /**
-     * @param  string                                            $argumentname The argument name
-     * @param  string                                            $message      The message
-     * @param  InputInterface                                    $input        The command input stream
+     * @param  string $argumentname The argument name
+     * @param  string $message The message
+     * @param  InputInterface $input The command input stream
      * @param  \Symfony\Component\Console\Output\OutputInterface $output
      * @throws \RuntimeException
      * @return string
      */
     public function askFor($argumentname, $message, InputInterface $input, OutputInterface $output)
     {
-    $name = $input->getArgument($argumentname);
-    if (is_null($name)) {
-        $name = $this->dialog->ask($output, '<question>' . $message . ': </question>');
-    }
-    if (is_null($name)) {
-        throw new RuntimeException("A $argumentname is required, what am I, psychic?");
-    }
+        $name = $input->getArgument($argumentname);
+        if (is_null($name)) {
+            $name = $this->dialog->ask($output, '<question>' . $message . ': </question>');
+        }
+        if (is_null($name)) {
+            throw new RuntimeException("A $argumentname is required, what am I, psychic?");
+        }
 
-    return $name;
+        return $name;
     }
 
     /**
-     * @param string                                            $question The question text
+     * @param string $question The question text
      * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @param bool                                              $default  The default action
+     * @param bool $default The default action
      */
     public function askConfirmation($question, OutputInterface $output, $default = true)
     {
-    $this->dialog->askConfirmation($output, $question, $default);
+        $this->dialog->askConfirmation($output, $question, $default);
     }
 }

@@ -19,8 +19,8 @@ class SelfUpdateCommand extends AbstractCommand
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
+     * @param  InputInterface $input
+     * @param  OutputInterface $output
      * @return int
      * @throws \Symfony\Component\Yaml\Exception\RuntimeException
      * @throws \Exception
@@ -83,6 +83,7 @@ class SelfUpdateCommand extends AbstractCommand
         } else {
             OutputUtil::log($output, OutputInterface::VERBOSITY_NORMAL, 'You are running the latest release: ' . $latest["tag_name"]);
         }
+
         return 0;
     }
 
@@ -117,6 +118,7 @@ class SelfUpdateCommand extends AbstractCommand
         } else {
             return $result;
         }
+
         return;
     }
 }

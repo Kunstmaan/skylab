@@ -20,15 +20,15 @@ class SetPermissionsCommand extends AbstractCommand
      */
     protected function configure()
     {
-    $this
-        ->setName('permissions')
-        ->setDescription('Set the permissions of a kServer project')
-        ->addArgument('name', InputArgument::REQUIRED, 'The name of the project')
-        ->addOption("--hideLogo", null, InputOption::VALUE_NONE, 'If set, no logo or statistics will be shown');
+        $this
+            ->setName('permissions')
+            ->setDescription('Set the permissions of a kServer project')
+            ->addArgument('name', InputArgument::REQUIRED, 'The name of the project')
+            ->addOption("--hideLogo", null, InputOption::VALUE_NONE, 'If set, no logo or statistics will be shown');
     }
 
     /**
-     * @param InputInterface  $input  The command inputstream
+     * @param InputInterface $input The command inputstream
      * @param OutputInterface $output The command outputstream
      *
      * @return int|void
@@ -46,7 +46,7 @@ class SetPermissionsCommand extends AbstractCommand
         OutputUtil::logStep($output, OutputInterface::VERBOSITY_NORMAL, "Setting permissions on project $projectname");
 
         /** @var BaseSkeleton $baseSkeleton */
-        $baseSkeleton =  $this->skeleton->findSkeleton("base", $output);
+        $baseSkeleton = $this->skeleton->findSkeleton("base", $output);
         $project = $this->projectConfig->loadProjectConfig($projectname, $output);
         $baseSkeleton->setPermissions($this->getContainer(), $project, $output, true);
     }

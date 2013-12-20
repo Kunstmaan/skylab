@@ -23,7 +23,7 @@ class Application extends BaseApplication
 
     public function __construct($name = 'UNKNOWN', $version = 'UNKNOWN')
     {
-    parent::__construct('Skylab', Application::VERSION);
+        parent::__construct('Skylab', Application::VERSION);
     }
 
     public function getHelp()

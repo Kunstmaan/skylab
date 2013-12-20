@@ -14,8 +14,8 @@ class FallbackConfigServiceProvider implements ServiceProviderInterface
         $app['config'] = $app->share(
             function () use ($app) {
                 $config = array();
-        foreach ($app['config.paths'] as $path) {
-            if (!file_exists($path)) {
+                foreach ($app['config.paths'] as $path) {
+                    if (!file_exists($path)) {
                         continue;
                     }
                     $parser = new Yaml\Parser();

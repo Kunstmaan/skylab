@@ -24,13 +24,13 @@ class ApacheSkeleton extends AbstractSkeleton
      */
     public function getName()
     {
-    return ApacheSkeleton::NAME;
+        return ApacheSkeleton::NAME;
     }
 
     /**
-     * @param Application     $app     The application
-     * @param \ArrayObject    $project
-     * @param OutputInterface $output  The command output stream
+     * @param Application $app The application
+     * @param \ArrayObject $project
+     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
@@ -61,15 +61,15 @@ class ApacheSkeleton extends AbstractSkeleton
         // update config
         {
             // url
-            $defaultUrl = $project["name"].".be";
+            $defaultUrl = $project["name"] . ".be";
             OutputUtil::newLine($output);
-            $project["url"] = $dialog->ask($output, "\n   <question>Enter the base url: [".$defaultUrl."]</question> ", $defaultUrl);
+            $project["url"] = $dialog->ask($output, "\n   <question>Enter the base url: [" . $defaultUrl . "]</question> ", $defaultUrl);
         }
         {
             // url aliases
             $aliases = array();
             $alias = null;
-            while (1==1) {
+            while (1 == 1) {
                 OutputUtil::newLine($output);
                 $alias = $dialog->ask($output, "   <question>Add an url alias (leave empty to stop adding):</question> ");
                 if (empty($alias)) {
@@ -83,69 +83,69 @@ class ApacheSkeleton extends AbstractSkeleton
     }
 
     /**
-     * @param Application     $app     The application
-     * @param \ArrayObject    $project
-     * @param OutputInterface $output  The command output stream
+     * @param Application $app The application
+     * @param \ArrayObject $project
+     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
     public function maintenance(Application $app, \ArrayObject $project, OutputInterface $output)
     {
-    // TODO: Implement maintenance() method.
+        // TODO: Implement maintenance() method.
     }
 
     /**
-     * @param Application     $app     The application
-     * @param \ArrayObject    $project
-     * @param OutputInterface $output  The command output stream
+     * @param Application $app The application
+     * @param \ArrayObject $project
+     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
     public function preBackup(Application $app, \ArrayObject $project, OutputInterface $output)
     {
-    // TODO: Implement preBackup() method.
+        // TODO: Implement preBackup() method.
     }
 
     /**
-     * @param Application     $app     The application
-     * @param \ArrayObject    $project
-     * @param OutputInterface $output  The command output stream
+     * @param Application $app The application
+     * @param \ArrayObject $project
+     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
     public function postBackup(Application $app, \ArrayObject $project, OutputInterface $output)
     {
-    // TODO: Implement postBackup() method.
+        // TODO: Implement postBackup() method.
     }
 
     /**
-     * @param Application     $app     The application
-     * @param \ArrayObject    $project
-     * @param OutputInterface $output  The command output stream
+     * @param Application $app The application
+     * @param \ArrayObject $project
+     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
     public function preRemove(Application $app, \ArrayObject $project, OutputInterface $output)
     {
-    // TODO: Implement preRemove() method.
+        // TODO: Implement preRemove() method.
     }
 
     /**
-     * @param Application     $app     The application
-     * @param \ArrayObject    $project
-     * @param OutputInterface $output  The command output stream
+     * @param Application $app The application
+     * @param \ArrayObject $project
+     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
     public function postRemove(Application $app, \ArrayObject $project, OutputInterface $output)
     {
-    // TODO: Implement postRemove() method.
+        // TODO: Implement postRemove() method.
     }
 
     /**
-     * @param  \Cilex\Application                                $app
-     * @param  \ArrayObject                                      $project
-     * @param  \SimpleXMLElement                                 $config  The configuration array
+     * @param  \Cilex\Application $app
+     * @param  \ArrayObject $project
+     * @param  \SimpleXMLElement $config The configuration array
      * @param  \Symfony\Component\Console\Output\OutputInterface $output
      * @return \SimpleXMLElement
      */
@@ -155,12 +155,13 @@ class ApacheSkeleton extends AbstractSkeleton
         $projectconfig = $app['projectconfig'];
         $config = $projectconfig->addVar($config, 'project.url', $project["url"]);
         $config = $projectconfig->addVarWithItems($config, 'project.aliases', $project["aliases"]);
+
         return $config;
     }
 
     /**
-     * @param  \Cilex\Application                                $app
-     * @param  \ArrayObject                                      $project
+     * @param  \Cilex\Application $app
+     * @param  \ArrayObject $project
      * @param  \Symfony\Component\Console\Output\OutputInterface $output
      * @return string[]
      */
