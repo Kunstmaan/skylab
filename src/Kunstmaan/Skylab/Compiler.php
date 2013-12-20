@@ -67,13 +67,18 @@ class Compiler
     $phar->stopBuffering();
 
     // disabled for interoperability with systems without gzip ext
-    // $phar->compressFiles(\Phar::GZ);
+    $phar->compressFiles(\Phar::GZ);
 
     $this->addFile($phar, new \SplFileInfo(__DIR__.'/../../../LICENSE'), false);
 
     unset($phar);
     }
 
+    /**
+     * @param $phar
+     * @param $file
+     * @param bool $strip
+     */
     private function addFile($phar, $file, $strip = true)
     {
     $path = strtr(str_replace(dirname(dirname(dirname(__DIR__))).DIRECTORY_SEPARATOR, '', $file->getRealPath()), '\\', '/');
