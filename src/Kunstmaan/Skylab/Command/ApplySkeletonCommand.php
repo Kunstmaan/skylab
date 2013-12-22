@@ -52,17 +52,13 @@ EOT
 
             return;
         }
-
         $projectname = $this->dialog->askFor('project', "Please enter the name of the project", $input, $output);
-
         // Check if the project exists, do use in creating a new one with the same name.
         if (!$this->filesystem->projectExists($projectname)) {
             throw new RuntimeException("A project with name $projectname should already exists!");
         }
-
         $skeletonname = $this->dialog->askFor('skeleton', "Please enter the name of the skeleton", $input, $output);
         $theSkeleton = $this->skeleton->findSkeleton($skeletonname, $output);
-
         $project = $this->projectConfig->loadProjectConfig($projectname, $output);
         $this->skeleton->applySkeleton($project, $theSkeleton, $output);
         $this->projectConfig->writeProjectConfig($project, $output);

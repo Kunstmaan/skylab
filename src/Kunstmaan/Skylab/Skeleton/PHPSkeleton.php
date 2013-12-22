@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class PHPSkeleton extends AbstractSkeleton
 {
 
-    const NAME = "php";
+    const NAME = "php5";
 
     /**
      * @return string
@@ -30,6 +30,28 @@ class PHPSkeleton extends AbstractSkeleton
     public function create(Application $app, \ArrayObject $project, OutputInterface $output)
     {
         // TODO: Implement create() method.
+    }
+
+    /**
+     * @param Application $app The application
+     * @param OutputInterface $output The command output stream
+     *
+     * @return mixed
+     */
+    public function preMaintenance(Application $app, OutputInterface $output)
+    {
+        // TODO: Implement preMaintenance() method.
+    }
+
+    /**
+     * @param Application $app The application
+     * @param OutputInterface $output The command output stream
+     *
+     * @return mixed
+     */
+    public function postMaintenance(Application $app, OutputInterface $output)
+    {
+        // TODO: Implement postMaintenance() method.
     }
 
     /**
@@ -112,7 +134,7 @@ class PHPSkeleton extends AbstractSkeleton
      */
     public function dependsOn(Application $app, \ArrayObject $project, OutputInterface $output)
     {
-        // TODO: Implement dependsOn() method.
+        return array("base", "apache");
     }
 
 }

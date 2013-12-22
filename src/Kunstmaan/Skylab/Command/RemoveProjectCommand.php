@@ -73,6 +73,7 @@ class RemoveProjectCommand extends AbstractCommand
         // Run the preRemove hook for all dependencies
         foreach ($project["skeletons"] as $skeleton) {
             OutputUtil::log($output, OutputInterface::VERBOSITY_NORMAL, "preRemove for skeleton: <info>$skeleton</info>");
+            OutputUtil::newLine($output);
             $skeleton = $this->skeleton->findSkeleton($skeleton, $output);
             if ($skeleton) {
                 $skeleton->preRemove($this->getContainer(), $project, $output);
@@ -86,6 +87,7 @@ class RemoveProjectCommand extends AbstractCommand
 
         foreach ($project["skeletons"] as $skeleton) {
             OutputUtil::log($output, OutputInterface::VERBOSITY_NORMAL, "postRemove for skeleton: <info>$skeleton</info>");
+            OutputUtil::newLine($output);
             $skeleton = $this->skeleton->findSkeleton($skeleton, $output);
             if ($skeleton) {
                 $skeleton->postRemove($this->getContainer(), $project, $output);

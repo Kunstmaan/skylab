@@ -68,6 +68,22 @@ abstract class AbstractSkeleton
 
     /**
      * @param Application $app The application
+     * @param OutputInterface $output The command output stream
+     *
+     * @return mixed
+     */
+    abstract public function preMaintenance(Application $app, OutputInterface $output);
+
+    /**
+     * @param Application $app The application
+     * @param OutputInterface $output The command output stream
+     *
+     * @return mixed
+     */
+    abstract public function postMaintenance(Application $app, OutputInterface $output);
+
+    /**
+     * @param Application $app The application
      * @param \ArrayObject $project
      * @param OutputInterface $output The command output stream
      *

@@ -33,7 +33,6 @@ class ProjectConfigProvider implements ServiceProviderInterface
     /**
      * @param string $projectname The project name
      * @param OutputInterface $output The command output stream
-     *
      * @return \ArrayObject
      */
     public function loadProjectConfig($projectname, OutputInterface $output)
@@ -45,7 +44,6 @@ class ProjectConfigProvider implements ServiceProviderInterface
         $config = $this->loadPermissions($projectname, $output, $config);
         $config = $this->loadBackup($projectname, $output, $config);
         OutputUtil::newLine($output);
-
         return $config;
     }
 
@@ -128,6 +126,13 @@ class ProjectConfigProvider implements ServiceProviderInterface
             "config.wwwuser" => $this->app["config"]["users"]["wwwuser"],
             "project.group" => $config["name"],
             "project.user" => $config["name"],
+            "project.ip" => "*",
+            "project.url" => $config["url"],
+            "project.admin" => $this->app["config"]["apache"]["admin"],
+            "project.dir" => $config["dir"],
+            "config.projectsdir" => $this->app["config"]["projects"]["path"],
+            "project.name" => $config["name"],
+
         ));
 
         preg_match_all("/@(\w*?\.\w*?)@/", $value, $hits);

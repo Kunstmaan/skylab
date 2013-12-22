@@ -38,30 +38,38 @@ class SkeletonProvider implements ServiceProviderInterface
      */
     public function applySkeleton(\ArrayObject $project, AbstractSkeleton $skeleton, OutputInterface $output)
     {
-        OutputUtil::log($output, OutputInterface::VERBOSITY_NORMAL, "Applying <info>" . $skeleton->getName() . "</info> to <info>" . $project["name"] . "</info>");
-        $project["skeletons"][$skeleton->getName()] = $skeleton->getName();
-        $this->resolveDependencies($project, $output);
-        $skeleton->create($this->app, $project, $output);
-        OutputUtil::newLine($output);
+        $list = new \ArrayObject();
+        $list[$skeleton->getName()] = $skeleton;
+        $list = $this->resolveDependencies($skeleton, $project, $list, $output);
+        /** @var AbstractSkeleton $skeleton */
+        foreach ($list as $theSkeleton) {
+            if (!isset($project["skeletons"]) || !array_key_exists($theSkeleton->getName(), $project["skeletons"])) {
+                OutputUtil::log($output, OutputInterface::VERBOSITY_NORMAL, "Running skeleton create for <info>" . $theSkeleton->getName() . "</info>");
+                $theSkeleton->create($this->app, $project, $output);
+                $project["skeletons"][$theSkeleton->getName()] = $theSkeleton->getName();
+                OutputUtil::newLine($output);
+            }
+        }
     }
 
     /**
+     * @param AbstractSkeleton $theSkeleton
      * @param \ArrayObject $project
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param \ArrayObject $deps
+     * @param OutputInterface $output
+     * @return \ArrayObject
      */
-    private function resolveDependencies(\ArrayObject $project, OutputInterface $output)
+    private function resolveDependencies(AbstractSkeleton $theSkeleton, \ArrayObject $project, \ArrayObject $deps, OutputInterface $output)
     {
-        $deps = (isset($project->skeletons) ? $project->skeletons : array());
-        foreach ($deps as $skeletonName) {
-            $theSkeleton = $this->findSkeleton($skeletonName, $output);
-            $skeletonDeps = $theSkeleton->dependsOn($this->app, $project, $output);
-            foreach ($skeletonDeps as $skeletonDependencyName) {
-                if (!isset($deps[$skeletonDependencyName])) {
-                    $aSkeleton = $this->findSkeleton($skeletonDependencyName, $output);
-                    $this->applySkeleton($project, $aSkeleton, $output);
-                }
+        $skeletonDeps = $theSkeleton->dependsOn($this->app, $project, $output);
+        foreach ($skeletonDeps as $skeletonDependencyName) {
+            if (!array_key_exists($skeletonDependencyName, $deps)) {
+                $aSkeleton = $this->findSkeleton($skeletonDependencyName, $output);
+                $deps[$aSkeleton->getName()] = $aSkeleton;
+                $deps = $this->resolveDependencies($aSkeleton, $project, $deps, $output);
             }
         }
+        return $deps;
     }
 
     /**
@@ -82,7 +90,7 @@ class SkeletonProvider implements ServiceProviderInterface
                 return new $skeleton($this->app, $output);
             }
         }
-        throw new RuntimeException("Skeleton not found!");
+        throw new RuntimeException("Skeleton " . $skeletonname . " not found!");
     }
 
     /**
@@ -92,6 +100,30 @@ class SkeletonProvider implements ServiceProviderInterface
     {
         foreach ($this->app["config"]["skeletons"] as $name => $class) {
             OutputUtil::log($output, OutputInterface::VERBOSITY_NORMAL, $name);
+            OutputUtil::newLine($output);
+        }
+    }
+
+    /**
+     * @param string $skeletonCommand
+     * @param \ArrayObject $skeletons
+     * @param string $message
+     * @param Application $app
+     * @param OutputInterface $output
+     */
+    public function skeletonLoop($skeletonCommand, \ArrayObject $skeletons, $message, Application $app, OutputInterface $output, \ArrayObject $project = null)
+    {
+        OutputUtil::logStep($output, OutputInterface::VERBOSITY_NORMAL, $message);
+        foreach ($skeletons as $skeletonName) {
+            OutputUtil::log($output, OutputInterface::VERBOSITY_NORMAL, "Skeleton: <info>$skeletonName</info>");
+            $skeleton = $this->findSkeleton($skeletonName, $output);
+            if ($skeleton) {
+                if ($project) {
+                    $skeleton->$skeletonCommand($app, $project, $output);
+                } else {
+                    $skeleton->$skeletonCommand($app, $output);
+                }
+            }
             OutputUtil::newLine($output);
         }
     }

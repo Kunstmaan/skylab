@@ -173,4 +173,56 @@ class FileSystemProvider implements ServiceProviderInterface
     {
         return __DIR__ . "/../../../../templates/apache/apache.d/";
     }
+
+
+    /**
+     * @param OutputInterface $output
+     * @param $callback
+     */
+    public function projectsLoop(OutputInterface $output, $callback)
+    {
+        /** @var ProjectConfigProvider $projectConfig */
+        $projectConfig = $this->app["projectconfig"];
+        $projects = $this->getProjects();
+        foreach ($projects as $projectFile) {
+            /** @var $projectFile SplFileInfo */
+            $projectname = $projectFile->getFilename();
+            $project = $projectConfig->loadProjectConfig($projectname, $output);
+            $callback($project["name"], new \ArrayObject($project["skeletons"]), $project);
+        }
+    }
+
+    /**
+     * @param \ArrayObject $project
+     * @return array
+     */
+    public function getProjectApacheConfigs(\ArrayObject $project)
+    {
+        $finder = new Finder();
+        $finder->files()
+            ->sortByName()
+            ->in($this->getProjectConfigDirectory($project["name"]) . "/apache.d/")
+            ->ignoreVCS(true)
+            ->ignoreDotFiles(true)
+            ->notName("*~")
+            ->notName("*.swp")
+            ->notName("*.bak")
+            ->notName("*-")
+            ->depth('== 0');
+        return iterator_to_array($finder);
+    }
+
+    /**
+     * @param $path
+     * @param $content
+     * @param OutputInterface $output
+     */
+    public function writeProtectedFile($path, $content, OutputInterface $output){
+        $tmpfname = tempnam(sys_get_temp_dir(), "skylab");
+        file_put_contents($tmpfname, $content);
+        if (is_null($this->process)) {
+            $this->process = $this->app["process"];
+        }
+        $this->process->executeSudoCommand("cat ".$tmpfname." | sudo tee ".$path, $output);
+    }
 }

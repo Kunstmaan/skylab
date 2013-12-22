@@ -40,6 +40,26 @@ class AnacronSkeleton extends AbstractSkeleton
 
     /**
      * @param Application $app The application
+     * @param OutputInterface $output The command output stream
+     *
+     * @return mixed
+     */
+    public function preMaintenance(Application $app, OutputInterface $output)
+    {
+    }
+
+    /**
+     * @param Application $app The application
+     * @param OutputInterface $output The command output stream
+     *
+     * @return mixed
+     */
+    public function postMaintenance(Application $app, OutputInterface $output)
+    {
+    }
+
+    /**
+     * @param Application $app The application
      * @param \ArrayObject $project
      * @param OutputInterface $output The command output stream
      *

@@ -34,6 +34,28 @@ class JavaSkeleton extends AbstractSkeleton
 
     /**
      * @param Application $app The application
+     * @param OutputInterface $output The command output stream
+     *
+     * @return mixed
+     */
+    public function preMaintenance(Application $app, OutputInterface $output)
+    {
+        // TODO: Implement preMaintenance() method.
+    }
+
+    /**
+     * @param Application $app The application
+     * @param OutputInterface $output The command output stream
+     *
+     * @return mixed
+     */
+    public function postMaintenance(Application $app, OutputInterface $output)
+    {
+        // TODO: Implement postMaintenance() method.
+    }
+
+    /**
+     * @param Application $app The application
      * @param \ArrayObject $project
      * @param OutputInterface $output The command output stream
      *
@@ -112,7 +134,7 @@ class JavaSkeleton extends AbstractSkeleton
      */
     public function dependsOn(Application $app, \ArrayObject $project, OutputInterface $output)
     {
-        // TODO: Implement dependsOn() method.
+        return array("base", "apache", "tomcat", "postgres");
     }
 
 }

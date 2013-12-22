@@ -17,5 +17,6 @@ script:
     - php skylab.phar self-update
     - ./skylab new test -vvv
     - ./skylab apply test anacron -vvv
+    - ./skylab apply test apache -vvv
     - ./skylab maintenance -vvv
     - ./skylab remove test --force -vvv

@@ -9,7 +9,9 @@ users:
     postgresuser:   postgres
 
 apache:
-    admin:      support@kunstmaan.be
+    admin:        support@kunstmaan.be
+    vhostdir:     /etc/apache2/conf/projects.d
+    hostmachine:  dev.kunstmaan.be
 
 permissions:
     develmode:  false
