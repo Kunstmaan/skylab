@@ -48,7 +48,7 @@ class ApacheSkeleton extends AbstractSkeleton
         foreach ($finder as $config) {
             OutputUtil::log($output, OutputInterface::VERBOSITY_VERBOSE, "%", "Rendering " . $config->getFilename());
             $shared = $twig->render(file_get_contents("./templates/apache/apache.d/" . $config->getFilename()), array());
-            file_put_contents($filesystem->getProjectConfigDirectory($project["name"]) . "/apache.d/" . str_replace(".conf.twig", "", $config->getFilename()), $shared);
+            $filesystem->writeProtectedFile($filesystem->getProjectConfigDirectory($project["name"]) . "/apache.d/" . str_replace(".conf.twig", "", $config->getFilename()), $shared, $output);
         }
         // update config
         {
@@ -233,7 +233,7 @@ class ApacheSkeleton extends AbstractSkeleton
             }
         }
         $serverAlias .= "\n";
-        file_put_contents($filesystem->getProjectConfigDirectory($project["name"]) . "/apache.d/05aliases", $serverAlias);
+        $filesystem->writeProtectedFile($filesystem->getProjectConfigDirectory($project["name"]) . "/apache.d/05aliases", $serverAlias, $output);
 
         $configcontent = "";
         /** @var \SplFileInfo $config */
@@ -245,7 +245,7 @@ class ApacheSkeleton extends AbstractSkeleton
         if ($app["config"]["permissions"]["develmode"]) {
             $configcontent = str_replace("-Indexes", "Indexes", $configcontent);
         }
-        file_put_contents($app["config"]["apache"]["vhostdir"] . "/" . $project["name"] . ".conf", $configcontent);
+        $filesystem->writeProtectedFile($app["config"]["apache"]["vhostdir"] . "/" . $project["name"] . ".conf", $configcontent, $output);
     }
 
     /**

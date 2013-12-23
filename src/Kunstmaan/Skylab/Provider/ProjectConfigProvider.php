@@ -280,7 +280,9 @@ class ProjectConfigProvider implements ServiceProviderInterface
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
         $process->executeSudoCommand('chmod -R 777 ' . dirname($path), $output);
-        file_put_contents($path, $dom->saveXML());
+        /* @var $filesystem FileSystemProvider */
+        $filesystem = $this->app['filesystem'];
+        $filesystem->writeProtectedFile($path, $dom->saveXML(), $output);
     }
 
     /**
