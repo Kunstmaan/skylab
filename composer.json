@@ -1,6 +1,6 @@
 {
     "name": "kunstmaan/skylab",
-    "description": "This project is a PHP port of the non-public python hosting platform used at Kunstmaan.",
+    "description": "Skylab is a 100% backwards compatible PHP port of the Python based hosting scripts used at Kunstmaan. By using the Cilex, Symfony Components and lot's of good code samples from the Composer project we hope to create an application where everyone in our organisation can work with, and if issues or new needed features should arise, be able to work on.",
     "license": "MIT",
     "authors": [
         {
