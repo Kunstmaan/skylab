@@ -10,10 +10,10 @@
     ],
     "require": {
         "cilex/cilex":              "1.0.*",
-	"symfony/yaml":             "~2.1",
-	"symfony/serializer":       "~2.1",
-	"roderik/pwgen-php":        "0.1.x",
-	"roderik/cilex-twig":       "1.0.x"
+        "symfony/yaml":             "~2.1",
+        "symfony/serializer":       "~2.1",
+        "roderik/pwgen-php":        "0.1.x",
+        "roderik/cilex-twig":       "dev-master"
     },
     "autoload": {
         "psr-0": { "Kunstmaan": "src/" }

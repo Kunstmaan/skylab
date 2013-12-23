@@ -14,6 +14,11 @@ before_script:
 
 script:
     - ./compile --version 0.0.0
+    - php skylab.phar new test -vvv
+    - php skylab.phar apply test anacron -vvv
+    - php skylab.phar apply test apache -vvv
+    - php skylab.phar maintenance -vvv
+    - php skylab.phar remove test --force -vvv
     - php skylab.phar self-update
     - ./skylab new test -vvv
     - ./skylab apply test anacron -vvv

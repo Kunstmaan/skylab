@@ -171,7 +171,7 @@ class FileSystemProvider implements ServiceProviderInterface
      */
     public function getApacheConfigTemplateDir(\ArrayObject $project, OutputInterface $output)
     {
-        return __DIR__ . "/../../../../templates/apache/apache.d/";
+        return BASE_DIR . "/templates/apache/apache.d/";
     }
 
 

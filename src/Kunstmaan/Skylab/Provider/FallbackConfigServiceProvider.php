@@ -22,7 +22,6 @@ class FallbackConfigServiceProvider implements ServiceProviderInterface
                     $result = $parser->parse(file_get_contents($path));
                     $config = array_merge_recursive($config, $result);
                 }
-
                 return $config;
             }
         );

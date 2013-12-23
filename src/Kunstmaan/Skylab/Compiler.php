@@ -57,6 +57,26 @@ class Compiler
             $this->addFile($phar, $file);
         }
 
+        $finder = new Finder();
+        $finder->files()
+            ->ignoreVCS(true)
+            ->name('*.yml')
+            ->in(__DIR__ . '/../../../config/');
+
+        foreach ($finder as $file) {
+            $this->addFile($phar, $file);
+        }
+
+        $finder = new Finder();
+        $finder->files()
+            ->ignoreVCS(true)
+            ->name('*.twig')
+            ->in(__DIR__ . '/../../../templates/');
+
+        foreach ($finder as $file) {
+            $this->addFile($phar, $file);
+        }
+
         $this->addSkylabBin($phar);
 
         // Stubs
@@ -65,7 +85,7 @@ class Compiler
         $phar->stopBuffering();
 
         // disabled for interoperability with systems without gzip ext
-        $phar->compressFiles(\Phar::GZ);
+        //$phar->compressFiles(\Phar::GZ);
 
         $this->addFile($phar, new \SplFileInfo(__DIR__ . '/../../../LICENSE'), false);
 

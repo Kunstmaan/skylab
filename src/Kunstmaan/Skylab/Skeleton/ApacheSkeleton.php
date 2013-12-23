@@ -46,8 +46,8 @@ class ApacheSkeleton extends AbstractSkeleton
         $finder->files()->in($filesystem->getApacheConfigTemplateDir($project, $output))->name("*.conf.twig");
         /** @var SplFileInfo $config */
         foreach ($finder as $config) {
-            OutputUtil::log($output, OutputInterface::VERBOSITY_VERBOSE, "%", "Rendering " . $config->getRealPath());
-            $shared = $twig->render($config->getRealPath(), array());
+            OutputUtil::log($output, OutputInterface::VERBOSITY_VERBOSE, "%", "Rendering " . $config->getFilename());
+            $shared = $twig->render(file_get_contents("./templates/apache/apache.d/" . $config->getFilename()), array());
             file_put_contents($filesystem->getProjectConfigDirectory($project["name"]) . "/apache.d/" . str_replace(".conf.twig", "", $config->getFilename()), $shared);
         }
         // update config
@@ -55,19 +55,27 @@ class ApacheSkeleton extends AbstractSkeleton
             // url
             $defaultUrl = $project["name"] . ".be";
             OutputUtil::newLine($output);
-            $project["url"] = $dialog->ask($output, "\n   <question>Enter the base url: [" . $defaultUrl . "]</question> ", $defaultUrl);
+            if (getenv("TRAVIS")){
+                $project["url"] = $defaultUrl;
+            } else {
+                $project["url"] = $dialog->ask($output, "\n   <question>Enter the base url: [" . $defaultUrl . "]</question> ", $defaultUrl);
+            }
         }
         {
             // url aliases
             $aliases = array();
-            $alias = null;
-            while (1 == 1) {
-                OutputUtil::newLine($output);
-                $alias = $dialog->ask($output, "   <question>Add an url alias (leave empty to stop adding):</question> ");
-                if (empty($alias)) {
-                    break;
-                } else {
-                    $aliases[] = $alias;
+            if (getenv("TRAVIS")){
+                $aliases[] = "www." . $project["url"];
+            } else {
+                $alias = null;
+                while (1 == 1) {
+                    OutputUtil::newLine($output);
+                    $alias = $dialog->ask($output, "   <question>Add an url alias (leave empty to stop adding):</question> ");
+                    if (empty($alias)) {
+                        break;
+                    } else {
+                        $aliases[] = $alias;
+                    }
                 }
             }
             $project["aliases"] = $aliases;

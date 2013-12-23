@@ -32,3 +32,5 @@ skeletons:
     postgres:   Kunstmaan\Skylab\Skeleton\PostgreSQLSkeleton
     tomcat:     Kunstmaan\Skylab\Skeleton\TomcatSkeleton
     smartcms:   Kunstmaan\Skylab\Skeleton\JavaSkeleton
+
+debug: true
