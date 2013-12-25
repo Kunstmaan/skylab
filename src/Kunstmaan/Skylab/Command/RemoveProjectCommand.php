@@ -1,12 +1,10 @@
 <?php
 namespace Kunstmaan\Skylab\Command;
 
-use Kunstmaan\Skylab\Helper\OutputUtil;
 use RuntimeException;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -29,31 +27,24 @@ class RemoveProjectCommand extends AbstractCommand
             ->addOption("hideLogo", null, InputOption::VALUE_NONE, 'If set, no logo or statistics will be shown');
     }
 
-    /**
-     * @param InputInterface $input The command inputstream
-     * @param OutputInterface $output The command outputstream
-     *
-     * @return int|void
-     *
-     * @throws \RuntimeException
-     */
-    protected function doExecute(InputInterface $input, OutputInterface $output)
+
+    protected function doExecute()
     {
-        $projectname = $this->dialog->askFor('name', "Please enter the name of the project", $input, $output);
+        $projectname = $this->dialogProvider->askFor("Please enter the name of the project", 'name');
 
         // Check if the project exists, do use in creating a new one with the same name.
-        if (!$this->filesystem->projectExists($projectname)) {
+        if (!$this->fileSystemProvider->projectExists($projectname)) {
             throw new RuntimeException("A project with name $projectname does not exist!");
         }
 
         /** @var $dialog DialogHelper */
         $dialog = $this->getHelperSet()->get('dialog');
-        $forceArgument = $input->getOption('force');
-        if (!$forceArgument && !$dialog->askConfirmation($output, '<question>Are you sure you want to remove ' . $projectname . '? [y/n]</question> ', false)) {
+        $forceArgument = $this->input->getOption('force');
+        if (!$forceArgument && !$dialog->askConfirmation($this->output, '<question>Are you sure you want to remove ' . $projectname . '? [y/n]</question> ', false)) {
             return;
         }
 
-        OutputUtil::logStep($output, OutputInterface::VERBOSITY_NORMAL, "Removing project $projectname");
+        $this->dialogProvider->logStep($this->output, OutputInterface::VERBOSITY_NORMAL, "Removing project $projectname");
 
         $command = $this->getApplication()->find('backup');
         $arguments = array(
@@ -62,37 +53,30 @@ class RemoveProjectCommand extends AbstractCommand
             '--hideLogo' => true
         );
         $input = new ArrayInput($arguments);
-        $returnCode = $command->run($input, $output);
+        $returnCode = $command->run($input, $this->output);
 
         if (is_null($returnCode)) {
-            $this->permission->killProcesses($projectname, $output);
+            $this->permissionsProvider->killProcesses($projectname, $this->output);
         }
 
-        $project = $this->projectConfig->loadProjectConfig($projectname, $output);
+        $project = $this->projectConfigProvider->loadProjectConfig($projectname, $this->output);
 
         // Run the preRemove hook for all dependencies
         foreach ($project["skeletons"] as $skeleton) {
-            OutputUtil::log($output, OutputInterface::VERBOSITY_NORMAL, "preRemove for skeleton: <info>$skeleton</info>");
-            OutputUtil::newLine($output);
-            $skeleton = $this->skeleton->findSkeleton($skeleton, $output);
+            $this->dialogProvider->logTask("preRemove for skeleton: $skeleton");
+            $skeleton = $this->skeletonProvider->findSkeleton($skeleton, $this->output);
             if ($skeleton) {
-                $skeleton->preRemove($this->getContainer(), $project, $output);
+                $skeleton->preRemove($this->getContainer(), $project, $this->output);
             }
         }
-        OutputUtil::newLine($output);
-
-        OutputUtil::log($output, OutputInterface::VERBOSITY_NORMAL, "Deleting the project folder at <info>" . $this->filesystem->getProjectDirectory($projectname) . "</info>");
-        $this->filesystem->removeProjectDirectory($project, $output);
-        OutputUtil::newLine($output);
-
+        $this->dialogProvider->logTask("Deleting the project folder at " . $this->fileSystemProvider->getProjectDirectory($projectname));
+        $this->fileSystemProvider->removeProjectDirectory($project, $this->output);
         foreach ($project["skeletons"] as $skeleton) {
-            OutputUtil::log($output, OutputInterface::VERBOSITY_NORMAL, "postRemove for skeleton: <info>$skeleton</info>");
-            OutputUtil::newLine($output);
-            $skeleton = $this->skeleton->findSkeleton($skeleton, $output);
+            $this->dialogProvider->logTask("postRemove for skeleton: $skeleton");
+            $skeleton = $this->skeletonProvider->findSkeleton($skeleton, $this->output);
             if ($skeleton) {
-                $skeleton->postRemove($this->getContainer(), $project, $output);
+                $skeleton->postRemove($this->getContainer(), $project, $this->output);
             }
         }
-        OutputUtil::newLine($output);
     }
 }

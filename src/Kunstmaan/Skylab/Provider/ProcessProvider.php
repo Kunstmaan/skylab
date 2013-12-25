@@ -3,15 +3,12 @@
 namespace Kunstmaan\Skylab\Provider;
 
 use Cilex\Application;
-use Cilex\ServiceProviderInterface;
-use Kunstmaan\Skylab\Helper\OutputUtil;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 
 /**
  * ProcessProvider
  */
-class ProcessProvider implements ServiceProviderInterface
+class ProcessProvider extends AbstractProvider
 {
     /**
      * Registers services on the given app.
@@ -21,43 +18,40 @@ class ProcessProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['process'] = $this;
+        $this->app = $app;
     }
 
     /**
      * @param string $command The command
-     * @param OutputInterface $output The command output stream
      * @param bool $silent Be silent or not
      *
      * @return bool|string
      */
-    public function executeCommand($command, OutputInterface $output, $silent = false)
+    public function executeCommand($command, $silent = false)
     {
         if (!$silent) {
-            OutputUtil::log($output, OutputInterface::VERBOSITY_VERBOSE, "$", $command);
+            $this->dialogProvider->logCommand($command);
         }
         $process = new Process($command);
         $process->setTimeout(3600);
         $process->run();
         if (!$process->isSuccessful()) {
             if (!$silent) {
-                OutputUtil::logError($output, OutputInterface::VERBOSITY_NORMAL, $process->getErrorOutput());
+                $this->dialogProvider->logError($process->getErrorOutput());
             }
-
             return false;
         }
-
         return $process->getOutput();
     }
 
     /**
      * @param string $command The command
-     * @param OutputInterface $output The command output stream
      * @param bool $silent Be silent or not
      * @param string $sudoAs Sudo as a different user then the root user
      *
      * @return bool|string
      */
-    public function executeSudoCommand($command, OutputInterface $output, $silent = false, $sudoAs = null)
+    public function executeSudoCommand($command, $silent = false, $sudoAs = null)
     {
         if (empty($sudoAs)) {
             $command = 'sudo -p "Please enter your sudo password:" ' . $command;
@@ -65,7 +59,7 @@ class ProcessProvider implements ServiceProviderInterface
             $command = 'sudo -p "Please enter your sudo password:" -u ' . $sudoAs . ' ' . $command;
         }
 
-        return $this->executeCommand($command, $output, $silent);
+        return $this->executeCommand($command, $silent);
     }
 
     /**

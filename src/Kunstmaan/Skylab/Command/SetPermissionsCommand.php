@@ -1,11 +1,9 @@
 <?php
 namespace Kunstmaan\Skylab\Command;
 
-use Kunstmaan\Skylab\Helper\OutputUtil;
 use Kunstmaan\Skylab\Skeleton\BaseSkeleton;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -28,26 +26,21 @@ class SetPermissionsCommand extends AbstractCommand
     }
 
     /**
-     * @param InputInterface $input The command inputstream
-     * @param OutputInterface $output The command outputstream
-     *
-     * @return int|void
-     *
      * @throws \RuntimeException
      */
-    protected function doExecute(InputInterface $input, OutputInterface $output)
+    protected function doExecute()
     {
-        $projectname = $input->getArgument('name');
+        $projectname = $this->input->getArgument('name');
 
-        if (!$this->filesystem->projectExists($projectname)) {
+        if (!$this->fileSystemProvider->projectExists($projectname)) {
             throw new RuntimeException("The $projectname project does not exist.");
         }
 
-        OutputUtil::logStep($output, OutputInterface::VERBOSITY_NORMAL, "Setting permissions on project $projectname");
+        $this->dialogProvider->logStep($this->output, OutputInterface::VERBOSITY_NORMAL, "Setting permissions on project $projectname");
 
         /** @var BaseSkeleton $baseSkeleton */
-        $baseSkeleton = $this->skeleton->findSkeleton("base", $output);
-        $project = $this->projectConfig->loadProjectConfig($projectname, $output);
-        $baseSkeleton->setPermissions($this->getContainer(), $project, $output, true);
+        $baseSkeleton = $this->skeletonProvider->findSkeleton("base", $this->output);
+        $project = $this->projectConfigProvider->loadProjectConfig($projectname, $this->output);
+        $baseSkeleton->setPermissions($this->getContainer(), $project, $this->output, true);
     }
 }

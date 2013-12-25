@@ -3,14 +3,15 @@
 namespace Kunstmaan\Skylab\Provider;
 
 use Cilex\Application;
-use Cilex\ServiceProviderInterface;
 use Symfony\Component\Yaml;
 
-class FallbackConfigServiceProvider implements ServiceProviderInterface
+class FallbackConfigServiceProvider extends AbstractProvider
 {
 
     public function register(Application $app)
     {
+        $this->app = $app;
+
         $app['config'] = $app->share(
             function () use ($app) {
                 $config = array();

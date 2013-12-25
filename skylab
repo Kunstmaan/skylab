@@ -30,4 +30,5 @@ $app->command(new \Kunstmaan\Skylab\Command\ApplySkeletonCommand());
 if ('phar:' === substr(__FILE__, 0, 5) || getenv("SU")) {
     $app->command(new \Kunstmaan\Skylab\Command\SelfUpdateCommand());
 }
+
 $app->run();

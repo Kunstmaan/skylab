@@ -2,12 +2,12 @@
 namespace Kunstmaan\Skylab\Skeleton;
 
 use Cilex\Application;
+use Kunstmaan\Skylab\Provider\DialogProvider;
 use Kunstmaan\Skylab\Provider\FileSystemProvider;
 use Kunstmaan\Skylab\Provider\PermissionsProvider;
 use Kunstmaan\Skylab\Provider\ProcessProvider;
 use Kunstmaan\Skylab\Provider\ProjectConfigProvider;
 use Kunstmaan\Skylab\Provider\SkeletonProvider;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * AbstractSkeleton
@@ -18,38 +18,63 @@ abstract class AbstractSkeleton
     /**
      * @var FileSystemProvider
      */
-    protected $filesystem;
+    protected $fileSystemProvider;
 
     /**
      * @var ProjectConfigProvider
      */
-    protected $projectConfig;
+    protected $projectConfigProvider;
 
     /**
      * @var SkeletonProvider
      */
-    protected $skeleton;
+    protected $skeletonProvider;
 
     /**
      * @var ProcessProvider
      */
-    protected $process;
+    protected $processProvider;
 
     /**
      * @var PermissionsProvider
      */
-    protected $permission;
+    protected $permissionsProvider;
 
     /**
-     * @param Application $app The app
+     * @var DialogProvider
+     */
+    protected $dialogProvider;
+
+    /**
+     * @var Application
+     */
+    protected $app;
+
+    /**
+     * @var \Twig_Environment
+     */
+    protected $twig;
+
+    /**
+     * @param Application $app
      */
     public function __construct(Application $app)
     {
-        $this->filesystem = $app['filesystem'];
-        $this->permission = $app['permission'];
-        $this->process = $app['process'];
-        $this->projectConfig = $app['projectconfig'];
-        $this->skeleton = $app['skeleton'];
+        $providers = array(
+            'filesystem' => 'fileSystemProvider',
+            'projectconfig' => 'projectConfigProvider',
+            'skeleton' => 'skeletonProvider',
+            'process' => 'processProvider',
+            'permission' => 'permissionsProvider',
+            'dialog' => 'dialogProvider',
+            'twig' => 'twig'
+        );
+        foreach ($providers as $service => $variable) {
+            $this->$variable = $app[$service];
+        }
+
+        $this->app = $app;
+        $this->twig = $app['twig'];
     }
 
     /**
@@ -58,90 +83,71 @@ abstract class AbstractSkeleton
     abstract public function getName();
 
     /**
-     * @param Application $app The application
      * @param \ArrayObject $project
-     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
-    abstract public function create(Application $app, \ArrayObject $project, OutputInterface $output);
+    abstract public function create(\ArrayObject $project);
 
     /**
-     * @param Application $app The application
-     * @param OutputInterface $output The command output stream
-     *
      * @return mixed
      */
-    abstract public function preMaintenance(Application $app, OutputInterface $output);
+    abstract public function preMaintenance();
 
     /**
-     * @param Application $app The application
-     * @param OutputInterface $output The command output stream
-     *
      * @return mixed
      */
-    abstract public function postMaintenance(Application $app, OutputInterface $output);
+    abstract public function postMaintenance();
 
     /**
-     * @param Application $app The application
      * @param \ArrayObject $project
-     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
-    abstract public function maintenance(Application $app, \ArrayObject $project, OutputInterface $output);
+    abstract public function maintenance(\ArrayObject $project);
 
     /**
-     * @param Application $app The application
      * @param \ArrayObject $project
-     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
-    abstract public function preBackup(Application $app, \ArrayObject $project, OutputInterface $output);
+    abstract public function preBackup(\ArrayObject $project);
 
     /**
-     * @param Application $app The application
      * @param \ArrayObject $project
-     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
-    abstract public function postBackup(Application $app, \ArrayObject $project, OutputInterface $output);
+    abstract public function postBackup(\ArrayObject $project);
 
     /**
-     * @param Application $app The application
      * @param \ArrayObject $project
-     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
-    abstract public function preRemove(Application $app, \ArrayObject $project, OutputInterface $output);
+    abstract public function preRemove(\ArrayObject $project);
 
     /**
-     * @param Application $app The application
      * @param \ArrayObject $project
-     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
-    abstract public function postRemove(Application $app, \ArrayObject $project, OutputInterface $output);
+    abstract public function postRemove(\ArrayObject $project);
 
     /**
-     * @param  \Cilex\Application $app
      * @param  \ArrayObject $project
      * @param  \SimpleXMLElement $config The configuration array
-     * @param  \Symfony\Component\Console\Output\OutputInterface $output
      * @return \SimpleXMLElement
      */
-    abstract public function writeConfig(Application $app, \ArrayObject $project, \SimpleXMLElement $config, OutputInterface $output);
+    public function writeConfig(/** @noinspection PhpUnusedParameterInspection */
+        \ArrayObject $project, \SimpleXMLElement $config)
+    {
+        return $config;
+    }
 
     /**
-     * @param  \Cilex\Application $app
-     * @param  \ArrayObject $project
-     * @param  \Symfony\Component\Console\Output\OutputInterface $output
      * @return string[]
      */
-    abstract public function dependsOn(Application $app, \ArrayObject $project, OutputInterface $output);
+    abstract public function dependsOn();
 
 }

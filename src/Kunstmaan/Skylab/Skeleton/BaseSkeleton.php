@@ -1,13 +1,7 @@
 <?php
 namespace Kunstmaan\Skylab\Skeleton;
 
-use Cilex\Application;
 use Kunstmaan\Skylab\Entity\PermissionDefinition;
-use Kunstmaan\Skylab\Helper\OutputUtil;
-use Kunstmaan\Skylab\Provider\FileSystemProvider;
-use Kunstmaan\Skylab\Provider\PermissionsProvider;
-use Kunstmaan\Skylab\Provider\ProjectConfigProvider;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * BaseSkeleton
@@ -26,16 +20,12 @@ class BaseSkeleton extends AbstractSkeleton
     }
 
     /**
-     * @param Application $app The application
      * @param \ArrayObject $project
-     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
-    public function create(Application $app, \ArrayObject $project, OutputInterface $output)
+    public function create(\ArrayObject $project)
     {
-        /** @var $filesystem FileSystemProvider */
-        $filesystem = $app["filesystem"];
         {
             $permissionDefinition = new PermissionDefinition();
             $permissionDefinition->setPath("/");
@@ -43,13 +33,13 @@ class BaseSkeleton extends AbstractSkeleton
             $permissionDefinition->addAcl("-R -m user::rwX");
             $permissionDefinition->addAcl("-R -m group::r-X");
             $permissionDefinition->addAcl("-R -m other::---");
-            $permissionDefinition->addAcl("-R -m u:" . $app["config"]["users"]["wwwuser"] . ":r-X");
+            $permissionDefinition->addAcl("-R -m u:" . $this->app["config"]["users"]["wwwuser"] . ":r-X");
             $permissionDefinition->addAcl("-R -m u:" . $project["name"] . ":rwX");
-            $permissionDefinition->addAcl("-R -m u:" . $app["config"]["users"]["postgresuser"] . ":r-X");
+            $permissionDefinition->addAcl("-R -m u:" . $this->app["config"]["users"]["postgresuser"] . ":r-X");
             $permissionDefinition->addAcl("-R -m group:admin:rwX");
             $project["permissions"]["/"] = $permissionDefinition;
         }
-        $filesystem->createDirectory($project, $output, '.ssh');
+        $this->fileSystemProvider->createDirectory($project, '.ssh');
         {
             $permissionDefinition = new PermissionDefinition();
             $permissionDefinition->setPath("/.ssh");
@@ -60,18 +50,18 @@ class BaseSkeleton extends AbstractSkeleton
             $permissionDefinition->addAcl("-R -m m::---");
             $project["permissions"]["/.ssh"] = $permissionDefinition;
         }
-        $filesystem->createDirectory($project, $output, 'stats');
+        $this->fileSystemProvider->createDirectory($project, 'stats');
         {
             $permissionDefinition = new PermissionDefinition();
             $permissionDefinition->setPath("/stats");
             $permissionDefinition->setOwnership("-R @project.user@.@project.group@");
             $permissionDefinition->addAcl("-R -m user::rwX");
             $permissionDefinition->addAcl("-R -m group::r-X");
-            $permissionDefinition->addAcl("-R -m u:" . $app["config"]["users"]["wwwuser"] . ":r-X");
+            $permissionDefinition->addAcl("-R -m u:" . $this->app["config"]["users"]["wwwuser"] . ":r-X");
             $permissionDefinition->addAcl("-R -m group:admin:r-X");
             $project["permissions"]["/stats"] = $permissionDefinition;
         }
-        $filesystem->createDirectory($project, $output, 'apachelogs');
+        $this->fileSystemProvider->createDirectory($project, 'apachelogs');
         {
             $permissionDefinition = new PermissionDefinition();
             $permissionDefinition->setPath("/apachelogs");
@@ -79,10 +69,10 @@ class BaseSkeleton extends AbstractSkeleton
             $permissionDefinition->addAcl("-R -m user::rwX");
             $permissionDefinition->addAcl("-R -m group::r-X");
             $permissionDefinition->addAcl("-R -m other::---");
-            $permissionDefinition->addAcl("-R -m u:" . $app["config"]["users"]["wwwuser"] . ":rwX");
+            $permissionDefinition->addAcl("-R -m u:" . $this->app["config"]["users"]["wwwuser"] . ":rwX");
             $project["permissions"]["/apachelogs"] = $permissionDefinition;
         }
-        $filesystem->createDirectory($project, $output, 'site');
+        $this->fileSystemProvider->createDirectory($project, 'site');
         {
             $permissionDefinition = new PermissionDefinition();
             $permissionDefinition->setPath("/site");
@@ -90,10 +80,10 @@ class BaseSkeleton extends AbstractSkeleton
             $permissionDefinition->addAcl("-R -m user::rwX");
             $permissionDefinition->addAcl("-R -m group::r-X");
             $permissionDefinition->addAcl("-R -m other::---");
-            $permissionDefinition->addAcl("-R -m u:" . $app["config"]["users"]["wwwuser"] . ":r-X");
+            $permissionDefinition->addAcl("-R -m u:" . $this->app["config"]["users"]["wwwuser"] . ":r-X");
             $project["permissions"]["/site"] = $permissionDefinition;
         }
-        $filesystem->createDirectory($project, $output, 'backup');
+        $this->fileSystemProvider->createDirectory($project, 'backup');
         {
             $permissionDefinition = new PermissionDefinition();
             $permissionDefinition->setPath("/backup");
@@ -101,10 +91,10 @@ class BaseSkeleton extends AbstractSkeleton
             $permissionDefinition->addAcl("-R -m user::rwX");
             $permissionDefinition->addAcl("-R -m group::r-X");
             $permissionDefinition->addAcl("-R -m other::---");
-            $permissionDefinition->addAcl("-R -m u:" . $app["config"]["users"]["postgresuser"] . ":rwX");
+            $permissionDefinition->addAcl("-R -m u:" . $this->app["config"]["users"]["postgresuser"] . ":rwX");
             $project["permissions"]["/backup"] = $permissionDefinition;
         }
-        $filesystem->createDirectory($project, $output, 'data');
+        $this->fileSystemProvider->createDirectory($project, 'data');
         {
             $permissionDefinition = new PermissionDefinition();
             $permissionDefinition->setPath("/data");
@@ -114,7 +104,7 @@ class BaseSkeleton extends AbstractSkeleton
             $permissionDefinition->addAcl("-R -m other::---");
             $project["permissions"]["/data"] = $permissionDefinition;
         }
-        $filesystem->createDirectory($project, $output, 'conf');
+        $this->fileSystemProvider->createDirectory($project, 'conf');
         {
             $permissionDefinition = new PermissionDefinition();
             $permissionDefinition->setPath("/conf");
@@ -130,136 +120,104 @@ class BaseSkeleton extends AbstractSkeleton
     }
 
     /**
-     * @param Application $app The application
-     * @param OutputInterface $output The command output stream
-     *
      * @return mixed
      */
-    public function preMaintenance(Application $app, OutputInterface $output)
+    public function preMaintenance()
     {
     }
 
     /**
-     * @param Application $app The application
-     * @param OutputInterface $output The command output stream
-     *
      * @return mixed
      */
-    public function postMaintenance(Application $app, OutputInterface $output)
+    public function postMaintenance()
     {
     }
 
     /**
-     * @param Application $app The application
      * @param \ArrayObject $project
-     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
-    public function maintenance(Application $app, \ArrayObject $project, OutputInterface $output)
+    public function maintenance(\ArrayObject $project)
     {
-        $this->setPermissions($app, $project, $output);
+        $this->setPermissions($project);
 
     }
 
     /**
-     * @param Application $app The application
      * @param \ArrayObject $project
-     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
-    public function preBackup(Application $app, \ArrayObject $project, OutputInterface $output)
+    public function preBackup(\ArrayObject $project)
     {
     }
 
     /**
-     * @param Application $app The application
      * @param \ArrayObject $project
-     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
-    public function postBackup(Application $app, \ArrayObject $project, OutputInterface $output)
+    public function postBackup(\ArrayObject $project)
     {
     }
 
     /**
-     * @param Application $app The application
      * @param \ArrayObject $project
-     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
-    public function preRemove(Application $app, \ArrayObject $project, OutputInterface $output)
+    public function preRemove(\ArrayObject $project)
     {
     }
 
     /**
-     * @param Application $app The application
      * @param \ArrayObject $project
-     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
-    public function postRemove(Application $app, \ArrayObject $project, OutputInterface $output)
+    public function postRemove(\ArrayObject $project)
     {
-        /** @var $permission PermissionsProvider */
-        $permission = $app["permission"];
-        $permission->removeUser($project["name"], $project["name"], $output);
+        $this->permissionsProvider->removeUser($project["name"], $project["name"]);
     }
 
     /**
-     * @param  \Cilex\Application $app
      * @param  \ArrayObject $project
      * @param  \SimpleXMLElement $config The configuration array
-     * @param  \Symfony\Component\Console\Output\OutputInterface $output
      * @return \SimpleXMLElement
      */
-    public function writeConfig(Application $app, \ArrayObject $project, \SimpleXMLElement $config, OutputInterface $output)
+    public function writeConfig(\ArrayObject $project, \SimpleXMLElement $config)
     {
-        /** @var ProjectConfigProvider $projectconfig */
-        $projectconfig = $app['projectconfig'];
-        $config = $projectconfig->addVar($config, 'project.dir', $project["dir"]);
-        $config = $projectconfig->addVar($config, 'project.name', $project["name"]);
-        $config = $projectconfig->addVar($config, 'project.user', $project["name"]);
-        $config = $projectconfig->addVar($config, 'project.group', $project["name"]);
-        $config = $projectconfig->addVar($config, 'project.admin', $app["config"]["apache"]["admin"]);
+        $config = $this->projectConfigProvider->addVar($config, 'project.dir', $project["dir"]);
+        $config = $this->projectConfigProvider->addVar($config, 'project.name', $project["name"]);
+        $config = $this->projectConfigProvider->addVar($config, 'project.user', $project["name"]);
+        $config = $this->projectConfigProvider->addVar($config, 'project.group', $project["name"]);
+        $config = $this->projectConfigProvider->addVar($config, 'project.admin', $this->app["config"]["apache"]["admin"]);
 
         return $config;
     }
 
     /**
-     * @param  \Cilex\Application $app
-     * @param  \ArrayObject $project
-     * @param  \Symfony\Component\Console\Output\OutputInterface $output
      * @return string[]
      */
-    public function dependsOn(Application $app, \ArrayObject $project, OutputInterface $output)
+    public function dependsOn()
     {
         return array();
     }
 
     /**
-     * @param Application $app
      * @param \ArrayObject $project
-     * @param OutputInterface $output
      * @param bool $log
      */
-    public function setPermissions(Application $app, \ArrayObject $project, OutputInterface $output, $log = false)
+    public function setPermissions(\ArrayObject $project, $log = false)
     {
         if ($log) {
-            OutputUtil::log($output, OutputInterface::VERBOSITY_NORMAL, "Updating permissions and ownership");
+            $this->dialogProvider->logTask("Updating permissions and ownership");
         }
-        /** @var $permission PermissionsProvider */
-        $permission = $app["permission"];
-        $permission->createGroupIfNeeded($project["name"], $output);
-        $permission->createUserIfNeeded($project["name"], $project["name"], $output);
-        $permission->applyOwnership($project, $output);
-        $permission->applyPermissions($project, $output);
-        if ($log) {
-            OutputUtil::newLine($output);
-        }
+        $this->permissionsProvider->createGroupIfNeeded($project["name"]);
+        $this->permissionsProvider->createUserIfNeeded($project["name"], $project["name"]);
+        $this->permissionsProvider->applyOwnership($project);
+        $this->permissionsProvider->applyPermissions($project);
     }
 
 }

@@ -1,9 +1,6 @@
 <?php
 namespace Kunstmaan\Skylab\Skeleton;
 
-use Cilex\Application;
-use Symfony\Component\Console\Output\OutputInterface;
-
 /**
  * ApacheSkeleton
  */
@@ -21,118 +18,85 @@ class LogrotateSkeleton extends AbstractSkeleton
     }
 
     /**
-     * @param Application $app The application
      * @param \ArrayObject $project
-     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
-    public function create(Application $app, \ArrayObject $project, OutputInterface $output)
+    public function create(\ArrayObject $project)
     {
         // TODO: Implement create() method.
     }
 
     /**
-     * @param Application $app The application
-     * @param OutputInterface $output The command output stream
-     *
      * @return mixed
      */
-    public function preMaintenance(Application $app, OutputInterface $output)
+    public function preMaintenance()
     {
         // TODO: Implement preMaintenance() method.
     }
 
     /**
-     * @param Application $app The application
-     * @param OutputInterface $output The command output stream
-     *
      * @return mixed
      */
-    public function postMaintenance(Application $app, OutputInterface $output)
+    public function postMaintenance()
     {
         // TODO: Implement postMaintenance() method.
     }
 
     /**
-     * @param Application $app The application
      * @param \ArrayObject $project
-     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
-    public function maintenance(Application $app, \ArrayObject $project, OutputInterface $output)
+    public function maintenance(\ArrayObject $project)
     {
         // TODO: Implement maintenance() method.
     }
 
     /**
-     * @param Application $app The application
      * @param \ArrayObject $project
-     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
-    public function preBackup(Application $app, \ArrayObject $project, OutputInterface $output)
+    public function preBackup(\ArrayObject $project)
     {
         // TODO: Implement preBackup() method.
     }
 
     /**
-     * @param Application $app The application
      * @param \ArrayObject $project
-     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
-    public function postBackup(Application $app, \ArrayObject $project, OutputInterface $output)
+    public function postBackup(\ArrayObject $project)
     {
         // TODO: Implement postBackup() method.
     }
 
     /**
-     * @param Application $app The application
      * @param \ArrayObject $project
-     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
-    public function preRemove(Application $app, \ArrayObject $project, OutputInterface $output)
+    public function preRemove(\ArrayObject $project)
     {
         // TODO: Implement preRemove() method.
     }
 
     /**
-     * @param Application $app The application
      * @param \ArrayObject $project
-     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
-    public function postRemove(Application $app, \ArrayObject $project, OutputInterface $output)
+    public function postRemove(\ArrayObject $project)
     {
         // TODO: Implement postRemove() method.
     }
 
     /**
-     * @param  \Cilex\Application $app
-     * @param  \ArrayObject $project
-     * @param  \SimpleXMLElement $config The configuration array
-     * @param  \Symfony\Component\Console\Output\OutputInterface $output
-     * @return \SimpleXMLElement
-     */
-    public function writeConfig(Application $app, \ArrayObject $project, \SimpleXMLElement $config, OutputInterface $output)
-    {
-        return $config;
-    }
-
-    /**
-     * @param  \Cilex\Application $app
-     * @param  \ArrayObject $project
-     * @param  \Symfony\Component\Console\Output\OutputInterface $output
      * @return string[]
      */
-    public function dependsOn(Application $app, \ArrayObject $project, OutputInterface $output)
+    public function dependsOn()
     {
         return array("base", "anacron", "apache");
     }

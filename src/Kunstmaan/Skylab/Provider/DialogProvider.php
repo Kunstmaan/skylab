@@ -2,9 +2,10 @@
 namespace Kunstmaan\Skylab\Provider;
 
 use Cilex\Application;
+use Kunstmaan\Skylab\Application as Skylab;
 use RuntimeException;
 use Symfony\Component\Console\Helper\DialogHelper;
-use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Helper\ProgressHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -14,14 +15,14 @@ class DialogProvider extends AbstractProvider
 {
 
     /**
-     * @var Application
-     */
-    private $app;
-
-    /**
      * @var DialogHelper
      */
     private $dialog;
+
+    /**
+     * @var ProgressHelper
+     */
+    private $progress;
 
     /**
      * Registers services on the given app.
@@ -32,37 +33,156 @@ class DialogProvider extends AbstractProvider
     {
         $app['dialog'] = $this;
         $this->app = $app;
-        $this->dialog = $this->app['console']->getHelperSet()->get('dialog');
+        /** @var Skylab $consoleApp */
+        $consoleApp = $this->app['console'];
+        $this->dialog = $consoleApp->getHelperSet()->get('dialog');
+        $this->progress = $consoleApp->getHelperSet()->get('progress');
+        $this->progress->setEmptyBarCharacter(' ');
+        $this->progress->setBarCharacter('-');
     }
 
     /**
-     * @param  string $argumentname The argument name
-     * @param  string $message The message
-     * @param  InputInterface $input The command input stream
-     * @param  \Symfony\Component\Console\Output\OutputInterface $output
-     * @throws \RuntimeException
+     * @param $message
+     * @param null $argumentname
+     * @param null $default
      * @return string
+     * @throws \RuntimeException
      */
-    public function askFor($argumentname, $message, InputInterface $input, OutputInterface $output)
+    public function askFor($message, $argumentname = null, $default = null)
     {
-        $name = $input->getArgument($argumentname);
-        if (is_null($name)) {
-            $name = $this->dialog->ask($output, '<question>' . $message . ': </question>');
+        if ($argumentname){
+        $var = $this->input->getArgument($argumentname);
+        if (!$var){
+            $var = $this->dialog->ask($this->output, '<question>' . $message . '</question> ');
         }
-        if (is_null($name)) {
-            throw new RuntimeException("A $argumentname is required, what am I, psychic?");
+        } elseif($default) {
+            $var = $this->dialog->ask($this->output, '<question>' . $message . '</question> ', $default);
+        } else {
+            $var = $this->dialog->ask($this->output, '<question>' . $message . '</question> ');
         }
-
-        return $name;
+        return $var;
     }
+
 
     /**
      * @param string $question The question text
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @param bool $default The default action
      */
-    public function askConfirmation($question, OutputInterface $output, $default = true)
+    public function askConfirmation($question, $default = true)
     {
-        $this->dialog->askConfirmation($output, $question, $default);
+        $this->dialog->askConfirmation($this->output, $question, $default);
+    }
+
+    /**
+     * @param string $message
+     */
+    public function logStep($message)
+    {
+        try {
+            $this->clearLine();
+            //$this->progress->finish();
+        } catch (\LogicException $e){
+            //ignore
+        }
+        $this->output->writeln("<fg=green;options=bold>-  " . $message . '</fg=green;options=bold>');
+    }
+
+    /**
+     * @param string $message
+     */
+    public function logTask($message)
+    {
+        try {
+            $this->clearLine();
+            //$this->progress->finish();
+        } catch (\LogicException $e){
+            //ignore
+        }
+        $this->output->writeln('<fg=blue;options=bold>   > ' . $message . " </fg=blue;options=bold>");
+        if ($this->output->getVerbosity() <= OutputInterface::VERBOSITY_NORMAL) {
+            $this->progress->start($this->output);
+        }
+    }
+
+    /**
+     * @param string $message
+     */
+    public function logCommand($message)
+    {
+        if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+            $this->output->writeln('<info>   $</info> <comment>' . $message . '</comment> ');
+        } else {
+            $this->progress->advance();
+        }
+    }
+
+    /**
+     * @param string $message
+     */
+    public function logConfig($message)
+    {
+        if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+            $this->output->writeln('<info>   %</info> <comment>' . $message . '</comment> ');
+        } else {
+            $this->progress->advance();
+        }
+    }
+
+    /**
+     * @param string $message
+     */
+    public function logNotice($message)
+    {
+        if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+            $this->output->writeln('<info>   !</info> <comment>' . $message . '</comment> ');
+        } else {
+            $this->progress->advance();
+        }
+    }
+
+    /**
+     * @param string $message
+     */
+    public function logError($message)
+    {
+        $this->output->writeln("\n\n<error>  " . $message . "</error>\n\n");
+    }
+
+    /**
+     * @param string $message
+     */
+    public function logWarning($message)
+    {
+        $this->output->writeln("<fg=black;bg=yellow;options=bold>\n\n" . $message . "\n</fg=black;bg=yellow;options=bold>\n\n");
+    }
+
+    public static function logo(OutputInterface $output, $verbosity, $txt)
+    {
+        if ($output->getVerbosity() >= $verbosity) {
+            $output->write(Skylab::$logo);
+            $output->writeln("<fg=yellow;options=bold>$txt</fg=yellow;options=bold>\n");
+        }
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @param $verbosity
+     * @param $startTime
+     */
+    public static function logStatistics(OutputInterface $output, $verbosity, $startTime)
+    {
+        if ($output->getVerbosity() >= $verbosity) {
+            $output->writeln("\n<fg=yellow;options=bold>Memory usage: " . round(memory_get_usage() / 1024 / 1024, 2) . 'MB (peak: ' . round(memory_get_peak_usage() / 1024 / 1024, 2) . 'MB), time: ' . round(microtime(true) - $startTime, 2) . "s</fg=yellow;options=bold>\n");
+        }
+    }
+
+    /**
+     *
+     */
+    private function clearLine(){
+        $message = str_pad("", 100, "\x20", STR_PAD_RIGHT);
+        $this->output->write("\x0D");
+        $this->output->write($message);
+        $this->output->write("\x0D");
     }
 }

@@ -3,22 +3,14 @@
 namespace Kunstmaan\Skylab\Provider;
 
 use Cilex\Application;
-use Cilex\ServiceProviderInterface;
-use Kunstmaan\Skylab\Helper\OutputUtil;
 use Kunstmaan\Skylab\Skeleton\AbstractSkeleton;
 use RuntimeException;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * SkeletonProvider
  */
-class SkeletonProvider implements ServiceProviderInterface
+class SkeletonProvider extends AbstractProvider
 {
-
-    /**
-     * @var Application
-     */
-    private $app;
 
     /**
      * Registers services on the given app.
@@ -34,97 +26,86 @@ class SkeletonProvider implements ServiceProviderInterface
     /**
      * @param \ArrayObject $project The project
      * @param AbstractSkeleton $skeleton The skeleton
-     * @param OutputInterface $output The command output stream
      */
-    public function applySkeleton(\ArrayObject $project, AbstractSkeleton $skeleton, OutputInterface $output)
+    public function applySkeleton(\ArrayObject $project, AbstractSkeleton $skeleton)
     {
         $list = new \ArrayObject();
         $list[$skeleton->getName()] = $skeleton;
-        $list = $this->resolveDependencies($skeleton, $project, $list, $output);
-        /** @var AbstractSkeleton $skeleton */
+        $list = $this->resolveDependencies($skeleton, $project, $list);
+        /** @var AbstractSkeleton $theSkeleton */
         foreach ($list as $theSkeleton) {
             if (!isset($project["skeletons"]) || !array_key_exists($theSkeleton->getName(), $project["skeletons"])) {
-                OutputUtil::log($output, OutputInterface::VERBOSITY_NORMAL, "Running skeleton create for <info>" . $theSkeleton->getName() . "</info>");
-                $theSkeleton->create($this->app, $project, $output);
+                $this->dialogProvider->logTask("Running skeleton create for " . $theSkeleton->getName());
+                $theSkeleton->create($project);
                 $project["skeletons"][$theSkeleton->getName()] = $theSkeleton->getName();
-                OutputUtil::newLine($output);
             }
         }
     }
+
 
     /**
      * @param AbstractSkeleton $theSkeleton
      * @param \ArrayObject $project
      * @param \ArrayObject $deps
-     * @param OutputInterface $output
      * @return \ArrayObject
      */
-    private function resolveDependencies(AbstractSkeleton $theSkeleton, \ArrayObject $project, \ArrayObject $deps, OutputInterface $output)
+    private function resolveDependencies(AbstractSkeleton $theSkeleton, \ArrayObject $project, \ArrayObject $deps)
     {
-        $skeletonDeps = $theSkeleton->dependsOn($this->app, $project, $output);
+        $skeletonDeps = $theSkeleton->dependsOn();
         foreach ($skeletonDeps as $skeletonDependencyName) {
             if (!array_key_exists($skeletonDependencyName, $deps)) {
-                $aSkeleton = $this->findSkeleton($skeletonDependencyName, $output);
+                $aSkeleton = $this->findSkeleton($skeletonDependencyName);
                 $deps[$aSkeleton->getName()] = $aSkeleton;
-                $deps = $this->resolveDependencies($aSkeleton, $project, $deps, $output);
+                $deps = $this->resolveDependencies($aSkeleton, $project, $deps);
             }
         }
         return $deps;
     }
 
+
     /**
      * @param string $skeletonname
-     *
-     * @param  \Symfony\Component\Console\Output\OutputInterface $output
+     * @return bool|AbstractSkeleton
      * @throws \RuntimeException
-     * @return AbstractSkeleton
-     *
      */
-    public function findSkeleton($skeletonname, OutputInterface $output)
+    public function findSkeleton($skeletonname)
     {
         if (isset($this->app["config"]["skeletons"][$skeletonname])) {
             $skeleton = $this->app["config"]["skeletons"][$skeletonname];
             if ($skeleton === false) {
                 return false;
             } else {
-                return new $skeleton($this->app, $output);
+                return new $skeleton($this->app);
             }
         }
         throw new RuntimeException("Skeleton " . $skeletonname . " not found!");
     }
 
     /**
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     *
      */
-    public function listSkeletons(OutputInterface $output)
+    public function listSkeletons()
     {
         foreach ($this->app["config"]["skeletons"] as $name => $class) {
-            OutputUtil::log($output, OutputInterface::VERBOSITY_NORMAL, $name);
-            OutputUtil::newLine($output);
+            $this->dialogProvider->logTask($name);
         }
     }
 
     /**
-     * @param string $skeletonCommand
+     * @param $callback
      * @param \ArrayObject $skeletons
-     * @param string $message
-     * @param Application $app
-     * @param OutputInterface $output
      */
-    public function skeletonLoop($skeletonCommand, \ArrayObject $skeletons, $message, Application $app, OutputInterface $output, \ArrayObject $project = null)
+    public function skeletonLoop($callback, \ArrayObject $skeletons = null)
     {
-        OutputUtil::logStep($output, OutputInterface::VERBOSITY_NORMAL, $message);
+        if (!$skeletons) {
+            $skeletons = new \ArrayObject(array_keys($this->app["config"]["skeletons"]));
+        }
         foreach ($skeletons as $skeletonName) {
-            OutputUtil::log($output, OutputInterface::VERBOSITY_NORMAL, "Skeleton: <info>$skeletonName</info>");
-            $skeleton = $this->findSkeleton($skeletonName, $output);
+            $skeleton = $this->findSkeleton($skeletonName);
             if ($skeleton) {
-                if ($project) {
-                    $skeleton->$skeletonCommand($app, $project, $output);
-                } else {
-                    $skeleton->$skeletonCommand($app, $output);
-                }
+                $callback($skeleton);
             }
-            OutputUtil::newLine($output);
         }
     }
+
 }

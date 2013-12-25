@@ -93,11 +93,11 @@ class Compiler
     }
 
     /**
-     * @param $phar
-     * @param $file
+     * @param \Phar $phar
+     * @param \SplFileInfo $file
      * @param bool $strip
      */
-    private function addFile($phar, $file, $strip = true)
+    private function addFile(\Phar $phar, \SplFileInfo $file, $strip = true)
     {
         $path = strtr(str_replace(dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR, '', $file->getRealPath()), '\\', '/');
         $content = file_get_contents($file);
@@ -115,7 +115,10 @@ class Compiler
         $phar->addFromString($path, $content);
     }
 
-    private function addSkylabBin($phar)
+    /**
+     * @param \Phar $phar
+     */
+    private function addSkylabBin(\Phar $phar)
     {
         $content = file_get_contents(__DIR__ . '/../../../skylab');
         $content = preg_replace('{^#!/usr/bin/env php\s*}', '', $content);

@@ -1,12 +1,9 @@
 <?php
 namespace Kunstmaan\Skylab\Command;
 
-use Kunstmaan\Skylab\Helper\OutputUtil;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * NewProjectCommand
@@ -36,30 +33,24 @@ EOT
     }
 
     /**
-     * @param InputInterface $input The command inputstream
-     * @param OutputInterface $output The command outputstream
-     *
-     * @return int|void
-     *
      * @throws \RuntimeException
      */
-    protected function DoExecute(InputInterface $input, OutputInterface $output)
+    protected function DoExecute()
     {
-        $projectname = $this->dialog->askFor('name', "Please enter the name of the project. All lowercase, no spaces or special characters. Keep it short, yet descriptive", $input, $output);
-        OutputUtil::logStep($output, OutputInterface::VERBOSITY_NORMAL, "Creating project $projectname");
+        $projectname = $this->dialogProvider->askFor("Please enter the name of the project. All lowercase, no spaces or special characters. Keep it short, yet descriptive", 'name');
+        $this->dialogProvider->logStep("Creating project $projectname");
         // Check if the project exists, do use in creating a new one with the same name.
-        if ($this->filesystem->projectExists($projectname)) {
+        if ($this->fileSystemProvider->projectExists($projectname)) {
             throw new RuntimeException("A project with name $projectname already exists!");
         } else {
-            OutputUtil::log($output, OutputInterface::VERBOSITY_NORMAL, "Creating project directory for <info>$projectname</info>");
-            $this->filesystem->createProjectDirectory($projectname, $output);
+            $this->dialogProvider->logTask("Creating project directory for $projectname");
+            $this->fileSystemProvider->createProjectDirectory($projectname, $this->output);
         }
-        OutputUtil::newLine($output);
         $project = new \ArrayObject();
         $project["name"] = $projectname;
-        $project["dir"] = $this->filesystem->getProjectDirectory($projectname);
-        $this->skeleton->applySkeleton($project, $this->skeleton->findSkeleton("base", $output), $output);
-        $this->projectConfig->writeProjectConfig($project, $output);
+        $project["dir"] = $this->fileSystemProvider->getProjectDirectory($projectname);
+        $this->skeletonProvider->applySkeleton($project, $this->skeletonProvider->findSkeleton("base", $this->output), $this->output);
+        $this->projectConfigProvider->writeProjectConfig($project, $this->output);
 
     }
 }

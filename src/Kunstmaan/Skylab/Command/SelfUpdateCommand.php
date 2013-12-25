@@ -2,8 +2,6 @@
 namespace Kunstmaan\Skylab\Command;
 
 use Kunstmaan\Skylab\Application;
-use Kunstmaan\Skylab\Helper\OutputUtil;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Exception\RuntimeException;
@@ -19,13 +17,11 @@ class SelfUpdateCommand extends AbstractCommand
     }
 
     /**
-     * @param  InputInterface $input
-     * @param  OutputInterface $output
      * @return int
      * @throws \Symfony\Component\Yaml\Exception\RuntimeException
      * @throws \Exception
      */
-    protected function doExecute(InputInterface $input, OutputInterface $output)
+    protected function doExecute()
     {
         $cacheDir = sys_get_temp_dir();
 
@@ -53,13 +49,11 @@ class SelfUpdateCommand extends AbstractCommand
 
         $latest = $data[0];
         if (version_compare(Application::VERSION, $latest["tag_name"]) < 0) {
-            OutputUtil::log($output, OutputInterface::VERBOSITY_NORMAL, 'New release found: ' . $latest["tag_name"] . ', updating...');
-            OutputUtil::newLine($output);
-
+            $this->dialogProvider->logTask('New release found: ' . $latest["tag_name"] . ', updating...');
             $this->getSslPage($latest["assets"][0]["url"], $latest["assets"][0]["content_type"], $tempFilename);
 
             if (!file_exists($tempFilename)) {
-                OutputUtil::logError($output, OutputInterface::VERBOSITY_NORMAL, 'The download of the new Skylab version failed for an unexpected reason');
+                $this->dialogProvider->logError($this->output, OutputInterface::VERBOSITY_NORMAL, 'The download of the new Skylab version failed for an unexpected reason');
 
                 return 1;
             }
@@ -76,12 +70,12 @@ class SelfUpdateCommand extends AbstractCommand
                 if (!$e instanceof \UnexpectedValueException && !$e instanceof \PharException) {
                     throw $e;
                 }
-                OutputUtil::logError($output, OutputInterface::VERBOSITY_NORMAL, 'The download is corrupted (' . $e->getMessage() . '). Please re-run the self-update command to try again.');
+                $this->dialogProvider->logError($this->output, OutputInterface::VERBOSITY_NORMAL, 'The download is corrupted (' . $e->getMessage() . '). Please re-run the self-update command to try again.');
 
                 return 1;
             }
         } else {
-            OutputUtil::log($output, OutputInterface::VERBOSITY_NORMAL, 'You are running the latest release: ' . $latest["tag_name"]);
+            $this->dialogProvider->logTask('You are running the latest release: ' . $latest["tag_name"]);
         }
 
         return 0;
@@ -105,20 +99,31 @@ class SelfUpdateCommand extends AbstractCommand
         if ($contentType) {
             curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: " . $contentType));
         }
-        if ($filename) {
-            $tempFP = fopen($filename, 'w+');
-            curl_setopt($ch, CURLOPT_FILE, $tempFP);
-            curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
-        }
+        $tmpfile = $this->setDownloadHeaders($filename, $ch);
         curl_setopt($ch, CURLOPT_USERAGENT, "Skylab " . Application::VERSION . " (https://github.com/Kunstmaan/skylab)");
         $result = curl_exec($ch);
         curl_close($ch);
         if ($filename) {
-            fclose($tempFP);
+            $this->closeFile($tmpfile);
         } else {
             return $result;
         }
+        return false;
+    }
 
-        return;
+    private function setDownloadHeaders($filename, $ch){
+        if ($filename) {
+            $tempFP = fopen($filename, 'w+');
+            curl_setopt($ch, CURLOPT_FILE, $tempFP);
+            curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
+            return $tempFP;
+        }
+        return false;
+    }
+
+    private function closeFile($tempFP){
+        if (!$tempFP){
+            fclose($tempFP);
+        }
     }
 }

@@ -1,10 +1,8 @@
 <?php
 namespace Kunstmaan\Skylab\Command;
 
-use RuntimeException;
-use Symfony\Component\Console\Input\InputInterface;
+use Kunstmaan\Skylab\Skeleton\AbstractSkeleton;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * MaintenanceCommand
@@ -24,20 +22,28 @@ class MaintenanceCommand extends AbstractCommand
     }
 
     /**
-     * @param InputInterface $input The command inputstream
-     * @param OutputInterface $output The command outputstream
      *
-     * @return int|void
-     * @throws \RuntimeException
      */
-    protected function doExecute(InputInterface $input, OutputInterface $output)
+    protected function doExecute()
     {
-        $app = $this->getContainer();
-        $allSkeletons = new \ArrayObject(array_keys($app["config"]["skeletons"]));
-        $this->skeleton->skeletonLoop('preMaintenance', $allSkeletons, "Running preMaintenance for all skeletons", $app, $output);
-        $this->filesystem->projectsLoop($output, function ($projectName, $skeletons, $project) use ($app, $output) {
-            $this->skeleton->skeletonLoop('maintenance', $skeletons, "Running maintenance on project $projectName", $app, $output, $project);
+        $this->dialogProvider->logStep("Running preMaintenance");
+        $this->skeletonProvider->skeletonLoop(function (AbstractSkeleton $theSkeleton) {
+            $this->dialogProvider->logTask("Running preMaintenance for skeleton " . $theSkeleton->getName());
+            $theSkeleton->preMaintenance();
         });
-        $this->skeleton->skeletonLoop('postMaintenance', $allSkeletons, "Running postMaintenance for all skeletons", $app, $output);
+
+        $this->fileSystemProvider->projectsLoop(function ($project) {
+            $this->dialogProvider->logStep("Running maintenance on " . $project["name"]);
+            $this->skeletonProvider->skeletonLoop(function (AbstractSkeleton $theSkeleton) use ($project) {
+                $this->dialogProvider->logTask("Running maintenance for skeleton " . $theSkeleton->getName());
+                $theSkeleton->maintenance($project);
+            });
+        });
+
+        $this->dialogProvider->logStep("Running postMaintenance");
+        $this->skeletonProvider->skeletonLoop(function (AbstractSkeleton $theSkeleton) {
+            $this->dialogProvider->logTask("Running postMaintenance for skeleton " . $theSkeleton->getName());
+            $theSkeleton->postMaintenance();
+        });
     }
 }

@@ -1,13 +1,6 @@
 <?php
 namespace Kunstmaan\Skylab\Skeleton;
 
-use Cilex\Application;
-use Kunstmaan\Skylab\Helper\OutputUtil;
-use Kunstmaan\Skylab\Provider\FileSystemProvider;
-use Kunstmaan\Skylab\Provider\ProcessProvider;
-use Kunstmaan\Skylab\Provider\ProjectConfigProvider;
-use Symfony\Component\Console\Helper\DialogHelper;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -20,57 +13,45 @@ class ApacheSkeleton extends AbstractSkeleton
     const NAME = "apache";
 
     /**
-     * @param Application $app The application
      * @param \ArrayObject $project
-     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
-    public function create(Application $app, \ArrayObject $project, OutputInterface $output)
+    public function create(\ArrayObject $project)
     {
-        /** @var $filesystem FileSystemProvider */
-        $filesystem = $app["filesystem"];
-        /** @var ProcessProvider $process */
-        $process = $app["process"];
-        /** @var \Twig_Environment $twig */
-        $twig = $app['twig'];
-        /** @var DialogHelper $dialog */
-        $dialog = $app['console']->getHelperSet()->get('dialog');
-        $process->executeSudoCommand("mkdir -p " . $app["config"]["apache"]["vhostdir"], $output);
-        $process->executeSudoCommand("mkdir -p " . $filesystem->getProjectDirectory($project["name"]) . "/apachelogs", $output);
-        $process->executeSudoCommand("mkdir -p " . $filesystem->getProjectConfigDirectory($project["name"]) . "/apache.d", $output);
-        $process->executeSudoCommand("mkdir -p " . $filesystem->getProjectDirectory($project["name"]) . "/stats", $output);
-        $process->executeSudoCommand("chmod -R 777 " . $filesystem->getProjectConfigDirectory($project["name"]) . "/apache.d/", $output);
+        $this->processProvider->executeSudoCommand("mkdir -p " . $this->app["config"]["apache"]["vhostdir"]);
+        $this->processProvider->executeSudoCommand("mkdir -p " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/apachelogs");
+        $this->processProvider->executeSudoCommand("mkdir -p " . $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d");
+        $this->processProvider->executeSudoCommand("mkdir -p " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/stats");
+        $this->processProvider->executeSudoCommand("chmod -R 777 " . $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/");
         // render templates
         $finder = new Finder();
-        $finder->files()->in($filesystem->getApacheConfigTemplateDir($project, $output))->name("*.conf.twig");
+        $finder->files()->in($this->fileSystemProvider->getApacheConfigTemplateDir())->name("*.conf.twig");
         /** @var SplFileInfo $config */
         foreach ($finder as $config) {
-            OutputUtil::log($output, OutputInterface::VERBOSITY_VERBOSE, "%", "Rendering " . $config->getFilename());
-            $shared = $twig->render(file_get_contents("./templates/apache/apache.d/" . $config->getFilename()), array());
-            $filesystem->writeProtectedFile($filesystem->getProjectConfigDirectory($project["name"]) . "/apache.d/" . str_replace(".conf.twig", "", $config->getFilename()), $shared, $output);
+            $this->dialogProvider->logConfig("Rendering " . $config->getFilename());
+            $shared = $this->twig->render(file_get_contents("./templates/apache/apache.d/" . $config->getFilename()), array());
+            $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/" . str_replace(".conf.twig", "", $config->getFilename()), $shared);
         }
         // update config
         {
             // url
             $defaultUrl = $project["name"] . ".be";
-            OutputUtil::newLine($output);
-            if (getenv("TRAVIS")){
+            if (getenv("TRAVIS")) {
                 $project["url"] = $defaultUrl;
             } else {
-                $project["url"] = $dialog->ask($output, "\n   <question>Enter the base url: [" . $defaultUrl . "]</question> ", $defaultUrl);
+                $project["url"] = $this->dialogProvider->askFor("Enter the base url: [" . $defaultUrl . "]", null, $defaultUrl);
             }
         }
         {
             // url aliases
             $aliases = array();
-            if (getenv("TRAVIS")){
+            if (getenv("TRAVIS")) {
                 $aliases[] = "www." . $project["url"];
             } else {
                 $alias = null;
                 while (1 == 1) {
-                    OutputUtil::newLine($output);
-                    $alias = $dialog->ask($output, "   <question>Add an url alias (leave empty to stop adding):</question> ");
+                    $alias = $this->dialogProvider->askFor("Add an url alias (leave empty to stop adding):");
                     if (empty($alias)) {
                         break;
                     } else {
@@ -83,48 +64,32 @@ class ApacheSkeleton extends AbstractSkeleton
     }
 
     /**
-     * @param Application $app The application
-     * @param OutputInterface $output The command output stream
-     *
      * @return mixed
      */
-    public function preMaintenance(Application $app, OutputInterface $output)
+    public function preMaintenance()
     {
-        /** @var ProcessProvider $process */
-        $process = $app["process"];
-        $process->executeSudoCommand("rm -Rf " . $app["config"]["apache"]["vhostdir"] . "/*", $output);
+        $this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["apache"]["vhostdir"] . "/*");
     }
 
     /**
-     * @param Application $app The application
-     * @param OutputInterface $output The command output stream
-     *
      * @return mixed
      */
-    public function postMaintenance(Application $app, OutputInterface $output)
+    public function postMaintenance()
     {
-        OutputUtil::newLine($output);
-        $this->writeHostFile($app, $output);
-        OutputUtil::newLine($output);
-        $this->writeNamevirtualhost($app, $output);
-        OutputUtil::newLine($output);
-        $this->writeFirsthost($app, $output);
+        $this->writeHostFile();
+        $this->writeNamevirtualhost();
+        $this->writeFirsthost();
     }
 
-    /**
-     * @param Application $app
-     * @param OutputInterface $output
-     */
-    private function writeHostFile(Application $app, OutputInterface $output)
+    private function writeHostFile()
     {
-        $hostmachine = $app["config"]["apache"]["hostmachine"];
         $hostlines = array();
-        $this->filesystem->projectsLoop($output, function ($projectName, $skeletons, $project) use ($app, $output, $hostmachine, &$hostlines) {
+        $this->fileSystemProvider->projectsLoop(function ($project) use ($hostlines) {
             if (array_key_exists($this->getName(), $project["skeletons"])) {
-                $hostlines[] = "127.0.0.1 " . $project["name"] . "." . $hostmachine . " www." . $project["name"] . "." . $hostmachine . "\n";
+                $hostlines[] = "127.0.0.1 " . $project["name"] . "." . $this->app["config"]["apache"]["hostmachine"] . " www." . $project["name"] . "." . $this->app["config"]["apache"]["hostmachine"] . "\n";
             }
         });
-        OutputUtil::log($output, OutputInterface::VERBOSITY_NORMAL, "Updating the <info>/etc/hosts</info> file");
+        $this->dialogProvider->logTask("Updating the /etc/hosts file");
         $hostsfile = file("/etc/hosts");
         $resultLines = array();
         $foundSection = false;
@@ -151,7 +116,7 @@ class ApacheSkeleton extends AbstractSkeleton
             $resultLines = array_merge($resultLines, $hostlines);
             $resultLines[] = "#KDEPLOY_end autogenerated section. do not edit above this line. do not remove this line.\n";
         }
-        $this->filesystem->writeProtectedFile("/etc/hosts", implode("", $resultLines), $output);
+        $this->fileSystemProvider->writeProtectedFile("/etc/hosts", implode("", $resultLines));
     }
 
     /**
@@ -162,25 +127,18 @@ class ApacheSkeleton extends AbstractSkeleton
         return ApacheSkeleton::NAME;
     }
 
-    /**
-     * @param Application $app
-     * @param OutputInterface $output
-     */
-    private function writeNamevirtualhost(Application $app, OutputInterface $output)
+    private function writeNamevirtualhost()
     {
-        OutputUtil::log($output, OutputInterface::VERBOSITY_NORMAL, "Writing <info>namevirtualhosts</info>");
+        $this->dialogProvider->logTask("Writing namevirtualhosts");
         $namevirtualhosts = "NameVirtualHost *:80\n";
         $namevirtualhosts .= "NameVirtualHost *:443\n";
-        $this->filesystem->writeProtectedFile($app["config"]["apache"]["vhostdir"] . "/namevirtualhosts", $namevirtualhosts, $output);
+        $this->fileSystemProvider->writeProtectedFile($this->app["config"]["apache"]["vhostdir"] . "/namevirtualhosts", $namevirtualhosts);
     }
 
-    /**
-     * @param Application $app
-     * @param OutputInterface $output
-     */
-    private function writeFirsthost(Application $app, OutputInterface $output)
+    // TODO: move to a template
+    private function writeFirsthost()
     {
-        OutputUtil::log($output, OutputInterface::VERBOSITY_NORMAL, "Writing <info>000firsthost.conf</info>");
+        $this->dialogProvider->logTask("Writing 000firsthost.conf");
         $firsthost = "<VirtualHost *:80>\n";
         $firsthost .= "    ServerName no_website_configured_at_this_address\n";
         $firsthost .= "    ServerAdmin support@kunstmaan.be\n";
@@ -207,25 +165,18 @@ class ApacheSkeleton extends AbstractSkeleton
         $firsthost .= "    ErrorLog /dev/null\n";
         $firsthost .= "    CustomLog /var/log/nowebsite.log nositelog\n";
         $firsthost .= "</VirtualHost>\n";
-        $this->filesystem->writeProtectedFile($app["config"]["apache"]["vhostdir"] . "/000firsthost.conf", $firsthost, $output);
+        $this->fileSystemProvider->writeProtectedFile($this->app["config"]["apache"]["vhostdir"] . "/000firsthost.conf", $firsthost);
     }
 
     /**
-     * @param Application $app The application
      * @param \ArrayObject $project
-     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
-    public function maintenance(Application $app, \ArrayObject $project, OutputInterface $output)
+    public function maintenance(\ArrayObject $project)
     {
-        /** @var $filesystem FileSystemProvider */
-        $filesystem = $app["filesystem"];
-        /** @var ProjectConfigProvider $projectConfig */
-        $projectConfig = $app["projectconfig"];
-
-        OutputUtil::log($output, OutputInterface::VERBOSITY_VERBOSE, "%", "Updating <info>05aliases</info> apache config file");
-        $hostmachine = $app["config"]["apache"]["hostmachine"];
+        $this->dialogProvider->logTask("Updating 05aliases apache config file");
+        $hostmachine = $this->app["config"]["apache"]["hostmachine"];
         $serverAlias = "ServerAlias " . $project["name"] . "." . $hostmachine . " www." . $project["name"] . "." . $hostmachine;
         if (isset($project["aliases"])) {
             foreach ($project["aliases"] as $alias) {
@@ -233,90 +184,75 @@ class ApacheSkeleton extends AbstractSkeleton
             }
         }
         $serverAlias .= "\n";
-        $filesystem->writeProtectedFile($filesystem->getProjectConfigDirectory($project["name"]) . "/apache.d/05aliases", $serverAlias, $output);
+        $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/05aliases", $serverAlias);
 
         $configcontent = "";
         /** @var \SplFileInfo $config */
-        foreach ($filesystem->getProjectApacheConfigs($project) as $config) {
+        foreach ($this->fileSystemProvider->getProjectApacheConfigs($project) as $config) {
             $configcontent .= "\n#BEGIN " . $config->getRealPath() . "\n\n";
-            $configcontent .= $projectConfig->searchReplacer(file_get_contents($config->getRealPath()), $project);
+            $configcontent .= $this->projectConfigProvider->searchReplacer(file_get_contents($config->getRealPath()), $project);
             $configcontent .= "\n#END " . $config->getRealPath() . "\n\n";
         }
-        if ($app["config"]["permissions"]["develmode"]) {
+        if ($this->app["config"]["permissions"]["develmode"]) {
             $configcontent = str_replace("-Indexes", "Indexes", $configcontent);
         }
-        $filesystem->writeProtectedFile($app["config"]["apache"]["vhostdir"] . "/" . $project["name"] . ".conf", $configcontent, $output);
+        $this->fileSystemProvider->writeProtectedFile($this->app["config"]["apache"]["vhostdir"] . "/" . $project["name"] . ".conf", $configcontent);
     }
 
     /**
-     * @param Application $app The application
      * @param \ArrayObject $project
-     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
-    public function preBackup(Application $app, \ArrayObject $project, OutputInterface $output)
+    public function preBackup(\ArrayObject $project)
     {
     }
 
     /**
-     * @param Application $app The application
      * @param \ArrayObject $project
-     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
-    public function postBackup(Application $app, \ArrayObject $project, OutputInterface $output)
+    public function postBackup(\ArrayObject $project)
     {
     }
 
     /**
-     * @param Application $app The application
      * @param \ArrayObject $project
-     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
-    public function preRemove(Application $app, \ArrayObject $project, OutputInterface $output)
+    public function preRemove(\ArrayObject $project)
     {
     }
 
     /**
-     * @param Application $app The application
      * @param \ArrayObject $project
-     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
-    public function postRemove(Application $app, \ArrayObject $project, OutputInterface $output)
+    public function postRemove(\ArrayObject $project)
     {
     }
 
     /**
-     * @param  \Cilex\Application $app
      * @param  \ArrayObject $project
      * @param  \SimpleXMLElement $config The configuration array
-     * @param  \Symfony\Component\Console\Output\OutputInterface $output
      * @return \SimpleXMLElement
      */
-    public function writeConfig(Application $app, \ArrayObject $project, \SimpleXMLElement $config, OutputInterface $output)
+    public function writeConfig(\ArrayObject $project, \SimpleXMLElement $config)
     {
-        /** @var ProjectConfigProvider $projectconfig */
-        $projectconfig = $app['projectconfig'];
-        $config = $projectconfig->addVar($config, 'project.url', $project["url"]);
+        $config = $this->projectConfigProvider->addVar($config, 'project.url', $project["url"]);
         if (isset($project["aliases"])) {
-            $config = $projectconfig->addVarWithItems($config, 'project.aliases', $project["aliases"]);
+            $config = $this->projectConfigProvider->addVarWithItems($config, 'project.aliases', $project["aliases"]);
         }
         return $config;
     }
 
     /**
-     * @param  \Cilex\Application $app
-     * @param  \ArrayObject $project
-     * @param  \Symfony\Component\Console\Output\OutputInterface $output
      * @return string[]
      */
-    public function dependsOn(Application $app, \ArrayObject $project, OutputInterface $output)
+    public function dependsOn()
     {
         return array("base", "awstats", "logrotate", "pingdom");
     }

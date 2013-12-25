@@ -2,26 +2,13 @@
 namespace Kunstmaan\Skylab\Provider;
 
 use Cilex\Application;
-use Cilex\ServiceProviderInterface;
 use Kunstmaan\Skylab\Entity\PermissionDefinition;
-use Kunstmaan\Skylab\Helper\OutputUtil;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * PermissionsProvider
  */
-class PermissionsProvider implements ServiceProviderInterface
+class PermissionsProvider extends AbstractProvider
 {
-
-    /**
-     * @var Application
-     */
-    private $app;
-
-    /**
-     * @var ProcessProvider
-     */
-    private $process;
 
     /**
      * Registers services on the given app.
@@ -36,191 +23,150 @@ class PermissionsProvider implements ServiceProviderInterface
 
     /**
      * @param string $groupName The group name
-     * @param OutputInterface $output The command output stream
      */
-    public function createGroupIfNeeded($groupName, OutputInterface $output)
+    public function createGroupIfNeeded($groupName)
     {
-        /** @var $process ProcessProvider */
-        $process = $this->app["process"];
         if (PHP_OS == "Darwin") {
-            $process->executeSudoCommand('dscl . create /groups/' . $groupName, $output);
-            $process->executeSudoCommand('dscl . create /groups/' . $groupName . ' RealName ' . $groupName, $output);
-            $process->executeSudoCommand('dscl . create /groups/' . $groupName . " name " . $groupName, $output);
-            $process->executeSudoCommand('dscl . create /groups/' . $groupName . ' passwd "*"', $output);
-            $process->executeSudoCommand('dscl . create /groups/' . $groupName . ' PrimaryGroupID 20', $output);
+            $this->processProvider->executeSudoCommand('dscl . create /groups/' . $groupName);
+            $this->processProvider->executeSudoCommand('dscl . create /groups/' . $groupName . ' RealName ' . $groupName);
+            $this->processProvider->executeSudoCommand('dscl . create /groups/' . $groupName . " name " . $groupName);
+            $this->processProvider->executeSudoCommand('dscl . create /groups/' . $groupName . ' passwd "*"');
+            $this->processProvider->executeSudoCommand('dscl . create /groups/' . $groupName . ' PrimaryGroupID 20');
         } else {
-            if (!$this->isGroup($groupName, $output)) {
-                $process->executeSudoCommand('addgroup ' . $groupName, $output);
+            if (!$this->isGroup($groupName)) {
+                $this->processProvider->executeSudoCommand('addgroup ' . $groupName);
             }
         }
     }
 
     /**
      * @param string $groupName The group name
-     * @param OutputInterface $output The command output stream
      *
      * @return bool|string
      */
-    private function isGroup($groupName, OutputInterface $output)
+    private function isGroup($groupName)
     {
-        /** @var ProcessProvider $process */
-        $process = $this->app["process"];
         if (PHP_OS == "Darwin") {
-            return $process->executeSudoCommand('dscl . -list /groups | grep ^' . $groupName . '$', $output, true);
+            return $this->processProvider->executeSudoCommand('dscl . -list /groups | grep ^' . $groupName . '$', true);
         } else {
-            return $process->executeSudoCommand('cat /etc/group | egrep ^' . $groupName . ':', $output, true);
+            return $this->processProvider->executeSudoCommand('cat /etc/group | egrep ^' . $groupName . ':', true);
         }
     }
 
     /**
      * @param string $userName The user name
      * @param string $groupName The group name
-     * @param OutputInterface $output The command output stream
      */
-    public function createUserIfNeeded($userName, $groupName, OutputInterface $output)
+    public function createUserIfNeeded($userName, $groupName)
     {
-        if (!$this->isUser($userName, $output)) {
-            /* @var ProcessProvider $process */
-            $process = $this->app["process"];
+        if (!$this->isUser($userName)) {
             if (PHP_OS == "Darwin") {
-                $maxid = $process->executeSudoCommand("dscl . list /Users UniqueID | awk '{print $2}' | sort -ug | tail -1", $output);
+                $maxid = $this->processProvider->executeSudoCommand("dscl . list /Users UniqueID | awk '{print $2}' | sort -ug | tail -1");
                 $maxid = $maxid + 1;
-                $process->executeSudoCommand('dscl . create /Users/' . $userName, $output);
-                $process->executeSudoCommand('dscl . create /Users/' . $userName . ' UserShell /bin/bash', $output);
-                $process->executeSudoCommand('dscl . create /Users/' . $userName . ' NFSHomeDirectory /var/www/' . $userName, $output);
-                $process->executeSudoCommand('dscl . create /Users/' . $userName . ' PrimaryGroupID 20', $output);
-                $process->executeSudoCommand('dscl . create /Users/' . $userName . ' UniqueID ' . $maxid, $output);
-                $process->executeSudoCommand('dscl . append /Groups/' . $groupName . ' GroupMembership ' . $userName, $output);
-                $process->executeSudoCommand('defaults write /Library/Preferences/com.apple.loginwindow HiddenUsersList -array-add ' . $userName, $output);
+                $this->processProvider->executeSudoCommand('dscl . create /Users/' . $userName);
+                $this->processProvider->executeSudoCommand('dscl . create /Users/' . $userName . ' UserShell /bin/bash');
+                $this->processProvider->executeSudoCommand('dscl . create /Users/' . $userName . ' NFSHomeDirectory /var/www/' . $userName);
+                $this->processProvider->executeSudoCommand('dscl . create /Users/' . $userName . ' PrimaryGroupID 20');
+                $this->processProvider->executeSudoCommand('dscl . create /Users/' . $userName . ' UniqueID ' . $maxid);
+                $this->processProvider->executeSudoCommand('dscl . append /Groups/' . $groupName . ' GroupMembership ' . $userName);
+                $this->processProvider->executeSudoCommand('defaults write /Library/Preferences/com.apple.loginwindow HiddenUsersList -array-add ' . $userName);
             } else {
-                $process->executeSudoCommand('adduser --firstuid 1000 --lastuid 1999 --disabled-password --system --quiet --ingroup ' . $groupName . ' --home "/var/www/' . $userName . '" --no-create-home --shell /bin/bash ' . $userName, $output);
+                $this->processProvider->executeSudoCommand('adduser --firstuid 1000 --lastuid 1999 --disabled-password --system --quiet --ingroup ' . $groupName . ' --home "/var/www/' . $userName . '" --no-create-home --shell /bin/bash ' . $userName);
             }
         }
     }
 
     /**
      * @param string $userName The user name
-     * @param OutputInterface $output The command output stream
      *
      * @return mixed
      */
-    private function isUser($userName, OutputInterface $output)
+    private function isUser($userName)
     {
-        if (is_null($this->process)) {
-            $this->process = $this->app["process"];
-        }
-
-        return $this->process->executeSudoCommand('id ' . $userName, $output, true);
+        return $this->processProvider->executeSudoCommand('id ' . $userName, true);
     }
 
     /**
      * @param \ArrayObject $project The project
-     * @param OutputInterface $output The command output stream
      */
-    public function applyOwnership(\ArrayObject $project, OutputInterface $output)
+    public function applyOwnership(\ArrayObject $project)
     {
-        if (is_null($this->process)) {
-            $this->process = $this->app["process"];
-        }
-        /** @var $filesystem FileSystemProvider */
-        $filesystem = $this->app['filesystem'];
-        /** @var ProjectConfigProvider $projectconfig */
-        $projectconfig = $this->app['projectconfig'];
         /** @var PermissionDefinition $pd */
         foreach ($project["permissions"] as $pd) {
-            $thePath = $filesystem->getProjectDirectory($project["name"]) . $pd->getPath();
+            $thePath = $this->fileSystemProvider->getProjectDirectory($project["name"]) . $pd->getPath();
             if (!$pd->getOwnership()) {
-                OutputUtil::log($output, OutputInterface::VERBOSITY_VERBOSE, "!", "No ownership information for " . $thePath . ", do not chown");
+                $this->dialogProvider->logNotice("No ownership information for " . $thePath . ", do not chown");
                 continue;
             }
             if (!file_exists($thePath)) {
-                OutputUtil::log($output, OutputInterface::VERBOSITY_VERBOSE, "!", $thePath . " does not exist, do not chown");
+                $this->dialogProvider->logNotice($thePath . " does not exist, do not chown");
                 continue;
             }
-            $dirContainsNFS = $this->process->executeSudoCommand("mount | grep $thePath | cat", $output);
+            $dirContainsNFS = $this->processProvider->executeSudoCommand("mount | grep $thePath | cat");
             if (!empty($dirContainsNFS)) {
-                OutputUtil::log($output, OutputInterface::VERBOSITY_VERBOSE, "!", $thePath . " is on an NFS share, do not chown");
+                $this->dialogProvider->logNotice($thePath . " is on an NFS share, do not chown");
                 continue;
             }
-            $owner = $projectconfig->searchReplacer($pd->getOwnership(), $project);
+            $owner = $this->projectConfigProvider->searchReplacer($pd->getOwnership(), $project);
             if (PHP_OS == "Darwin") {
                 $owner = str_replace(".", ":", $owner);
             }
-            $this->process->executeSudoCommand('chown -f ' . $owner . ' ' . $thePath, $output, true);
+            $this->processProvider->executeSudoCommand('chown -f ' . $owner . ' ' . $thePath, true);
         }
     }
 
     /**
      * @param \ArrayObject $project The project
-     * @param OutputInterface $output The command output stream
      */
-    public function applyPermissions(\ArrayObject $project, OutputInterface $output)
+    public function applyPermissions(\ArrayObject $project)
     {
-        if (is_null($this->process)) {
-            $this->process = $this->app["process"];
-        }
-        /** @var $filesystem FileSystemProvider */
-        $filesystem = $this->app['filesystem'];
-        /** @var ProjectConfigProvider $projectconfig */
-
-        $projectconfig = $this->app['projectconfig'];
-        if ($this->app["config"]["permissions"]["develmode"] || !$this->process->commandExists("setfacl")) {
-            if (!file_exists($filesystem->getProjectDirectory($project["name"]))) {
-                OutputUtil::log($output, OutputInterface::VERBOSITY_VERBOSE, "!", $filesystem->getProjectDirectory($project["name"]) . " does not exist, do not chmod");
-
+        if ($this->app["config"]["permissions"]["develmode"] || !$this->processProvider->commandExists("setfacl")) {
+            if (!file_exists($this->fileSystemProvider->getProjectDirectory($project["name"]))) {
+                $this->dialogProvider->logNotice($this->fileSystemProvider->getProjectDirectory($project["name"]) . " does not exist, do not chmod");
                 return;
             }
-            $this->process->executeSudoCommand('chmod -R 777 ' . $filesystem->getProjectDirectory($project["name"]), $output);
-            if (!file_exists($filesystem->getProjectDirectory($project["name"]) . '/.ssh/')) {
-                OutputUtil::log($output, OutputInterface::VERBOSITY_VERBOSE, "!", $filesystem->getProjectDirectory($project["name"]) . '/.ssh/' . " does not exist, do not chmod");
-
+            $this->processProvider->executeSudoCommand('chmod -R 777 ' . $this->fileSystemProvider->getProjectDirectory($project["name"]));
+            if (!file_exists($this->fileSystemProvider->getProjectDirectory($project["name"]) . '/.ssh/')) {
+                $this->dialogProvider->logNotice($this->fileSystemProvider->getProjectDirectory($project["name"]) . '/.ssh/' . " does not exist, do not chmod");
                 return;
             }
-            $this->process->executeSudoCommand('chmod -R 700 ' . $filesystem->getProjectDirectory($project["name"]) . '/.ssh/', $output);
+            $this->processProvider->executeSudoCommand('chmod -R 700 ' . $this->fileSystemProvider->getProjectDirectory($project["name"]) . '/.ssh/');
         } else {
             /** @var PermissionDefinition $pd */
             foreach ($project["permissions"] as $pd) {
                 foreach ($pd->getAcl() as $acl) {
-                    $path = $filesystem->getProjectDirectory($project["name"]) . $pd->getPath();
+                    $path = $this->fileSystemProvider->getProjectDirectory($project["name"]) . $pd->getPath();
                     if (!file_exists($path)) {
-                        OutputUtil::log($output, OutputInterface::VERBOSITY_VERBOSE, "!", $path . " does not exist, do not chmod");
+                        $this->dialogProvider->logNotice($path . " does not exist, do not chmod");
                         continue;
                     }
-                    $this->process->executeSudoCommand('setfacl ' . $projectconfig->searchReplacer($acl, $project) . ' ' . $path, $output);
+                    $this->processProvider->executeSudoCommand('setfacl ' . $this->projectConfigProvider->searchReplacer($acl, $project) . ' ' . $path);
                 }
             }
         }
-        $this->process->executeSudoCommand('find ' . $filesystem->getProjectDirectory($project["name"]) . '/ -type d -exec chmod o+rx {} \;', $output);
+        $this->processProvider->executeSudoCommand('find ' . $this->fileSystemProvider->getProjectDirectory($project["name"]) . '/ -type d -exec chmod o+rx {} \;');
     }
 
     /**
      * @param string $userName The user name
-     * @param OutputInterface $output The command output stream
      */
-    public function killProcesses($userName, OutputInterface $output)
+    public function killProcesses($userName)
     {
-        if (is_null($this->process)) {
-            $this->process = $this->app["process"];
-        }
-        $this->process->executeSudoCommand("su - " . $userName . " -c 'kill -9 -1'", $output, true);
+        $this->processProvider->executeSudoCommand("su - " . $userName . " -c 'kill -9 -1'", true);
     }
 
     /**
      * @param string $userName The user name
      * @param string $groupName The group name
-     * @param OutputInterface $output The command output stream
      */
-    public function removeUser($userName, $groupName, OutputInterface $output)
+    public function removeUser($userName, $groupName)
     {
-        if ($this->isUser($userName, $output)) {
-            if (is_null($this->process)) {
-                $this->process = $this->app["process"];
-            }
+        if ($this->isUser($userName)) {
             if (PHP_OS == "Darwin") {
-                $this->process->executeSudoCommand('dscl . delete /Users/' . $userName, $output);
-                $this->process->executeSudoCommand('dscl . delete /Groups/' . $groupName, $output);
+                $this->processProvider->executeSudoCommand('dscl . delete /Users/' . $userName);
+                $this->processProvider->executeSudoCommand('dscl . delete /Groups/' . $groupName);
             } else {
-                $this->process->executeSudoCommand('userdel ' . $userName, $output);
+                $this->processProvider->executeSudoCommand('userdel ' . $userName);
             }
         }
     }

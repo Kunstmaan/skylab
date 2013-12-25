@@ -2,25 +2,14 @@
 namespace Kunstmaan\Skylab\Provider;
 
 use Cilex\Application;
-use Cilex\ServiceProviderInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
 /**
  * FileSystemProvider
  */
-class FileSystemProvider implements ServiceProviderInterface
+class FileSystemProvider extends AbstractProvider
 {
-
-    /**
-     * @var Application
-     */
-    private $app;
-    /**
-     * @var ProcessProvider
-     */
-    private $process;
 
     /**
      * Registers services on the given app.
@@ -39,8 +28,14 @@ class FileSystemProvider implements ServiceProviderInterface
     public function getProjects()
     {
         $finder = new Finder();
-        $finder->directories()->sortByName()->in($this->app["config"]["projects"]["path"])->depth('== 0');
-
+        $finder
+            ->directories()
+            ->sortByName()
+            ->in($this->app["config"]["projects"]["path"])
+            ->depth('== 0')
+            ->filter(function(\SplFileInfo $file){
+                return file_exists($file->getRealPath() . "/conf/config.xml");
+            });
         return iterator_to_array($finder);
     }
 
@@ -52,20 +47,17 @@ class FileSystemProvider implements ServiceProviderInterface
     {
         $finder = new Finder();
         $finder->files()->sortByName()->in($path)->depth('== 0');
-
         return iterator_to_array($finder);
     }
 
     /**
      * @param string $projectname
-     *
      * @return bool
      */
     public function projectExists($projectname)
     {
         $finder = new Finder();
         $finder->directories()->sortByName()->in($this->app["config"]["projects"]["path"])->depth('== 0')->name($projectname);
-
         return $finder->count() != 0;
     }
 
@@ -91,104 +83,78 @@ class FileSystemProvider implements ServiceProviderInterface
 
     /**
      * @param string $projectname The project name
-     * @param OutputInterface $output The command output stream
      */
-    public function createProjectDirectory($projectname, OutputInterface $output)
+    public function createProjectDirectory($projectname)
     {
         $projectDirectory = $this->getProjectDirectory($projectname);
-        if (is_null($this->process)) {
-            $this->process = $this->app["process"];
-        }
-        $this->process->executeSudoCommand('mkdir -p ' . $projectDirectory, $output);
+        $this->processProvider->executeSudoCommand('mkdir -p ' . $projectDirectory);
     }
 
     /**
      * @param \ArrayObject $project The project
-     * @param OutputInterface $output The command output stream
      * @param string $path The relative path in the project folder
      */
-    public function createDirectory(\ArrayObject $project, OutputInterface $output, $path)
+    public function createDirectory(\ArrayObject $project, $path)
     {
         $projectDirectory = $this->getProjectDirectory($project["name"]);
-        if (is_null($this->process)) {
-            $this->process = $this->app["process"];
-        }
-        $this->process->executeSudoCommand('mkdir -p ' . $projectDirectory . '/' . $path, $output);
+        $this->processProvider->executeSudoCommand('mkdir -p ' . $projectDirectory . '/' . $path);
     }
 
     /**
      * @param \ArrayObject $project The project
-     * @param OutputInterface $output The command output stream
      * @param string $path The relative path in the project folder
      *
      * @return string
      */
-    public function getDirectory(\ArrayObject $project, OutputInterface $output, $path)
+    public function getDirectory(\ArrayObject $project, $path)
     {
         $projectDirectory = $this->getProjectDirectory($project["name"]);
-        if (is_null($this->process)) {
-            $this->process = $this->app["process"];
-        }
-
         return $projectDirectory . '/' . $path;
     }
 
     /**
      * @param \ArrayObject $project The project
-     * @param OutputInterface $output The command output stream
      */
-    public function runTar(\ArrayObject $project, OutputInterface $output)
+    public function runTar(\ArrayObject $project)
     {
-        if (is_null($this->process)) {
-            $this->process = $this->app["process"];
-        }
-        $this->process->executeSudoCommand('mkdir -p ' . $this->app["config"]["projects"]["backuppath"], $output);
+        $this->processProvider->executeSudoCommand('mkdir -p ' . $this->app["config"]["projects"]["backuppath"]);
         $projectDirectory = $this->getProjectDirectory($project["name"]);
         $excluded = '';
         foreach ($project["backupexcludes"] as $backupexclude) {
             $excluded = $excluded . " --exclude='" . $backupexclude . "'";
         }
-        $this->process->executeSudoCommand('nice -n 19 tar --create --absolute-names ' . $excluded . ' --file ' . $this->app["config"]["projects"]["backuppath"] . '/' . $project["name"] . '.tar.gz --totals --gzip ' . $projectDirectory . '/ 2>&1', $output);
+        $this->processProvider->executeSudoCommand('nice -n 19 tar --create --absolute-names ' . $excluded . ' --file ' . $this->app["config"]["projects"]["backuppath"] . '/' . $project["name"] . '.tar.gz --totals --gzip ' . $projectDirectory . '/ 2>&1');
     }
 
     /**
      * @param \ArrayObject $project The project
-     * @param OutputInterface $output The command output stream
      */
-    public function removeProjectDirectory(\ArrayObject $project, OutputInterface $output)
+    public function removeProjectDirectory(\ArrayObject $project)
     {
         $projectDirectory = $this->getProjectDirectory($project["name"]);
-        if (is_null($this->process)) {
-            $this->process = $this->app["process"];
-        }
-        $this->process->executeSudoCommand("rm -Rf " . $projectDirectory, $output);
+        $this->processProvider->executeSudoCommand("rm -Rf " . $projectDirectory);
     }
 
     /**
-     * @param  \ArrayObject $project
-     * @param  OutputInterface $output
      * @return string
      */
-    public function getApacheConfigTemplateDir(\ArrayObject $project, OutputInterface $output)
+    public function getApacheConfigTemplateDir()
     {
         return BASE_DIR . "/templates/apache/apache.d/";
     }
 
 
     /**
-     * @param OutputInterface $output
      * @param $callback
      */
-    public function projectsLoop(OutputInterface $output, $callback)
+    public function projectsLoop($callback)
     {
-        /** @var ProjectConfigProvider $projectConfig */
-        $projectConfig = $this->app["projectconfig"];
         $projects = $this->getProjects();
         foreach ($projects as $projectFile) {
             /** @var $projectFile SplFileInfo */
             $projectname = $projectFile->getFilename();
-            $project = $projectConfig->loadProjectConfig($projectname, $output);
-            $callback($project["name"], new \ArrayObject($project["skeletons"]), $project);
+            $project = $this->projectConfigProvider->loadProjectConfig($projectname);
+            $callback($project);
         }
     }
 
@@ -215,14 +181,11 @@ class FileSystemProvider implements ServiceProviderInterface
     /**
      * @param $path
      * @param $content
-     * @param OutputInterface $output
      */
-    public function writeProtectedFile($path, $content, OutputInterface $output){
+    public function writeProtectedFile($path, $content)
+    {
         $tmpfname = tempnam(sys_get_temp_dir(), "skylab");
         file_put_contents($tmpfname, $content);
-        if (is_null($this->process)) {
-            $this->process = $this->app["process"];
-        }
-        $this->process->executeSudoCommand("cat ".$tmpfname." | sudo tee ".$path, $output);
+        $this->processProvider->executeSudoCommand("cat " . $tmpfname . " | sudo tee " . $path);
     }
 }
