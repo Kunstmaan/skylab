@@ -51,10 +51,10 @@ class DialogProvider extends AbstractProvider
     public function askFor($message, $argumentname = null, $default = null)
     {
         if ($argumentname){
-        $var = $this->input->getArgument($argumentname);
-        if (!$var){
-            $var = $this->dialog->ask($this->output, '<question>' . $message . '</question> ');
-        }
+            $var = $this->input->getArgument($argumentname);
+            if (!$var){
+                $var = $this->dialog->ask($this->output, '<question>' . $message . '</question> ');
+            }
         } elseif($default) {
             $var = $this->dialog->ask($this->output, '<question>' . $message . '</question> ', $default);
         } else {

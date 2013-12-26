@@ -108,7 +108,7 @@ abstract class AbstractCommand extends Command
             $this->dialogProvider->logo($this->output, OutputInterface::VERBOSITY_NORMAL, "Executing " . get_class($this));
         }
 
-        $this->processProvider->executeCommand('sudo -p "Please enter your sudo password: " -v', $this->output, true);
+        $this->processProvider->executeCommand('sudo -p "Please enter your sudo password: " -v', true);
 
         if (defined('SKYLAB_DEV_WARNING_TIME') && $this->getName() !== 'self-update') {
             if (time() > SKYLAB_DEV_WARNING_TIME) {

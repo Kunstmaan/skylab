@@ -25,16 +25,17 @@ class ProcessProvider extends AbstractProvider
      * @param string $command The command
      * @param bool $silent Be silent or not
      *
+     * @param callable $callback
      * @return bool|string
      */
-    public function executeCommand($command, $silent = false)
+    public function executeCommand($command, $silent = false, \Closure $callback = null)
     {
         if (!$silent) {
             $this->dialogProvider->logCommand($command);
         }
         $process = new Process($command);
         $process->setTimeout(3600);
-        $process->run();
+        $process->run($callback);
         if (!$process->isSuccessful()) {
             if (!$silent) {
                 $this->dialogProvider->logError($process->getErrorOutput());

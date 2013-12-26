@@ -16,6 +16,13 @@ apache:
 permissions:
     develmode:  false
 
+mysql:
+    password: password
+
+postgresql:
+    user: smlscript
+    password: sml
+
 skeletons:
     base:       Kunstmaan\Skylab\Skeleton\BaseSkeleton
     mysql:      Kunstmaan\Skylab\Skeleton\MySQLSkeleton
