@@ -67,10 +67,11 @@ class DialogProvider extends AbstractProvider
     /**
      * @param string $question The question text
      * @param bool $default The default action
+     * @return bool
      */
     public function askConfirmation($question, $default = true)
     {
-        $this->dialog->askConfirmation($this->output, $question, $default);
+        return $this->dialog->askConfirmation($this->output, $question, $default);
     }
 
     /**
@@ -179,7 +180,7 @@ class DialogProvider extends AbstractProvider
     /**
      *
      */
-    private function clearLine(){
+    public function clearLine(){
         $message = str_pad("", 100, "\x20", STR_PAD_RIGHT);
         $this->output->write("\x0D");
         $this->output->write($message);

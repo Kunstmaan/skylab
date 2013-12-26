@@ -122,6 +122,8 @@ abstract class AbstractCommand extends Command
      */
     protected function doPostExecute()
     {
+        $this->dialogProvider->clearLine();
+
         if (!$this->input->getOption('hideLogo')) {
             $this->dialogProvider->logStatistics($this->output, OutputInterface::VERBOSITY_NORMAL, $this->app['skylab.starttime']);
         }

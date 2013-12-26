@@ -1,6 +1,7 @@
 <?php
 namespace Kunstmaan\Skylab\Command;
 
+use Kunstmaan\Skylab\Skeleton\AbstractSkeleton;
 use RuntimeException;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -37,14 +38,11 @@ class RemoveProjectCommand extends AbstractCommand
             throw new RuntimeException("A project with name $projectname does not exist!");
         }
 
-        /** @var $dialog DialogHelper */
-        $dialog = $this->getHelperSet()->get('dialog');
-        $forceArgument = $this->input->getOption('force');
-        if (!$forceArgument && !$dialog->askConfirmation($this->output, '<question>Are you sure you want to remove ' . $projectname . '? [y/n]</question> ', false)) {
+        if (!$this->input->getOption('force') && !$this->dialogProvider->askConfirmation('Are you sure you want to remove ' . $projectname . '?')) {
             return;
         }
 
-        $this->dialogProvider->logStep($this->output, OutputInterface::VERBOSITY_NORMAL, "Removing project $projectname");
+        $this->dialogProvider->logStep("Removing project $projectname");
 
         $command = $this->getApplication()->find('backup');
         $arguments = array(
@@ -61,22 +59,16 @@ class RemoveProjectCommand extends AbstractCommand
 
         $project = $this->projectConfigProvider->loadProjectConfig($projectname, $this->output);
 
-        // Run the preRemove hook for all dependencies
-        foreach ($project["skeletons"] as $skeleton) {
-            $this->dialogProvider->logTask("preRemove for skeleton: $skeleton");
-            $skeleton = $this->skeletonProvider->findSkeleton($skeleton, $this->output);
-            if ($skeleton) {
-                $skeleton->preRemove($this->getContainer(), $project, $this->output);
-            }
-        }
+        $this->skeletonProvider->skeletonLoop(function(AbstractSkeleton $skeleton) use ($project) {
+            $skeleton->preRemove($project);
+        });
+
+
         $this->dialogProvider->logTask("Deleting the project folder at " . $this->fileSystemProvider->getProjectDirectory($projectname));
         $this->fileSystemProvider->removeProjectDirectory($project, $this->output);
-        foreach ($project["skeletons"] as $skeleton) {
-            $this->dialogProvider->logTask("postRemove for skeleton: $skeleton");
-            $skeleton = $this->skeletonProvider->findSkeleton($skeleton, $this->output);
-            if ($skeleton) {
-                $skeleton->postRemove($this->getContainer(), $project, $this->output);
-            }
-        }
+
+        $this->skeletonProvider->skeletonLoop(function(AbstractSkeleton $skeleton) use ($project) {
+            $skeleton->postRemove($project);
+        });
     }
 }
