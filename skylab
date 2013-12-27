@@ -17,6 +17,7 @@ $app->register(new \Kunstmaan\Skylab\Provider\ProcessProvider());
 $app->register(new \Kunstmaan\Skylab\Provider\SkeletonProvider());
 $app->register(new \Kunstmaan\Skylab\Provider\PermissionsProvider());
 $app->register(new \Kunstmaan\Skylab\Provider\DialogProvider());
+$app->register(new \Kunstmaan\Skylab\Provider\RemoteProvider());
 $app->register(new \Cilex\Provider\TwigServiceProvider(), array(
     'twig.path' =>  '/',
 ));

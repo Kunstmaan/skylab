@@ -4,7 +4,6 @@ namespace Kunstmaan\Skylab\Command;
 use Kunstmaan\Skylab\Skeleton\AbstractSkeleton;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * BackupCommand
@@ -32,7 +31,7 @@ class BackupCommand extends AbstractCommand
             if (isset($onlyprojectname) && $project["name"] != $onlyprojectname) {
                 return;
             }
-            $this->dialogProvider->logStep("Running backup on project ". $project["name"]);
+            $this->dialogProvider->logStep("Running backup on project " . $project["name"]);
             $this->skeletonProvider->skeletonLoop(function (AbstractSkeleton $theSkeleton) use ($project) {
                 $this->dialogProvider->logTask("Running preBackup for skeleton " . $theSkeleton->getName());
                 $theSkeleton->preBackup($project);

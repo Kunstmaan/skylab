@@ -1,64 +1,15 @@
 <?php
 namespace Kunstmaan\Skylab\Command;
 
-use Cilex\Application;
 use Cilex\Command\Command;
-use Kunstmaan\Skylab\Provider\DialogProvider;
-use Kunstmaan\Skylab\Provider\FileSystemProvider;
-use Kunstmaan\Skylab\Provider\PermissionsProvider;
-use Kunstmaan\Skylab\Provider\ProcessProvider;
-use Kunstmaan\Skylab\Provider\ProjectConfigProvider;
-use Kunstmaan\Skylab\Provider\SkeletonProvider;
+use Kunstmaan\Skylab\Provider\UsesProviders;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class AbstractCommand extends Command
 {
 
-    /**
-     * @var FileSystemProvider
-     */
-    protected $fileSystemProvider;
-
-    /**
-     * @var ProjectConfigProvider
-     */
-    protected $projectConfigProvider;
-
-    /**
-     * @var SkeletonProvider
-     */
-    protected $skeletonProvider;
-
-    /**
-     * @var ProcessProvider
-     */
-    protected $processProvider;
-
-    /**
-     * @var PermissionsProvider
-     */
-    protected $permissionsProvider;
-
-    /**
-     * @var DialogProvider
-     */
-    protected $dialogProvider;
-
-    /**
-     * @var OutputInterface
-     */
-    protected $output;
-
-    /**
-     * @var InputInterface
-     */
-    protected $input;
-
-    /**
-     * @var Application
-     */
-    protected $app;
+    use UsesProviders;
 
     /**
      * @param InputInterface $input
@@ -67,37 +18,13 @@ abstract class AbstractCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->setUpClassVars($input, $output);
+        $this->setup($this->getContainer(), $input, $output, true);
         $this->doPreExecute();
         $this->doExecute();
         $this->doPostExecute();
     }
 
     abstract protected function doExecute();
-
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     */
-    private function setUpClassVars(InputInterface $input, OutputInterface $output)
-    {
-        $providers = array(
-            'filesystem' => 'fileSystemProvider',
-            'projectconfig' => 'projectConfigProvider',
-            'skeleton' => 'skeletonProvider',
-            'process' => 'processProvider',
-            'permission' => 'permissionsProvider',
-            'dialog' => 'dialogProvider',
-        );
-        foreach ($providers as $service => $variable) {
-            $this->$variable = $this->getService($service);
-            $this->$variable->setUpClassVars($output, $input);
-        }
-
-        $this->output = $output;
-        $this->input = $input;
-        $this->app = $this->getContainer();
-    }
 
     /**
      *

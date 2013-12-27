@@ -3,7 +3,6 @@ namespace Kunstmaan\Skylab\Command;
 
 use Kunstmaan\Skylab\Application;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Exception\RuntimeException;
 
 class SelfUpdateCommand extends AbstractCommand
@@ -40,7 +39,7 @@ class SelfUpdateCommand extends AbstractCommand
             throw new RuntimeException('Skylab update failed: the "' . $localFilename . '" file could not be written');
         }
 
-        $json = $this->getSslPage('https://api.github.com/repos/kunstmaan/skylab/releases');
+        $json = $this->remoteProvider->curl('https://api.github.com/repos/kunstmaan/skylab/releases');
         $data = json_decode($json, TRUE);
 
         usort($data, function ($a, $b) {
@@ -50,14 +49,11 @@ class SelfUpdateCommand extends AbstractCommand
         $latest = $data[0];
         if (version_compare(Application::VERSION, $latest["tag_name"]) < 0) {
             $this->dialogProvider->logTask('New release found: ' . $latest["tag_name"] . ', updating...');
-            $this->getSslPage($latest["assets"][0]["url"], $latest["assets"][0]["content_type"], $tempFilename);
-
+            $this->remoteProvider->curl($latest["assets"][0]["url"], $latest["assets"][0]["content_type"], $tempFilename);
             if (!file_exists($tempFilename)) {
-                $this->dialogProvider->logError($this->output, OutputInterface::VERBOSITY_NORMAL, 'The download of the new Skylab version failed for an unexpected reason');
-
+                $this->dialogProvider->logError('The download of the new Skylab version failed for an unexpected reason');
                 return 1;
             }
-
             try {
                 @chmod($tempFilename, 0777 & ~umask());
                 // test the phar validity
@@ -70,60 +66,15 @@ class SelfUpdateCommand extends AbstractCommand
                 if (!$e instanceof \UnexpectedValueException && !$e instanceof \PharException) {
                     throw $e;
                 }
-                $this->dialogProvider->logError($this->output, OutputInterface::VERBOSITY_NORMAL, 'The download is corrupted (' . $e->getMessage() . '). Please re-run the self-update command to try again.');
+                $this->dialogProvider->logError('The download is corrupted (' . $e->getMessage() . '). Please re-run the self-update command to try again.');
 
                 return 1;
             }
         } else {
             $this->dialogProvider->logTask('You are running the latest release: ' . $latest["tag_name"]);
         }
-
         return 0;
     }
 
-    /**
-     * @param $url
-     * @param  string $contentType
-     * @param  string $filename
-     * @return mixed
-     */
-    private function getSslPage($url, $contentType = null, $filename = null)
-    {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-        curl_setopt($ch, CURLOPT_HEADER, false);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_REFERER, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-        if ($contentType) {
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: " . $contentType));
-        }
-        $tmpfile = $this->setDownloadHeaders($filename, $ch);
-        curl_setopt($ch, CURLOPT_USERAGENT, "Skylab " . Application::VERSION . " (https://github.com/Kunstmaan/skylab)");
-        $result = curl_exec($ch);
-        curl_close($ch);
-        if ($filename) {
-            $this->closeFile($tmpfile);
-        } else {
-            return $result;
-        }
-        return false;
-    }
 
-    private function setDownloadHeaders($filename, $ch){
-        if ($filename) {
-            $tempFP = fopen($filename, 'w+');
-            curl_setopt($ch, CURLOPT_FILE, $tempFP);
-            curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
-            return $tempFP;
-        }
-        return false;
-    }
-
-    private function closeFile($tempFP){
-        if (!$tempFP){
-            fclose($tempFP);
-        }
-    }
 }

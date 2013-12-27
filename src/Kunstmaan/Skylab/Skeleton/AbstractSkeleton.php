@@ -2,12 +2,7 @@
 namespace Kunstmaan\Skylab\Skeleton;
 
 use Cilex\Application;
-use Kunstmaan\Skylab\Provider\DialogProvider;
-use Kunstmaan\Skylab\Provider\FileSystemProvider;
-use Kunstmaan\Skylab\Provider\PermissionsProvider;
-use Kunstmaan\Skylab\Provider\ProcessProvider;
-use Kunstmaan\Skylab\Provider\ProjectConfigProvider;
-use Kunstmaan\Skylab\Provider\SkeletonProvider;
+use Kunstmaan\Skylab\Provider\UsesProviders;
 
 /**
  * AbstractSkeleton
@@ -15,66 +10,11 @@ use Kunstmaan\Skylab\Provider\SkeletonProvider;
 abstract class AbstractSkeleton
 {
 
-    /**
-     * @var FileSystemProvider
-     */
-    protected $fileSystemProvider;
+    use UsesProviders;
 
-    /**
-     * @var ProjectConfigProvider
-     */
-    protected $projectConfigProvider;
-
-    /**
-     * @var SkeletonProvider
-     */
-    protected $skeletonProvider;
-
-    /**
-     * @var ProcessProvider
-     */
-    protected $processProvider;
-
-    /**
-     * @var PermissionsProvider
-     */
-    protected $permissionsProvider;
-
-    /**
-     * @var DialogProvider
-     */
-    protected $dialogProvider;
-
-    /**
-     * @var Application
-     */
-    protected $app;
-
-    /**
-     * @var \Twig_Environment
-     */
-    protected $twig;
-
-    /**
-     * @param Application $app
-     */
-    public function __construct(Application $app)
+    function __construct(Application $app)
     {
-        $providers = array(
-            'filesystem' => 'fileSystemProvider',
-            'projectconfig' => 'projectConfigProvider',
-            'skeleton' => 'skeletonProvider',
-            'process' => 'processProvider',
-            'permission' => 'permissionsProvider',
-            'dialog' => 'dialogProvider',
-            'twig' => 'twig'
-        );
-        foreach ($providers as $service => $variable) {
-            $this->$variable = $app[$service];
-        }
-
-        $this->app = $app;
-        $this->twig = $app['twig'];
+        $this->setup($app);
     }
 
     /**

@@ -3,11 +3,9 @@ namespace Kunstmaan\Skylab\Command;
 
 use Kunstmaan\Skylab\Skeleton\AbstractSkeleton;
 use RuntimeException;
-use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * RemoveProjectCommand
@@ -59,7 +57,7 @@ class RemoveProjectCommand extends AbstractCommand
 
         $project = $this->projectConfigProvider->loadProjectConfig($projectname, $this->output);
 
-        $this->skeletonProvider->skeletonLoop(function(AbstractSkeleton $skeleton) use ($project) {
+        $this->skeletonProvider->skeletonLoop(function (AbstractSkeleton $skeleton) use ($project) {
             $skeleton->preRemove($project);
         });
 
@@ -67,7 +65,7 @@ class RemoveProjectCommand extends AbstractCommand
         $this->dialogProvider->logTask("Deleting the project folder at " . $this->fileSystemProvider->getProjectDirectory($projectname));
         $this->fileSystemProvider->removeProjectDirectory($project, $this->output);
 
-        $this->skeletonProvider->skeletonLoop(function(AbstractSkeleton $skeleton) use ($project) {
+        $this->skeletonProvider->skeletonLoop(function (AbstractSkeleton $skeleton) use ($project) {
             $skeleton->postRemove($project);
         });
     }

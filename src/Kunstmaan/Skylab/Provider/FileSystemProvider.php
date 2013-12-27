@@ -33,7 +33,7 @@ class FileSystemProvider extends AbstractProvider
             ->sortByName()
             ->in($this->app["config"]["projects"]["path"])
             ->depth('== 0')
-            ->filter(function(\SplFileInfo $file){
+            ->filter(function (\SplFileInfo $file) {
                 return file_exists($file->getRealPath() . "/conf/config.xml");
             });
         return iterator_to_array($finder);

@@ -28,7 +28,6 @@ class ProjectConfigProvider extends AbstractProvider
      */
     public function loadProjectConfig($projectname)
     {
-        $this->dialogProvider->logTask("Loading configuration files");
         $config = new \ArrayObject();
         $config = $this->loadConfig($projectname, $config);
         $config = $this->loadOwnership($projectname, $config);
@@ -45,7 +44,6 @@ class ProjectConfigProvider extends AbstractProvider
     private function loadConfig($projectname, \ArrayObject $config)
     {
         $configPath = $this->fileSystemProvider->getProjectConfigDirectory($projectname) . "/config.xml";
-        $this->dialogProvider->logConfig("Loading the project config from " . $configPath);
         $xml = simplexml_load_file($configPath);
         foreach ($xml->{'var'} as $var) {
             $tag = (string)$var["name"];
@@ -75,7 +73,6 @@ class ProjectConfigProvider extends AbstractProvider
     private function loadOwnership($projectname, \ArrayObject $config)
     {
         $configPath = $this->fileSystemProvider->getProjectConfigDirectory($projectname) . "/ownership.xml";
-        $this->dialogProvider->logConfig("Loading the project ownership from " . $configPath);
         $xml = simplexml_load_file($configPath);
         foreach ($xml->{'var'} as $var) {
             $name = (string)$var["name"];
@@ -130,7 +127,6 @@ class ProjectConfigProvider extends AbstractProvider
     private function loadPermissions($projectname, \ArrayObject $config)
     {
         $configPath = $this->fileSystemProvider->getProjectConfigDirectory($projectname) . "/permissions.xml";
-        $this->dialogProvider->logConfig("Loading the project permissions from " . $configPath);
         $xml = simplexml_load_file($configPath);
         foreach ($xml->{'var'} as $var) {
             $name = (string)$var["name"];
@@ -157,7 +153,6 @@ class ProjectConfigProvider extends AbstractProvider
     private function loadBackup($projectname, \ArrayObject $config)
     {
         $configPath = $this->fileSystemProvider->getProjectConfigDirectory($projectname) . "/backup.xml";
-        $this->dialogProvider->logConfig("Loading the project backup excludes from " . $configPath);
         $xml = simplexml_load_file($configPath);
         foreach ($xml->{'var'}[0]->item as $item) {
             $value = (string)$item["value"];

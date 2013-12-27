@@ -6,7 +6,6 @@ namespace Kunstmaan\Skylab\Command;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Process\Process;
 
 class FetchCommand extends AbstractCommand
 {
@@ -25,7 +24,7 @@ class FetchCommand extends AbstractCommand
             ->addArgument('project', InputArgument::OPTIONAL, 'The name of the Skylab project')
             ->addArgument('host', InputArgument::OPTIONAL, 'The hostname of the server to fetch from')
             ->addOption("--hideLogo", null, InputOption::VALUE_NONE, 'If set, no logo or statistics will be shown')
-        ->setHelp(<<<EOT
+            ->setHelp(<<<EOT
 The <info>fetch</info> command fetches a Skylab project from a server and puts it in the right locations on your computer. It
 will also drop the databases, so be very careful if you want to use this on a production server to do a migration.
 
@@ -47,7 +46,7 @@ EOT
         $this->dialogProvider->logStep("Checking preconditions");
         $this->dialogProvider->logTask("Checking the server");
         $exists = $this->remoteProjectExists($projectname, $hostname);
-        if (!$exists){
+        if (!$exists) {
             throw new \RuntimeException("The project " . $projectname . " does not exist on " . $hostname);
         }
         $this->dialogProvider->logTask("Detecting the project type");
@@ -68,22 +67,22 @@ EOT
             "data/current/app/cache/*"
         );
 
-        if (!$this->fileSystemProvider->projectExists($projectname)){
+        if (!$this->fileSystemProvider->projectExists($projectname)) {
             $this->dialogProvider->logStep("Running the full rsync commands since " . $projectname . " is not on this computer");
             $full_excludes = $excludes;
             $full_excludes[] = "data/shared";
             $full_excludes[] = "data/releases";
-            if ($type !== FetchCommand::TYPE_JAVA){
-                $full_excludes[] = "data/".$projectname;
+            if ($type !== FetchCommand::TYPE_JAVA) {
+                $full_excludes[] = "data/" . $projectname;
             }
             $this->fetchFolder(
                 $this->app["config"]["projects"]["path"] . '/',
                 $hostname,
-                "/home/projects/".$projectname,
+                "/home/projects/" . $projectname,
                 $full_excludes,
                 true
             );
-            if ($type !== FetchCommand::TYPE_JAVA){
+            if ($type !== FetchCommand::TYPE_JAVA) {
                 $mv_command = "mv " . $this->fileSystemProvider->getProjectDirectory($projectname) . "/data/current " . $this->fileSystemProvider->getProjectDirectory($projectname) . "/data/" . $projectname;
                 $this->processProvider->executeCommand($mv_command);
             }
@@ -95,14 +94,14 @@ EOT
             $this->fetchFolderIfExists(
                 $this->fileSystemProvider->getProjectDirectory($projectname),
                 $hostname,
-                "/home/projects/".$projectname,
+                "/home/projects/" . $projectname,
                 $update_excludes
             );
 
             $this->fetchFolderIfExists(
-                $this->fileSystemProvider->getProjectDirectory($projectname) . "/data/".$projectname."/web/uploads/",
+                $this->fileSystemProvider->getProjectDirectory($projectname) . "/data/" . $projectname . "/web/uploads/",
                 $hostname,
-                "/home/projects/".$projectname . "/data/shared/web/uploads/*",
+                "/home/projects/" . $projectname . "/data/shared/web/uploads/*",
                 $update_excludes
             );
 
@@ -116,10 +115,10 @@ EOT
         $this->dialogProvider->logStep("Dropping the databases");
         $this->dialogProvider->logTask("Dropping the MySQL database");
         $dbh = new \PDO('mysql:host=localhost;', "root", $this->app["config"]["mysql"]["password"]);
-        $dbh->query("DROP DATABASE IF EXISTS ". $projectname);
+        $dbh->query("DROP DATABASE IF EXISTS " . $projectname);
         $this->dialogProvider->logTask("Dropping the PostgreSQL database");
         $dbh = new \PDO("pgsql:host=localhost;dbname=template1", $this->app["config"]["postgresql"]["user"], $this->app["config"]["postgresql"]["password"]);
-        $dbh->query("DROP DATABASE IF EXISTS ". $projectname);
+        $dbh->query("DROP DATABASE IF EXISTS " . $projectname);
     }
 
     /**
@@ -129,11 +128,12 @@ EOT
      * @param $hostname
      * @return string
      */
-    private function detectProjectType($projectname, $hostname){
-        $command = "ssh ".$hostname." 'test -d /home/projects/".$projectname."/data/".$projectname."/src/be/smartlounge && echo found'";
+    private function detectProjectType($projectname, $hostname)
+    {
+        $command = "ssh " . $hostname . " 'test -d /home/projects/" . $projectname . "/data/" . $projectname . "/src/be/smartlounge && echo found'";
         $this->dialogProvider->logCommand($command);
         $found = $this->processProvider->executeCommand($command, true);
-        if ($found){
+        if ($found) {
             return FetchCommand::TYPE_JAVA;
         }
         return FetchCommand::TYPE_PHP;
@@ -146,11 +146,12 @@ EOT
      * @param $hostname
      * @return bool
      */
-    private function remoteProjectExists($projectname, $hostname){
-        $command = "ssh ".$hostname." 'test -d /home/projects/".$projectname." && echo found'";
+    private function remoteProjectExists($projectname, $hostname)
+    {
+        $command = "ssh " . $hostname . " 'test -d /home/projects/" . $projectname . " && echo found'";
         $this->dialogProvider->logCommand($command);
         $found = $this->processProvider->executeCommand($command, true);
-        if ($found){
+        if ($found) {
             return true;
         }
         return false;
@@ -163,7 +164,7 @@ EOT
      * @param string[] $excludes
      * @param bool $links
      */
-    private function fetchFolderIfExists($folder, $hostname, $remoteFolder, $excludes, $links=false)
+    private function fetchFolderIfExists($folder, $hostname, $remoteFolder, $excludes, $links = false)
     {
         if (file_exists($folder)) {
             $this->fetchFolder($folder, $hostname, $remoteFolder, $excludes, $links);
@@ -177,9 +178,9 @@ EOT
      * @param string[] $excludes
      * @param bool $links
      */
-    private function fetchFolder($folder, $hostname, $remoteFolder, $excludes, $links=false)
+    private function fetchFolder($folder, $hostname, $remoteFolder, $excludes, $links = false)
     {
-        $rsync_command = "rsync -r".($links?"L":"l")."Dhz --info=progress2";
+        $rsync_command = "rsync -r" . ($links ? "L" : "l") . "Dhz --info=progress2";
         foreach ($excludes as $exclude) {
             $rsync_command .= " --exclude=" . $exclude;
         }
