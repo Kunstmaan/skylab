@@ -135,36 +135,13 @@ class ApacheSkeleton extends AbstractSkeleton
         $this->fileSystemProvider->writeProtectedFile($this->app["config"]["apache"]["vhostdir"] . "/namevirtualhosts", $namevirtualhosts);
     }
 
-    // TODO: move to a template
+    /**
+     *
+     */
     private function writeFirsthost()
     {
         $this->dialogProvider->logTask("Writing 000firsthost.conf");
-        $firsthost = "<VirtualHost *:80>\n";
-        $firsthost .= "    ServerName no_website_configured_at_this_address\n";
-        $firsthost .= "    ServerAdmin support@kunstmaan.be\n";
-        $firsthost .= "    DocumentRoot /opt/nowebsite/\n";
-        $firsthost .= "    <Directory /opt/nowebsite >\n";
-        $firsthost .= "        Options None\n";
-        $firsthost .= "        Order allow,deny\n";
-        $firsthost .= "        Allow from all\n";
-        $firsthost .= "    </Directory>\n";
-        $firsthost .= "    LogFormat \"%h %l %u %t \\\"%r\\\" %>s %b \\\"%{Referer}i\\\" \\\"%{User-Agent}i\\\" %A \\\"%{Host}i\\\" \\\"%q\\\"  \" nositelog\n";
-        $firsthost .= "    ErrorLog /dev/null\n";
-        $firsthost .= "    CustomLog /var/log/nowebsite.log nositelog\n";
-        $firsthost .= "</VirtualHost>\n";
-        $firsthost .= "<VirtualHost *:443>\n";
-        $firsthost .= "    ServerName no_website_configured_at_this_address\n";
-        $firsthost .= "    ServerAdmin support@kunstmaan.be\n";
-        $firsthost .= "    DocumentRoot /opt/nowebsite/\n";
-        $firsthost .= "    <Directory /opt/nowebsite >\n";
-        $firsthost .= "        Options None\n";
-        $firsthost .= "        Order allow,deny\n";
-        $firsthost .= "        Allow from all\n";
-        $firsthost .= "    </Directory>\n";
-        $firsthost .= "    LogFormat \"%h %l %u %t \\\"%r\\\" %>s %b \\\"%{Referer}i\\\" \\\"%{User-Agent}i\\\" %A \\\"%{Host}i\\\" \\\"%q\\\"  \" nositelog\n";
-        $firsthost .= "    ErrorLog /dev/null\n";
-        $firsthost .= "    CustomLog /var/log/nowebsite.log nositelog\n";
-        $firsthost .= "</VirtualHost>\n";
+        $firsthost = $this->twig->render(file_get_contents("./templates/apache/000firsthost.conf"), array('admin' => $this->app["config"]["apache"]["admin"]));
         $this->fileSystemProvider->writeProtectedFile($this->app["config"]["apache"]["vhostdir"] . "/000firsthost.conf", $firsthost);
     }
 

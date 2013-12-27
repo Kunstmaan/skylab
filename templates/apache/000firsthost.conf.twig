@@ -1,0 +1,13 @@
+<VirtualHost *:80>
+    ServerName no_website_configured_at_this_address
+    ServerAdmin {{ admin }}
+    DocumentRoot /opt/nowebsite/
+    <Directory /opt/nowebsite >
+        Options None
+        Order allow,deny
+        Allow from all
+    </Directory>
+    LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" %A \"%{Host}i\" \"%q\"  " nositelog
+    ErrorLog /dev/null
+    CustomLog /var/log/nowebsite.log nositelog
+</VirtualHost>
