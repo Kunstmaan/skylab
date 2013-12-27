@@ -13,6 +13,9 @@ apache:
     vhostdir:     /etc/apache2/conf/projects.d
     hostmachine:  dev.kunstmaan.be
 
+awstats:
+    password: password
+
 permissions:
     develmode:  false
 

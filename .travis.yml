@@ -5,6 +5,7 @@ php:
   - 5.5
 
 before_script:
+    - sudo apt-get install -q apache2
     - sudo mkdir -p /home/projects
     - sudo mkdir -p /home/backupped-projects
     - echo '' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
@@ -15,13 +16,21 @@ before_script:
 script:
     - ./compile --version 0.0.0
     - php skylab.phar new test -vvv
-    - php skylab.phar apply test anacron -vvv
-    - php skylab.phar apply test apache -vvv
+    - php skylab.phar apply test symfony -vvv
+    - php skylab.phar maintenance -vvv
+    - php skylab.phar remove test --force -vvv
+    - ./skylab new test -vvv
+    - ./skylab apply test symfony -vvv
+    - ./skylab maintenance -vvv
+    - ./skylab remove test --force -vvv
+    - php skylab.phar new test -vvv
+    - php skylab.phar apply test smartcms -vvv
     - php skylab.phar maintenance -vvv
     - php skylab.phar remove test --force -vvv
     - php skylab.phar self-update
     - ./skylab new test -vvv
-    - ./skylab apply test anacron -vvv
-    - ./skylab apply test apache -vvv
+    - ./skylab apply test smartcms -vvv
     - ./skylab maintenance -vvv
     - ./skylab remove test --force -vvv
+    - php skylab.phar self-update
+

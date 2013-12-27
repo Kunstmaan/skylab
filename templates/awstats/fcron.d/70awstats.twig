@@ -1,0 +1,8 @@
+#update this project's awstats
+perl @project.dir@/stats/cgi-bin/awstats.pl -update -config=@project.user@ > /dev/null
+#exit on error (we don't want logrotate to happen if we didn't gather the stats first!)
+if [ $? != "0" ]; then echo "awstats for project @project.name@ FAILED!"; exit 1; fi;
+
+DATE=`date +'%Y-%m-%d'`
+DISK=`du -sm @project.dir@ | cut -d$'\t' -f1`
+echo "<stats><disk>$DISK</disk></stats>" > @project.dir@/stats/report/disk-$DATE.xml

@@ -7,7 +7,7 @@ namespace Kunstmaan\Skylab\Skeleton;
 class JavaSkeleton extends AbstractSkeleton
 {
 
-    const NAME = "java";
+    const NAME = "smartcms";
 
     /**
      * @return string

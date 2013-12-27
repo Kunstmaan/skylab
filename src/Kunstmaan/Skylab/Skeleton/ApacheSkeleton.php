@@ -29,9 +29,11 @@ class ApacheSkeleton extends AbstractSkeleton
         $finder->files()->in($this->fileSystemProvider->getApacheConfigTemplateDir())->name("*.conf.twig");
         /** @var SplFileInfo $config */
         foreach ($finder as $config) {
-            $this->dialogProvider->logConfig("Rendering " . $config->getFilename());
-            $shared = $this->twig->render(file_get_contents("./templates/apache/apache.d/" . $config->getFilename()), array());
-            $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/" . str_replace(".conf.twig", "", $config->getFilename()), $shared);
+            $this->fileSystemProvider->render(
+                "/apache/apache.d/" . $config->getFilename(),
+                $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/" . str_replace(".conf.twig", "", $config->getFilename()),
+                array()
+            );
         }
         // update config
         {
@@ -140,9 +142,9 @@ class ApacheSkeleton extends AbstractSkeleton
      */
     private function writeFirsthost()
     {
-        $this->dialogProvider->logTask("Writing 000firsthost.conf");
-        $firsthost = $this->twig->render(file_get_contents("./templates/apache/000firsthost.conf"), array('admin' => $this->app["config"]["apache"]["admin"]));
-        $this->fileSystemProvider->writeProtectedFile($this->app["config"]["apache"]["vhostdir"] . "/000firsthost.conf", $firsthost);
+        $this->fileSystemProvider->render("/apache/000firsthost.conf.twig", $this->app["config"]["apache"]["vhostdir"] . "/000firsthost.conf", array(
+            'admin' => $this->app["config"]["apache"]["admin"]
+        ));
     }
 
     /**
@@ -152,7 +154,7 @@ class ApacheSkeleton extends AbstractSkeleton
      */
     public function maintenance(\ArrayObject $project)
     {
-        $this->dialogProvider->logTask("Updating 05aliases apache config file");
+        $this->dialogProvider->logConfig("Updating 05aliases apache config file");
         $hostmachine = $this->app["config"]["apache"]["hostmachine"];
         $serverAlias = "ServerAlias " . $project["name"] . "." . $hostmachine . " www." . $project["name"] . "." . $hostmachine;
         if (isset($project["aliases"])) {

@@ -188,4 +188,16 @@ class FileSystemProvider extends AbstractProvider
         file_put_contents($tmpfname, $content);
         $this->processProvider->executeSudoCommand("cat " . $tmpfname . " | sudo tee " . $path);
     }
+
+    /**
+     * @param string $sourcePath
+     * @param string $destinationPath
+     * @param string[] $variables
+     */
+    public function render($sourcePath, $destinationPath, $variables){
+        $this->dialogProvider->logConfig("Rendering " . $sourcePath . " to " . $destinationPath);
+        $this->processProvider->executeSudoCommand('mkdir -p ' . dirname($destinationPath));
+        $file = $this->twig->render(file_get_contents("./templates".$sourcePath), $variables);
+        $this->writeProtectedFile($destinationPath, $file);
+    }
 }

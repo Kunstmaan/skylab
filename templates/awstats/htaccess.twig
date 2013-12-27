@@ -1,0 +1,6 @@
+AuthUserFile {{ statsdir }}/.htpasswd
+AuthName "Advanced Web Statistics for {{ projectname }}"
+AuthType Basic
+<Limit GET POST>
+    require valid-user
+</Limit>
