@@ -2,3 +2,7 @@
 composer.lock
 vendor
 skylab.phar
+Cheffile.lock
+cookbooks
+tmp
+.vagrant
