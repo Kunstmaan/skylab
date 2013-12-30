@@ -39,11 +39,7 @@ class ApacheSkeleton extends AbstractSkeleton
         {
             // url
             $defaultUrl = $project["name"] . ".be";
-            if (getenv("TRAVIS")) {
-                $project["url"] = $defaultUrl;
-            } else {
-                $project["url"] = $this->dialogProvider->askFor("Enter the base url: [" . $defaultUrl . "]", null, $defaultUrl);
-            }
+            $project["url"] = $this->dialogProvider->askFor("Enter the base url", null, $defaultUrl);
         }
         {
             // url aliases

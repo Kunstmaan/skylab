@@ -1,0 +1,1 @@
+[ -x /usr/lib/php5/maxlifetime ] && [ -d {{ projectdir }}/tmp ] && find {{ projectdir }}/tmp/ -type f -cmin +$(/usr/lib/php5/maxlifetime) -print0 | xargs -n 200 -r -0 rm

@@ -23,8 +23,8 @@ mysql:
     password: password
 
 postgresql:
-    user: smlscript
-    password: sml
+    user: skylab
+    password: password
 
 skeletons:
     base:       Kunstmaan\Skylab\Skeleton\BaseSkeleton

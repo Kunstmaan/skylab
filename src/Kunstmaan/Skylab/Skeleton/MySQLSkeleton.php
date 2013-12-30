@@ -1,6 +1,8 @@
 <?php
 namespace Kunstmaan\Skylab\Skeleton;
 
+use Symfony\Component\Finder\Finder;
+
 /**
  * MySQLSkeleton
  */
@@ -24,7 +26,11 @@ class MySQLSkeleton extends AbstractSkeleton
      */
     public function create(\ArrayObject $project)
     {
-        // TODO: Implement create() method.
+        $project["mysqluser"] = $this->dialogProvider->askFor("Enter a MySQL username", null, $project["name"]);
+        $pwgen = new \PWGen();
+        $project["mysqlpass"] = $this->dialogProvider->askFor("Enter a MySQL password", null, $pwgen->generate());
+        $project["mysqldbname"] = $this->dialogProvider->askFor("Enter a MySQL databasename", null, $project["name"]);
+        $project["mysqlserver"] = $this->dialogProvider->askFor("Enter a MySQL server host", null, "localhost");
     }
 
     /**
@@ -32,7 +38,6 @@ class MySQLSkeleton extends AbstractSkeleton
      */
     public function preMaintenance()
     {
-        // TODO: Implement preMaintenance() method.
     }
 
     /**
@@ -40,7 +45,6 @@ class MySQLSkeleton extends AbstractSkeleton
      */
     public function postMaintenance()
     {
-        // TODO: Implement postMaintenance() method.
     }
 
     /**
@@ -50,7 +54,29 @@ class MySQLSkeleton extends AbstractSkeleton
      */
     public function maintenance(\ArrayObject $project)
     {
-        // TODO: Implement maintenance() method.
+        try {
+            new \PDO('mysql:host=' . $project["mysqlserver"] . ';dbname=' . $project["mysqldbname"], $project["mysqluser"], $project["mysqlpass"]);
+        } catch (\PDOException $exLoginTest) {
+            $this->dialogProvider->logNotice("Cannot connect as " . $project["mysqluser"] . ", lets test if the database exists (" . $exLoginTest->getMessage() . ")");
+            try {
+                new \PDO('mysql:host=' . $project["mysqlserver"] . ';dbname=' . $project["mysqldbname"], "root", $this->app["config"]["mysql"]["password"]);
+                $this->dialogProvider->logNotice("Database " . $project["mysqldbname"] . " exists!");
+            } catch (\PDOException $exDBTest) {
+                $this->dialogProvider->logNotice("Cannot connect to the " . $project["mysqldbname"] . " database as the root user as well, lets create it. (" . $exDBTest->getMessage() . ")");
+                $backupDir = $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/backup/";
+                $pdo = new \PDO('mysql:host=' . $project["mysqlserver"] . ";", "root", $this->app["config"]["mysql"]["password"]);
+                $pdo->exec($this->dialogProvider->logQuery("create database " . $project["mysqldbname"] . " DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci"));
+                $finder = new Finder();
+                $finder->files()->in($backupDir)->name("mysql.dmp.gz");
+                if (sizeof(iterator_to_array($finder)) > 0) {
+                    $this->processProvider->executeCommand('gzip -dc ' . $backupDir . '/mysql.dmp.gz | mysql -h ' . $project["mysqlserver"] . ' -u root -p' . $this->app["config"]["mysql"]["password"] . ' ' . $project["mysqldbname"]);
+                }
+
+            }
+            $pdo = new \PDO('mysql:host=' . $project["mysqlserver"] . ";", "root", $this->app["config"]["mysql"]["password"]);
+            $pdo->exec($this->dialogProvider->logQuery("GRANT ALL PRIVILEGES ON " . $project["mysqldbname"] . ".* TO " . $project["mysqluser"] . "@localhost IDENTIFIED BY '" . $project["mysqlpass"] . "'"));
+            $pdo->exec($this->dialogProvider->logQuery("GRANT ALL PRIVILEGES ON " . $project["mysqldbname"] . ".* TO " . $project["mysqluser"] . "@'%%' IDENTIFIED BY '" . $project["mysqlpass"] . "'"));
+        }
     }
 
     /**
@@ -60,7 +86,22 @@ class MySQLSkeleton extends AbstractSkeleton
      */
     public function preBackup(\ArrayObject $project)
     {
-        // TODO: Implement preBackup() method.
+        $backupDir = $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/backup/";
+        $this->fileSystemProvider->createDirectory($project, $backupDir);
+        $this->processProvider->executeSudoCommand('rm -f ' . $backupDir . '/mysql.dmp');
+        if (is_file($backupDir . '/mysql.dmp.gz')) {
+            $this->processProvider->executeSudoCommand('rm -f ' . $backupDir . '/mysql.dmp.previous.gz');
+            $this->processProvider->executeSudoCommand('mv ' . $backupDir . '/mysql.dmp.gz ' . $backupDir . '/mysql.dmp.previous.gz');
+        }
+        $this->processProvider->executeSudoCommand("echo 'SET autocommit=0;' > " . $backupDir . "/mysql.dmp");
+        $this->processProvider->executeSudoCommand("echo 'SET unique_checks=0;' >> " . $backupDir . "/mysql.dmp");
+        $this->processProvider->executeSudoCommand("echo 'SET foreign_key_checks=0;' >> " . $backupDir . "/mysql.dmp");
+        $this->processProvider->executeSudoCommand("mysqldump --ignore-table=" . $project["mysqldbname"] . ".sessions --skip-opt --add-drop-table --add-locks --create-options --disable-keys --single-transaction --skip-extended-insert --quick --set-charset -u " . $project["mysqluser"] . " -p" . $project["mysqlpass"] . " " . $project["mysqldbname"] . " >> " . $backupDir . "/mysql.dmp");
+        $this->processProvider->executeSudoCommand("echo 'COMMIT;' >> " . $backupDir . "/mysql.dmp");
+        $this->processProvider->executeSudoCommand("echo 'SET autocommit=1;' >> " . $backupDir . "/mysql.dmp");
+        $this->processProvider->executeSudoCommand("echo 'SET unique_checks=1;' >> " . $backupDir . "/mysql.dmp");
+        $this->processProvider->executeSudoCommand("echo 'SET foreign_key_checks=1;' >> " . $backupDir . "/mysql.dmp");
+        $this->processProvider->executeSudoCommand("gzip " . $backupDir . "/mysql.dmp -f");
     }
 
     /**
@@ -70,7 +111,6 @@ class MySQLSkeleton extends AbstractSkeleton
      */
     public function postBackup(\ArrayObject $project)
     {
-        // TODO: Implement postBackup() method.
     }
 
     /**
@@ -80,7 +120,6 @@ class MySQLSkeleton extends AbstractSkeleton
      */
     public function preRemove(\ArrayObject $project)
     {
-        // TODO: Implement preRemove() method.
     }
 
     /**
@@ -90,8 +129,20 @@ class MySQLSkeleton extends AbstractSkeleton
      */
     public function postRemove(\ArrayObject $project)
     {
-        // TODO: Implement postRemove() method.
+        $pdo = new \PDO('mysql:host=' . $project["mysqlserver"] . ";", "root", $this->app["config"]["mysql"]["password"]);
+        $pdo->exec($this->dialogProvider->logQuery("drop database if exists " . $project["mysqldbname"]));
     }
+
+    public function writeConfig(/** @noinspection PhpUnusedParameterInspection */
+        \ArrayObject $project, \SimpleXMLElement $config)
+    {
+        $config = $this->projectConfigProvider->addVar($config, 'project.mysqluser', $project["mysqluser"]);
+        $config = $this->projectConfigProvider->addVar($config, 'project.mysqlpass', $project["mysqlpass"]);
+        $config = $this->projectConfigProvider->addVar($config, 'project.mysqldbname', $project["mysqldbname"]);
+        $config = $this->projectConfigProvider->addVar($config, 'project.mysqlserver', $project["mysqlserver"]);
+        return $config;
+    }
+
 
     /**
      * @return string[]

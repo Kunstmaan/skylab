@@ -1,6 +1,8 @@
 <?php
 namespace Kunstmaan\Skylab\Skeleton;
 
+use Kunstmaan\Skylab\Entity\PermissionDefinition;
+
 /**
  * ApacheSkeleton
  */
@@ -24,7 +26,50 @@ class PHPSkeleton extends AbstractSkeleton
      */
     public function create(\ArrayObject $project)
     {
-        // TODO: Implement create() method.
+        $this->fileSystemProvider->createDirectory($project, 'php5-fpm');
+        {
+            $permissionDefinition = new PermissionDefinition();
+            $permissionDefinition->setPath("/php5-fpm");
+            $permissionDefinition->setOwnership("-R @project.user@.@project.group@");
+            $permissionDefinition->addAcl("-R -m user::rwX");
+            $permissionDefinition->addAcl("-R -m group::r-X");
+            $permissionDefinition->addAcl("-R -m other::---");
+            $permissionDefinition->addAcl("-R -m u:" . $this->app["config"]["users"]["wwwuser"] . ":r-X");
+            $project["permissions"]["/php5-fpm"] = $permissionDefinition;
+        }
+        $this->fileSystemProvider->createDirectory($project, 'tmp');
+        {
+            $permissionDefinition = new PermissionDefinition();
+            $permissionDefinition->setPath("/tmp");
+            $permissionDefinition->setOwnership("-R @project.user@.@project.group@");
+            $permissionDefinition->addAcl("-R -m user::rwX");
+            $permissionDefinition->addAcl("-R -m group::r-X");
+            $permissionDefinition->addAcl("-R -m other::---");
+            $permissionDefinition->addAcl("-R -m u:" . $this->app["config"]["users"]["wwwuser"] . ":r-X");
+            $project["permissions"]["/tmp"] = $permissionDefinition;
+        }
+        $this->fileSystemProvider->render(
+            "/php/apache.d/19php.conf.twig",
+            $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/19php",
+            array()
+        );
+        $this->fileSystemProvider->render(
+            "/php/fcron.d/01php5.twig",
+            $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/fcron.d/01php5",
+            array(
+                "projectdir" => $this->fileSystemProvider->getProjectDirectory($project["name"])
+            )
+        );
+        $this->fileSystemProvider->render(
+            "/php/php5-fpm.conf.twig",
+            $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/php5-fpm.conf",
+            array(
+                "projectdir" => $this->fileSystemProvider->getProjectDirectory($project["name"]),
+                "projectname" => $project["name"],
+                "projectuser" => $project["name"],
+                "projectgroup" => $project["name"]
+            )
+        );
     }
 
     /**
@@ -32,7 +77,7 @@ class PHPSkeleton extends AbstractSkeleton
      */
     public function preMaintenance()
     {
-        // TODO: Implement preMaintenance() method.
+        $this->processProvider->executeSudoCommand("rm -Rf /etc/php5/fpm/pool.d/*");
     }
 
     /**
@@ -40,7 +85,6 @@ class PHPSkeleton extends AbstractSkeleton
      */
     public function postMaintenance()
     {
-        // TODO: Implement postMaintenance() method.
     }
 
     /**
@@ -50,7 +94,7 @@ class PHPSkeleton extends AbstractSkeleton
      */
     public function maintenance(\ArrayObject $project)
     {
-        // TODO: Implement maintenance() method.
+        $this->processProvider->executeSudoCommand("ln -sf " . $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/php5-fpm.conf /etc/php5/fpm/pool.d/" . $project["name"] . ".conf");
     }
 
     /**
@@ -60,7 +104,6 @@ class PHPSkeleton extends AbstractSkeleton
      */
     public function preBackup(\ArrayObject $project)
     {
-        // TODO: Implement preBackup() method.
     }
 
     /**
@@ -70,7 +113,6 @@ class PHPSkeleton extends AbstractSkeleton
      */
     public function postBackup(\ArrayObject $project)
     {
-        // TODO: Implement postBackup() method.
     }
 
     /**
@@ -80,7 +122,6 @@ class PHPSkeleton extends AbstractSkeleton
      */
     public function preRemove(\ArrayObject $project)
     {
-        // TODO: Implement preRemove() method.
     }
 
     /**
@@ -90,7 +131,6 @@ class PHPSkeleton extends AbstractSkeleton
      */
     public function postRemove(\ArrayObject $project)
     {
-        // TODO: Implement postRemove() method.
     }
 
     /**

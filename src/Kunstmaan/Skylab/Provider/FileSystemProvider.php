@@ -200,4 +200,5 @@ class FileSystemProvider extends AbstractProvider
         $file = $this->twig->render(file_get_contents("./templates".$sourcePath), $variables);
         $this->writeProtectedFile($destinationPath, $file);
     }
+
 }

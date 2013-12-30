@@ -58,15 +58,17 @@ class RemoveProjectCommand extends AbstractCommand
         $project = $this->projectConfigProvider->loadProjectConfig($projectname, $this->output);
 
         $this->skeletonProvider->skeletonLoop(function (AbstractSkeleton $skeleton) use ($project) {
+            $this->dialogProvider->logTask("Running preRemove for skeleton " . $skeleton->getName());
             $skeleton->preRemove($project);
-        });
+        }, new \ArrayObject($project["skeletons"]));
 
 
         $this->dialogProvider->logTask("Deleting the project folder at " . $this->fileSystemProvider->getProjectDirectory($projectname));
         $this->fileSystemProvider->removeProjectDirectory($project, $this->output);
 
         $this->skeletonProvider->skeletonLoop(function (AbstractSkeleton $skeleton) use ($project) {
+            $this->dialogProvider->logTask("Running postRemove for skeleton " . $skeleton->getName());
             $skeleton->postRemove($project);
-        });
+        }, new \ArrayObject($project["skeletons"]));
     }
 }

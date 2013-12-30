@@ -186,6 +186,7 @@ EOT
         }
         $rsync_command .= " " . $hostname . ":" . $remoteFolder;
         $rsync_command .= " " . $folder;
+        /** @noinspection PhpUnusedParameterInspection */
         $this->processProvider->executeCommand($rsync_command, false, function ($type, $buffer) {
             echo $buffer;
         });

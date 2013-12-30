@@ -1,0 +1,11 @@
+<Directory @project.dir@/data/current/web >
+  Options -Indexes MultiViews Includes FollowSymLinks
+  AllowOverride All
+  <IfVersion < 2.4>
+    Order allow,deny
+    Allow from all
+  </IfVersion>
+  <IfVersion >= 2.4>
+    Require all granted
+  </IfVersion>
+</Directory>

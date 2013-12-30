@@ -35,7 +35,7 @@ class BackupCommand extends AbstractCommand
             $this->skeletonProvider->skeletonLoop(function (AbstractSkeleton $theSkeleton) use ($project) {
                 $this->dialogProvider->logTask("Running preBackup for skeleton " . $theSkeleton->getName());
                 $theSkeleton->preBackup($project);
-            });
+            }, new \ArrayObject($project["skeletons"]));
             if (!$this->input->getOption('quick')) {
                 $this->dialogProvider->logTask("Tarring the project folder");
                 $this->fileSystemProvider->runTar($project, $this->output);
@@ -43,7 +43,7 @@ class BackupCommand extends AbstractCommand
             $this->skeletonProvider->skeletonLoop(function (AbstractSkeleton $theSkeleton) use ($project) {
                 $this->dialogProvider->logTask("Running postBackup for skeleton " . $theSkeleton->getName());
                 $theSkeleton->postBackup($project);
-            });
+            }, new \ArrayObject($project["skeletons"]));
         });
     }
 }

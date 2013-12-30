@@ -56,13 +56,16 @@ class DialogProvider extends AbstractProvider
                 $var = $this->dialog->ask($this->output, '<question>' . $message . '</question> ');
             }
         } elseif ($default) {
-            $var = $this->dialog->ask($this->output, '<question>' . $message . '</question> ', $default);
+            if (getenv("TRAVIS")) {
+                $var = $default;
+            } else {
+                $var = $this->dialog->ask($this->output, '<question>' . $message . ':  [' . $default . ']</question> ', $default);
+            }
         } else {
             $var = $this->dialog->ask($this->output, '<question>' . $message . '</question> ');
         }
         return $var;
     }
-
 
     /**
      * @param string $question The question text
@@ -115,6 +118,20 @@ class DialogProvider extends AbstractProvider
         } else {
             $this->progress->advance();
         }
+    }
+
+    /**
+     * @param string $message
+     * @return string
+     */
+    public function logQuery($message)
+    {
+        if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+            $this->output->writeln('<info>   ~</info> <comment>' . $message . '</comment> ');
+        } else {
+            $this->progress->advance();
+        }
+        return $message;
     }
 
     /**

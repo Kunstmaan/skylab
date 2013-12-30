@@ -27,7 +27,7 @@ class AwstatsSkeleton extends AbstractSkeleton
         $tempFilename = sys_get_temp_dir() . '/awstats-7.2-temp.tar.gz';
 
         $this->dialogProvider->logCommand("Downloading AWStats to $tempFilename");
-        $this->remoteProvider->curl("http://kent.dl.sourceforge.net/project/awstats/AWStats/7.2/awstats-7.2.tar.gz","application/x-gzip", $tempFilename);
+        $this->remoteProvider->curl("http://kent.dl.sourceforge.net/project/awstats/AWStats/7.2/awstats-7.2.tar.gz", "application/x-gzip", $tempFilename);
         $statsFolder = $this->fileSystemProvider->getProjectDirectory($project["name"]) . '/stats';
         $this->processProvider->executeSudoCommand("tar xvf " . $tempFilename . ' --strip=2 --exclude="tools" --exclude="docs" -C ' . $statsFolder);
         $this->processProvider->executeSudoCommand("mkdir -p " . $statsFolder . '/data/');
@@ -35,7 +35,7 @@ class AwstatsSkeleton extends AbstractSkeleton
 
         $this->fileSystemProvider->render(
             "/awstats/cgi-bin/awstats.conf.twig",
-            $statsFolder."/cgi-bin/awstats.conf",
+            $statsFolder . "/cgi-bin/awstats.conf",
             array(
                 'url' => $this->app["config"]["apache"]["admin"],
                 'statsdir' => $statsFolder,
@@ -44,12 +44,12 @@ class AwstatsSkeleton extends AbstractSkeleton
         );
         $this->fileSystemProvider->render(
             "/awstats/apache.d/30awstats.conf.twig",
-            $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) ."/apache.d/30awstats",
+            $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/30awstats",
             array()
         );
         $this->fileSystemProvider->render(
             "/awstats/fcron.d/70awstats.twig",
-            $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) ."/fcron.d/70awstats",
+            $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/fcron.d/70awstats",
             array()
         );
         $this->fileSystemProvider->render(
@@ -59,7 +59,7 @@ class AwstatsSkeleton extends AbstractSkeleton
         );
         $this->fileSystemProvider->render(
             "/awstats/htaccess.twig",
-            $statsFolder.".htaccess",
+            $statsFolder . ".htaccess",
             array(
                 'statsdir' => $statsFolder,
                 'projectname' => $project["name"]
