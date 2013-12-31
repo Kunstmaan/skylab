@@ -17,12 +17,12 @@ class ApplySkeletonCommand extends AbstractCommand
     protected function configure()
     {
         $this
+            ->addDefaults()
             ->setName('apply')
             ->setDescription('Apply a skeleton to a Skylab project')
             ->addArgument('project', InputArgument::OPTIONAL, 'The name of the kServer project')
             ->addArgument('skeleton', InputArgument::OPTIONAL, 'The name of the skeleton')
             ->addOption("list", "l", InputOption::VALUE_NONE, 'Lists all available skeletons')
-            ->addOption("--hideLogo", null, InputOption::VALUE_NONE, 'If set, no logo or statistics will be shown')
             ->setHelp(<<<EOT
 The <info>apply</info> command applies a skeleton, and all it's dependencies to a project. It will run the "create"
 method in the skeleton to setup all the requirements for that skeleton.

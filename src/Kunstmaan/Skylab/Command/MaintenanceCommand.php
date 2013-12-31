@@ -16,9 +16,9 @@ class MaintenanceCommand extends AbstractCommand
     protected function configure()
     {
         $this
+            ->addDefaults()
             ->setName('maintenance')
-            ->setDescription('Run maintenance on all Skylab projects')
-            ->addOption("--hideLogo", null, InputOption::VALUE_NONE, 'If set, no logo or statistics will be shown');
+            ->setDescription('Run maintenance on all Skylab projects');
     }
 
     /**

@@ -44,7 +44,8 @@ class ApacheSkeleton extends AbstractSkeleton
         {
             // url aliases
             $aliases = array();
-            if (getenv("TRAVIS")) {
+            if ($this->noInteraction) {
+                $this->dialogProvider->logNotice("--no-iteraction selected, using www." . $project["url"]);
                 $aliases[] = "www." . $project["url"];
             } else {
                 $alias = null;

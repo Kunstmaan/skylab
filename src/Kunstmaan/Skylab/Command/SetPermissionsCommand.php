@@ -19,10 +19,10 @@ class SetPermissionsCommand extends AbstractCommand
     protected function configure()
     {
         $this
+            ->addDefaults()
             ->setName('permissions')
             ->setDescription('Set the permissions of a kServer project')
-            ->addArgument('name', InputArgument::REQUIRED, 'The name of the project')
-            ->addOption("--hideLogo", null, InputOption::VALUE_NONE, 'If set, no logo or statistics will be shown');
+            ->addArgument('name', InputArgument::REQUIRED, 'The name of the project');
     }
 
     /**

@@ -67,6 +67,11 @@ trait UsesProviders
     protected $twig;
 
     /**
+     * @var bool
+     */
+    protected $noInteraction = false;
+
+    /**
      * @param Application $app
      * @param InputInterface $input
      * @param OutputInterface $output
@@ -93,6 +98,8 @@ trait UsesProviders
         $this->input = $input;
         $this->app = $app;
         $this->twig = $app["twig"];
+
+        $this->noInteraction = $input->getOption("no-interaction");
     }
 
 }

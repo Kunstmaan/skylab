@@ -10,9 +10,9 @@ class SelfUpdateCommand extends AbstractCommand
     protected function configure()
     {
         $this
+            ->addDefaults()
             ->setName('self-update')
-            ->setDescription('Updates skylab.phar to the latest version.')
-            ->addOption("--hideLogo", null, InputOption::VALUE_NONE, 'If set, no logo or statistics will be shown');
+            ->setDescription('Updates skylab.phar to the latest version.');
     }
 
     /**

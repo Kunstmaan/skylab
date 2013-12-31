@@ -19,11 +19,11 @@ class RemoveProjectCommand extends AbstractCommand
     protected function configure()
     {
         $this
+            ->addDefaults()
             ->setName('remove')
             ->setDescription('Removes a Skylab project')
             ->addArgument('name', InputArgument::OPTIONAL, 'The name of the project.')
-            ->addOption("force", null, InputOption::VALUE_NONE, 'Does not ask before removing')
-            ->addOption("hideLogo", null, InputOption::VALUE_NONE, 'If set, no logo or statistics will be shown');
+            ->addOption("force", null, InputOption::VALUE_NONE, 'Does not ask before removing');
     }
 
 

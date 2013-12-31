@@ -56,7 +56,8 @@ class DialogProvider extends AbstractProvider
                 $var = $this->dialog->ask($this->output, '<question>' . $message . '</question> ');
             }
         } elseif ($default) {
-            if (getenv("TRAVIS")) {
+            if ($this->noInteraction) {
+                $this->dialogProvider->logNotice("--no-iteraction selected, using " . $default);
                 $var = $default;
             } else {
                 $var = $this->dialog->ask($this->output, '<question>' . $message . ':  [' . $default . ']</question> ', $default);

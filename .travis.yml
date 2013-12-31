@@ -23,22 +23,21 @@ before_script:
 
 script:
     - ./compile --version 0.0.0
-    - php skylab.phar new test -vvv
-    - php skylab.phar apply test symfony -vvv
-    - php skylab.phar maintenance -vvv
-    - php skylab.phar remove test --force -vvv
-    - ./skylab new test -vvv
-    - ./skylab apply test symfony -vvv
-    - ./skylab maintenance -vvv
-    - ./skylab remove test --force -vvv
-    - php skylab.phar new test -vvv
-    - php skylab.phar apply test smartcms -vvv
-    - php skylab.phar maintenance -vvv
-    - php skylab.phar remove test --force -vvv
-    - php skylab.phar self-update
-    - ./skylab new test -vvv
-    - ./skylab apply test smartcms -vvv
-    - ./skylab maintenance -vvv
-    - ./skylab remove test --force -vvv
-    - php skylab.phar self-update
+    - php skylab.phar new test -vvv --no-interaction
+    - php skylab.phar apply test symfony -vvv --no-interaction
+    - php skylab.phar maintenance -vvv --no-interaction
+    - php skylab.phar remove test --force -vvv --no-interaction
+    - ./skylab new test -vvv --no-interaction
+    - ./skylab apply test symfony -vvv --no-interaction
+    - ./skylab maintenance -vvv --no-interaction
+    - ./skylab remove test --force -vvv --no-interaction
+    - php skylab.phar new test -vvv --no-interaction
+    - php skylab.phar apply test smartcms -vvv --no-interaction
+    - php skylab.phar maintenance -vvv --no-interaction
+    - php skylab.phar remove test --force -vvv --no-interaction
+    - ./skylab new test -vvv --no-interaction
+    - ./skylab apply test smartcms -vvv --no-interaction
+    - ./skylab maintenance -vvv --no-interaction
+    - ./skylab remove test --force -vvv --no-interaction
+    - php skylab.phar self-update --no-interaction
 

@@ -19,11 +19,11 @@ class FetchCommand extends AbstractCommand
     protected function configure()
     {
         $this
+            ->addDefaults()
             ->setName('fetch')
             ->setDescription('Fetches a project from a production server')
             ->addArgument('project', InputArgument::OPTIONAL, 'The name of the Skylab project')
             ->addArgument('host', InputArgument::OPTIONAL, 'The hostname of the server to fetch from')
-            ->addOption("--hideLogo", null, InputOption::VALUE_NONE, 'If set, no logo or statistics will be shown')
             ->setHelp(<<<EOT
 The <info>fetch</info> command fetches a Skylab project from a server and puts it in the right locations on your computer. It
 will also drop the databases, so be very careful if you want to use this on a production server to do a migration.

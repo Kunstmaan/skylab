@@ -4,6 +4,7 @@ namespace Kunstmaan\Skylab\Command;
 use Cilex\Command\Command;
 use Kunstmaan\Skylab\Provider\UsesProviders;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class AbstractCommand extends Command
@@ -54,6 +55,16 @@ abstract class AbstractCommand extends Command
         if (!$this->input->getOption('hideLogo')) {
             $this->dialogProvider->logStatistics($this->output, OutputInterface::VERBOSITY_NORMAL, $this->app['skylab.starttime']);
         }
+    }
+
+    /**
+     * @return $this
+     */
+    public function addDefaults(){
+        $this
+            ->addOption("--hideLogo", null, InputOption::VALUE_NONE, 'If set, no logo or statistics will be shown')
+            ->addOption("--no-interactive", null, InputOption::VALUE_NONE, 'If set, no questions will be asked');
+        return $this;
     }
 
 
