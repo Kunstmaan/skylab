@@ -94,6 +94,7 @@ class PHPSkeleton extends AbstractSkeleton
      */
     public function maintenance(\ArrayObject $project)
     {
+        $this->processProvider->executeSudoCommand("mkdir -p /etc/php5/fpm/pool.d/");
         $this->processProvider->executeSudoCommand("ln -sf " . $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/php5-fpm.conf /etc/php5/fpm/pool.d/" . $project["name"] . ".conf");
     }
 
