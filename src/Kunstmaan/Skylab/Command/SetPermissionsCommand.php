@@ -45,8 +45,8 @@ EOT
         $this->dialogProvider->logStep("Setting permissions on project $projectname");
 
         /** @var BaseSkeleton $baseSkeleton */
-        $baseSkeleton = $this->skeletonProvider->findSkeleton("base", $this->output);
-        $project = $this->projectConfigProvider->loadProjectConfig($projectname, $this->output);
-        $baseSkeleton->setPermissions($this->getContainer(), $project, $this->output, true);
+        $baseSkeleton = $this->skeletonProvider->findSkeleton("base");
+        $project = $this->projectConfigProvider->loadProjectConfig($projectname);
+        $baseSkeleton->setPermissions($project, true);
     }
 }
