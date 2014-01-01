@@ -40,4 +40,5 @@ script:
     - ./skylab maintenance -vvv --no-interaction
     - ./skylab remove test --force -vvv --no-interaction
     - php skylab.phar self-update --no-interaction
+    - cd /tmp && curl -sS https://raw.github.com/Kunstmaan/skylab/master/installer.php | php
 
