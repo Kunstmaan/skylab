@@ -3,7 +3,6 @@ namespace Kunstmaan\Skylab\Command;
 
 use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 
 /**
  * NewProjectCommand

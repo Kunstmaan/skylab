@@ -26,18 +26,26 @@ script:
     - php skylab.phar new test -vvv --no-interaction
     - php skylab.phar apply test symfony -vvv --no-interaction
     - php skylab.phar maintenance -vvv --no-interaction
+    - php skylab.phar backup -vvv --no-interaction
+    - php skylab.phar permissions test -vvv --no-interaction
     - php skylab.phar remove test --force -vvv --no-interaction
     - ./skylab new test -vvv --no-interaction
     - ./skylab apply test symfony -vvv --no-interaction
     - ./skylab maintenance -vvv --no-interaction
+    - ./skylab backup -vvv --no-interaction
+    - ./skylab permissions test -vvv --no-interaction
     - ./skylab remove test --force -vvv --no-interaction
     - php skylab.phar new test -vvv --no-interaction
     - php skylab.phar apply test smartcms -vvv --no-interaction
     - php skylab.phar maintenance -vvv --no-interaction
+    - php skylab.phar backup -vvv --no-interaction
+    - php skylab.phar permissions test -vvv --no-interaction
     - php skylab.phar remove test --force -vvv --no-interaction
     - ./skylab new test -vvv --no-interaction
     - ./skylab apply test smartcms -vvv --no-interaction
     - ./skylab maintenance -vvv --no-interaction
+    - ./skylab backup -vvv --no-interaction
+    - ./skylab permissions test -vvv --no-interaction
     - ./skylab remove test --force -vvv --no-interaction
     - php skylab.phar self-update --no-interaction
     - cd /tmp && curl -sS https://raw.github.com/Kunstmaan/skylab/master/installer.php | php

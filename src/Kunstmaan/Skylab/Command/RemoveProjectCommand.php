@@ -23,7 +23,15 @@ class RemoveProjectCommand extends AbstractCommand
             ->setName('remove')
             ->setDescription('Removes a Skylab project')
             ->addArgument('name', InputArgument::OPTIONAL, 'The name of the project.')
-            ->addOption("force", null, InputOption::VALUE_NONE, 'Does not ask before removing');
+            ->addOption("force", null, InputOption::VALUE_NONE, 'Does not ask before removing')
+            ->setHelp(<<<EOT
+The <info>remove</info> command will remove the project after creating a backup first.
+
+<info>php skylab.phar remove testproject</info>                         # Will remove the testproject project
+<info>php skylab.phar remove testproject --force</info>                 # Will do the same, but don't ask you if you are sure.
+
+EOT
+            );
     }
 
 

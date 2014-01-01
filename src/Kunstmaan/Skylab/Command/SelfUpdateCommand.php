@@ -2,7 +2,6 @@
 namespace Kunstmaan\Skylab\Command;
 
 use Kunstmaan\Skylab\Application;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Yaml\Exception\RuntimeException;
 
 class SelfUpdateCommand extends AbstractCommand
@@ -12,7 +11,14 @@ class SelfUpdateCommand extends AbstractCommand
         $this
             ->addDefaults()
             ->setName('self-update')
-            ->setDescription('Updates skylab.phar to the latest version.');
+            ->setDescription('Updates skylab.phar to the latest version.')
+            ->setHelp(<<<EOT
+The <info>self-update</info> command will check if there is an updated skylab.phar released and updates if it is.
+
+<info>php skylab.phar self-update</info>
+
+EOT
+            );
     }
 
     /**

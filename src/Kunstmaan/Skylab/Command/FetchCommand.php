@@ -5,7 +5,6 @@ namespace Kunstmaan\Skylab\Command;
 
 
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 
 class FetchCommand extends AbstractCommand
 {

@@ -2,8 +2,15 @@ backup
 ------
 
 * Description: Run backup on all or one Skylab projects
-* Usage: `backup [--quick] [--hideLogo] [project]`
+* Usage: `backup [--hideLogo] [--no-interactive] [--quick] [project]`
 * Aliases: <none>
+
+The <info>backup</info> command will dump all your databases and create a tarball of one or all projects.
+
+<info>php skylab.phar backup</info>                         # Will backup all projects
+<info>php skylab.phar backup myproject</info>               # Will backup the myproject project
+<info>php skylab.phar backup myproject --quick</info>       # Will backup the myproject project, but not create the tar file.
+
 
 ### Arguments:
 
@@ -17,16 +24,6 @@ backup
 
 ### Options:
 
-**quick:**
-
-* Name: `--quick`
-* Shortcut: <none>
-* Accept value: no
-* Is value required: no
-* Is multiple: no
-* Description: If set, no tar.gz file will be created, only the preBackup and postBackup hooks will be executed.
-* Default: `false`
-
 **hideLogo:**
 
 * Name: `--hideLogo`
@@ -35,6 +32,26 @@ backup
 * Is value required: no
 * Is multiple: no
 * Description: If set, no logo or statistics will be shown
+* Default: `false`
+
+**no-interactive:**
+
+* Name: `--no-interactive`
+* Shortcut: <none>
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Description: If set, no questions will be asked
+* Default: `false`
+
+**quick:**
+
+* Name: `--quick`
+* Shortcut: <none>
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Description: If set, no tar.gz file will be created, only the preBackup and postBackup hooks will be executed.
 * Default: `false`
 
 **help:**
@@ -107,4 +124,4 @@ backup
 * Description: Do not ask any interactive question.
 * Default: `false`
 
-*Documentation generated on 2013-12-19 12:50:26*
+*Documentation generated on 2014-01-01 21:33:39*

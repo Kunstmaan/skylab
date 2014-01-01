@@ -2,7 +2,7 @@ apply
 -----
 
 * Description: Apply a skeleton to a Skylab project
-* Usage: `apply [-l|--list] [--hideLogo] [project] [skeleton]`
+* Usage: `apply [--hideLogo] [--no-interactive] [-l|--list] [project] [skeleton]`
 * Aliases: <none>
 
 The <info>apply</info> command applies a skeleton, and all it's dependencies to a project. It will run the "create"
@@ -33,16 +33,6 @@ method in the skeleton to setup all the requirements for that skeleton.
 
 ### Options:
 
-**list:**
-
-* Name: `--list`
-* Shortcut: `-l`
-* Accept value: no
-* Is value required: no
-* Is multiple: no
-* Description: Lists all available skeletons
-* Default: `false`
-
 **hideLogo:**
 
 * Name: `--hideLogo`
@@ -51,6 +41,26 @@ method in the skeleton to setup all the requirements for that skeleton.
 * Is value required: no
 * Is multiple: no
 * Description: If set, no logo or statistics will be shown
+* Default: `false`
+
+**no-interactive:**
+
+* Name: `--no-interactive`
+* Shortcut: <none>
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Description: If set, no questions will be asked
+* Default: `false`
+
+**list:**
+
+* Name: `--list`
+* Shortcut: `-l`
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Description: Lists all available skeletons
 * Default: `false`
 
 **help:**
@@ -123,4 +133,4 @@ method in the skeleton to setup all the requirements for that skeleton.
 * Description: Do not ask any interactive question.
 * Default: `false`
 
-*Documentation generated on 2013-12-19 12:50:26*
+*Documentation generated on 2014-01-01 21:33:40*

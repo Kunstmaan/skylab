@@ -14,13 +14,35 @@ TO DO: factor out the generic code needed for Skylab from our big chef recipe
 
 ### Skylab application
 
-TO DO: create an installer like composer
+To actually get Skylab, run this command:
+
+```
+$ curl -sS https://raw.github.com/Kunstmaan/skylab/master/installer.php | php
+```
+
+This will just check a few PHP settings and then download skylab.phar to your working directory. This file is the Skylab
+binary. It is a PHAR (PHP archive), which is an archive format for PHP which can be run on the command line, amongst
+other things.
+
+You can install Skylab to a specific directory by using the --install-dir option and providing a target directory (it
+can be an absolute or relative path):
+
+```
+$ curl -sS https://raw.github.com/Kunstmaan/skylab/master/installer.php | php -- --install-dir=bin
+```
+
+You can also install Skylab globally by running:
+
+```
+$ curl -sS https://raw.github.com/Kunstmaan/skylab/master/installer.php | php
+$ mv skylab.phar /usr/local/bin/skylab
+```
 
 ## Commands
 
 ### NewProjectCommand
 
-Usage: ```php skylab.phar new [--hideLogo] [name]```
+Usage: ```php skylab.phar new [--hideLogo] [--no-interactive] [name]```
 
 The ```new``` command creates a new project. It will setup the directory structure and apply the "base" skeleton
 which is responsible for setting up users, permissions and ownership.
@@ -32,35 +54,51 @@ Full details at [doc/NewProjectCommand.md](doc/NewProjectCommand.md)
 
 ### SetPermissionsCommand
 
-Usage: ```php skylab.phar permissions [--hideLogo] name```
+Usage: ```php skylab.phar permissions [--hideLogo] [--no-interactive] name```
 
+The ```permissions``` command will fix the permissions of a project.
+
+```php skylab.phar permissions testproject```
 
 Full details at [doc/SetPermissionsCommand.md](doc/SetPermissionsCommand.md)
 
 ### MaintenanceCommand
 
-Usage: ```php skylab.phar maintenance [--hideLogo]```
+Usage: ```php skylab.phar maintenance [--hideLogo] [--no-interactive]```
 
+The ```maintenance``` command will run the maintenance commands of all skeletons on a project. Most notably, it
+will create the apache config files and make sure the the databases are available.
+
+```php skylab.phar maintenance```
 
 Full details at [doc/MaintenanceCommand.md](doc/MaintenanceCommand.md)
 
 ### BackupCommand
 
-Usage: ```php skylab.phar backup [--quick] [--hideLogo] [project]```
+Usage: ```php skylab.phar backup [--hideLogo] [--no-interactive] [--quick] [project]```
 
+The ```backup``` command will dump all your databases and create a tarball of one or all projects.
+
+```php skylab.phar backup```                         # Will backup all projects
+```php skylab.phar backup myproject```               # Will backup the myproject project
+```php skylab.phar backup myproject --quick```       # Will backup the myproject project, but not create the tar file.
 
 Full details at [doc/BackupCommand.md](doc/BackupCommand.md)
 
 ### RemoveProjectCommand
 
-Usage: ```php skylab.phar remove [--force] [--hideLogo] [name]```
+Usage: ```php skylab.phar remove [--hideLogo] [--no-interactive] [--force] [name]```
 
+The ```remove``` command will remove the project after creating a backup first.
+
+```php skylab.phar remove testproject```                         # Will remove the testproject project
+```php skylab.phar remove testproject --force```                 # Will do the same, but don't ask you if you are sure.
 
 Full details at [doc/RemoveProjectCommand.md](doc/RemoveProjectCommand.md)
 
 ### ApplySkeletonCommand
 
-Usage: ```php skylab.phar apply [-l|--list] [--hideLogo] [project] [skeleton]```
+Usage: ```php skylab.phar apply [--hideLogo] [--no-interactive] [-l|--list] [project] [skeleton]```
 
 The ```apply``` command applies a skeleton, and all it's dependencies to a project. It will run the "create"
 method in the skeleton to setup all the requirements for that skeleton.
@@ -73,8 +111,11 @@ Full details at [doc/ApplySkeletonCommand.md](doc/ApplySkeletonCommand.md)
 
 ### SelfUpdateCommand
 
-Usage: ```php skylab.phar self-update [--hideLogo]```
+Usage: ```php skylab.phar self-update [--hideLogo] [--no-interactive]```
 
+The ```self-update``` command will check if there is an updated skylab.phar released and updates if it is.
+
+```php skylab.phar self-update```
 
 Full details at [doc/SelfUpdateCommand.md](doc/SelfUpdateCommand.md)
 
@@ -101,4 +142,4 @@ Full details at [doc/SelfUpdateCommand.md](doc/SelfUpdateCommand.md)
 1. Do your thing, and send a Pull Request. But please make sure Travis is green and your code has been run through php-cs-fixer!
 
 
-*Documentation generated on 2013-12-19 12:50:26*
+*Documentation generated on 2014-01-01 21:33:40*

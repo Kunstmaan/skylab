@@ -60,7 +60,8 @@ abstract class AbstractCommand extends Command
     /**
      * @return $this
      */
-    public function addDefaults(){
+    public function addDefaults()
+    {
         $this
             ->addOption("--hideLogo", null, InputOption::VALUE_NONE, 'If set, no logo or statistics will be shown')
             ->addOption("--no-interactive", null, InputOption::VALUE_NONE, 'If set, no questions will be asked');

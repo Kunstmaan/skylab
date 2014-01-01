@@ -21,7 +21,16 @@ class BackupCommand extends AbstractCommand
             ->setName('backup')
             ->setDescription('Run backup on all or one Skylab projects')
             ->addArgument('project', InputArgument::OPTIONAL, 'If set, the task will only backup the project named')
-            ->addOption("--quick", null, InputOption::VALUE_NONE, 'If set, no tar.gz file will be created, only the preBackup and postBackup hooks will be executed.');
+            ->addOption("--quick", null, InputOption::VALUE_NONE, 'If set, no tar.gz file will be created, only the preBackup and postBackup hooks will be executed.')
+            ->setHelp(<<<EOT
+The <info>backup</info> command will dump all your databases and create a tarball of one or all projects.
+
+<info>php skylab.phar backup</info>                         # Will backup all projects
+<info>php skylab.phar backup myproject</info>               # Will backup the myproject project
+<info>php skylab.phar backup myproject --quick</info>       # Will backup the myproject project, but not create the tar file.
+
+EOT
+            );
     }
 
     protected function doExecute()

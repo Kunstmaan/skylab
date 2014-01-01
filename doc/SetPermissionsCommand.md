@@ -1,9 +1,14 @@
 permissions
 -----------
 
-* Description: Set the permissions of a kServer project
-* Usage: `permissions [--hideLogo] name`
+* Description: Set the permissions of a Skylab project
+* Usage: `permissions [--hideLogo] [--no-interactive] name`
 * Aliases: <none>
+
+The <info>permissions</info> command will fix the permissions of a project.
+
+<info>php skylab.phar permissions testproject</info>
+
 
 ### Arguments:
 
@@ -25,6 +30,16 @@ permissions
 * Is value required: no
 * Is multiple: no
 * Description: If set, no logo or statistics will be shown
+* Default: `false`
+
+**no-interactive:**
+
+* Name: `--no-interactive`
+* Shortcut: <none>
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Description: If set, no questions will be asked
 * Default: `false`
 
 **help:**
@@ -97,4 +112,4 @@ permissions
 * Description: Do not ask any interactive question.
 * Default: `false`
 
-*Documentation generated on 2013-12-19 12:50:26*
+*Documentation generated on 2014-01-01 21:33:39*

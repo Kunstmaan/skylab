@@ -4,7 +4,6 @@ namespace Kunstmaan\Skylab\Command;
 use Kunstmaan\Skylab\Skeleton\BaseSkeleton;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -21,8 +20,15 @@ class SetPermissionsCommand extends AbstractCommand
         $this
             ->addDefaults()
             ->setName('permissions')
-            ->setDescription('Set the permissions of a kServer project')
-            ->addArgument('name', InputArgument::REQUIRED, 'The name of the project');
+            ->setDescription('Set the permissions of a Skylab project')
+            ->addArgument('name', InputArgument::REQUIRED, 'The name of the project')
+            ->setHelp(<<<EOT
+The <info>permissions</info> command will fix the permissions of a project.
+
+<info>php skylab.phar permissions testproject</info>
+
+EOT
+            );
     }
 
     /**

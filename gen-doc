@@ -19,7 +19,29 @@ TO DO: factor out the generic code needed for Skylab from our big chef recipe
 
 ### Skylab application
 
-TO DO: create an installer like composer
+To actually get Skylab, run this command:
+
+```
+$ curl -sS https://raw.github.com/Kunstmaan/skylab/master/installer.php | php
+```
+
+This will just check a few PHP settings and then download skylab.phar to your working directory. This file is the Skylab
+binary. It is a PHAR (PHP archive), which is an archive format for PHP which can be run on the command line, amongst
+other things.
+
+You can install Skylab to a specific directory by using the --install-dir option and providing a target directory (it
+can be an absolute or relative path):
+
+```
+$ curl -sS https://raw.github.com/Kunstmaan/skylab/master/installer.php | php -- --install-dir=bin
+```
+
+You can also install Skylab globally by running:
+
+```
+$ curl -sS https://raw.github.com/Kunstmaan/skylab/master/installer.php | php
+$ mv skylab.phar /usr/local/bin/skylab
+```
 
 ## Commands
 

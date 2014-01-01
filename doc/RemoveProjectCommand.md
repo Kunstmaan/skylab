@@ -2,8 +2,14 @@ remove
 ------
 
 * Description: Removes a Skylab project
-* Usage: `remove [--force] [--hideLogo] [name]`
+* Usage: `remove [--hideLogo] [--no-interactive] [--force] [name]`
 * Aliases: <none>
+
+The <info>remove</info> command will remove the project after creating a backup first.
+
+<info>php skylab.phar remove testproject</info>                         # Will remove the testproject project
+<info>php skylab.phar remove testproject --force</info>                 # Will do the same, but don't ask you if you are sure.
+
 
 ### Arguments:
 
@@ -17,16 +23,6 @@ remove
 
 ### Options:
 
-**force:**
-
-* Name: `--force`
-* Shortcut: <none>
-* Accept value: no
-* Is value required: no
-* Is multiple: no
-* Description: Does not ask before removing
-* Default: `false`
-
 **hideLogo:**
 
 * Name: `--hideLogo`
@@ -35,6 +31,26 @@ remove
 * Is value required: no
 * Is multiple: no
 * Description: If set, no logo or statistics will be shown
+* Default: `false`
+
+**no-interactive:**
+
+* Name: `--no-interactive`
+* Shortcut: <none>
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Description: If set, no questions will be asked
+* Default: `false`
+
+**force:**
+
+* Name: `--force`
+* Shortcut: <none>
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Description: Does not ask before removing
 * Default: `false`
 
 **help:**
@@ -107,4 +123,4 @@ remove
 * Description: Do not ask any interactive question.
 * Default: `false`
 
-*Documentation generated on 2013-12-19 12:50:26*
+*Documentation generated on 2014-01-01 21:33:39*

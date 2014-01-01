@@ -2,7 +2,6 @@
 namespace Kunstmaan\Skylab\Command;
 
 use Kunstmaan\Skylab\Skeleton\AbstractSkeleton;
-use Symfony\Component\Console\Input\InputOption;
 
 /**
  * MaintenanceCommand
@@ -18,7 +17,15 @@ class MaintenanceCommand extends AbstractCommand
         $this
             ->addDefaults()
             ->setName('maintenance')
-            ->setDescription('Run maintenance on all Skylab projects');
+            ->setDescription('Run maintenance on all Skylab projects')
+            ->setHelp(<<<EOT
+The <info>maintenance</info> command will run the maintenance commands of all skeletons on a project. Most notably, it
+will create the apache config files and make sure the the databases are available.
+
+<info>php skylab.phar maintenance</info>
+
+EOT
+            );
     }
 
     /**
