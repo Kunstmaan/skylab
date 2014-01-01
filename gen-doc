@@ -15,7 +15,23 @@ Kunstmaan wouldn't be Kunstmaan is we didn't open-source this, so here it is. [M
 
 ### Skylab chef recipe
 
-TO DO: factor out the generic code needed for Skylab from our big chef recipe
+To install a sever ready for Skylab, first install Chef and Librarian.
+
+```
+$ curl -L https://www.opscode.com/chef/install.sh | sudo bash
+$ gem install librarian-chef
+```
+
+Then get the Cheffile, get the cookbooks and run Chef
+
+```
+$ mkdir skylab-chef
+$ cd skylab-chef
+$ wget https://github.com/Kunstmaan/skylab/blob/master/Cheffile
+$ librarian-chef install
+$ echo "cookbook_path [ \"/home/travis/build/Kunstmaan/skylab/cookbooks\" ]" > solo.rb
+$ sudo chef-solo --log_level debug -c solo.rb -o "applications::packagemanager,git::default,skylab::postgresql,applications::mysql,skylab::apache,skylab::directories"
+```
 
 ### Skylab application
 
