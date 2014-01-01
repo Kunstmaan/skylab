@@ -37,7 +37,7 @@ class MaintenanceCommand extends AbstractCommand
             $this->skeletonProvider->skeletonLoop(function (AbstractSkeleton $theSkeleton) use ($project) {
                 $this->dialogProvider->logTask("Running maintenance for skeleton " . $theSkeleton->getName());
                 $theSkeleton->maintenance($project);
-            });
+            }, new \ArrayObject($project["skeletons"]));
         });
 
         $this->dialogProvider->logStep("Running postMaintenance");
