@@ -42,7 +42,7 @@ EOT
             throw new RuntimeException("The $projectname project does not exist.");
         }
 
-        $this->dialogProvider->logStep($this->output, OutputInterface::VERBOSITY_NORMAL, "Setting permissions on project $projectname");
+        $this->dialogProvider->logStep("Setting permissions on project $projectname");
 
         /** @var BaseSkeleton $baseSkeleton */
         $baseSkeleton = $this->skeletonProvider->findSkeleton("base", $this->output);
