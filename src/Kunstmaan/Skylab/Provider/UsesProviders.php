@@ -99,7 +99,14 @@ trait UsesProviders
         $this->app = $app;
         $this->twig = $app["twig"];
 
-        $this->noInteraction = $input->getOption("no-interaction");
+        if ($input){
+            $this->noInteraction = $input->getOption("no-interaction");
+            $app["no-interaction"] = true;
+        } else if ($app["no-interaction"]){
+            $this->noInteraction = $app["no-interaction"];
+        } else {
+            $this->noInteraction = false;
+        }
     }
 
 }
