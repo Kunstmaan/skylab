@@ -212,8 +212,8 @@ class ApacheSkeleton extends AbstractSkeleton
     }
 
     /**
-     * @param  \ArrayObject $project
-     * @param  \SimpleXMLElement $config The configuration array
+     * @param  \ArrayObject      $project
+     * @param  \SimpleXMLElement $config  The configuration array
      * @return \SimpleXMLElement
      */
     public function writeConfig(\ArrayObject $project, \SimpleXMLElement $config)
@@ -222,6 +222,7 @@ class ApacheSkeleton extends AbstractSkeleton
         if (isset($project["aliases"])) {
             $config = $this->projectConfigProvider->addVarWithItems($config, 'project.aliases', $project["aliases"]);
         }
+
         return $config;
     }
 

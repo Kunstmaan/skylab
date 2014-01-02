@@ -24,7 +24,7 @@ class SkeletonProvider extends AbstractProvider
     }
 
     /**
-     * @param \ArrayObject $project The project
+     * @param \ArrayObject     $project  The project
      * @param AbstractSkeleton $skeleton The skeleton
      */
     public function applySkeleton(\ArrayObject $project, AbstractSkeleton $skeleton)
@@ -42,11 +42,10 @@ class SkeletonProvider extends AbstractProvider
         }
     }
 
-
     /**
-     * @param AbstractSkeleton $theSkeleton
-     * @param \ArrayObject $project
-     * @param \ArrayObject $deps
+     * @param  AbstractSkeleton $theSkeleton
+     * @param  \ArrayObject     $project
+     * @param  \ArrayObject     $deps
      * @return \ArrayObject
      */
     private function resolveDependencies(AbstractSkeleton $theSkeleton, \ArrayObject $project, \ArrayObject $deps)
@@ -59,12 +58,12 @@ class SkeletonProvider extends AbstractProvider
                 $deps = $this->resolveDependencies($aSkeleton, $project, $deps);
             }
         }
+
         return $deps;
     }
 
-
     /**
-     * @param string $skeletonname
+     * @param  string                $skeletonname
      * @return bool|AbstractSkeleton
      * @throws \RuntimeException
      */

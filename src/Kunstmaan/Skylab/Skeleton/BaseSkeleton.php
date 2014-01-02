@@ -182,8 +182,8 @@ class BaseSkeleton extends AbstractSkeleton
     }
 
     /**
-     * @param  \ArrayObject $project
-     * @param  \SimpleXMLElement $config The configuration array
+     * @param  \ArrayObject      $project
+     * @param  \SimpleXMLElement $config  The configuration array
      * @return \SimpleXMLElement
      */
     public function writeConfig(\ArrayObject $project, \SimpleXMLElement $config)
@@ -207,7 +207,7 @@ class BaseSkeleton extends AbstractSkeleton
 
     /**
      * @param \ArrayObject $project
-     * @param bool $log
+     * @param bool         $log
      */
     public function setPermissions(\ArrayObject $project, $log = false)
     {

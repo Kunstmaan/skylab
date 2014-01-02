@@ -236,6 +236,7 @@ function checkPlatform($quiet)
         }
 
         out('');
+
         return false;
     }
 
@@ -280,12 +281,14 @@ function checkPlatform($quiet)
         }
 
         out('');
+
         return true;
     }
 
     if (!$quiet) {
         out("All settings correct for using Composer", 'success');
     }
+
     return true;
 }
 
@@ -408,6 +411,7 @@ function curl($url, $contentType = null, $filename = null)
     } else {
         return $result;
     }
+
     return false;
 }
 
@@ -417,8 +421,10 @@ function setDownloadHeaders($filename, $ch)
         $tempFP = fopen($filename, 'w+');
         curl_setopt($ch, CURLOPT_FILE, $tempFP);
         curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
+
         return $tempFP;
     }
+
     return false;
 }
 

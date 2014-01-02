@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Kunstmaan\Skylab\Command;
-
 
 use Symfony\Component\Console\Input\InputArgument;
 
@@ -135,6 +133,7 @@ EOT
         if ($found) {
             return FetchCommand::TYPE_JAVA;
         }
+
         return FetchCommand::TYPE_PHP;
     }
 
@@ -153,15 +152,16 @@ EOT
         if ($found) {
             return true;
         }
+
         return false;
     }
 
     /**
-     * @param string $folder
-     * @param string $hostname
-     * @param string $remoteFolder
+     * @param string   $folder
+     * @param string   $hostname
+     * @param string   $remoteFolder
      * @param string[] $excludes
-     * @param bool $links
+     * @param bool     $links
      */
     private function fetchFolderIfExists($folder, $hostname, $remoteFolder, $excludes, $links = false)
     {
@@ -171,11 +171,11 @@ EOT
     }
 
     /**
-     * @param string $folder
-     * @param string $hostname
-     * @param string $remoteFolder
+     * @param string   $folder
+     * @param string   $hostname
+     * @param string   $remoteFolder
      * @param string[] $excludes
-     * @param bool $links
+     * @param bool     $links
      */
     private function fetchFolder($folder, $hostname, $remoteFolder, $excludes, $links = false)
     {

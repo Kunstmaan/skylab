@@ -15,7 +15,7 @@ class Compiler
      * Compiles skylab into a single phar file
      *
      * @param $version
-     * @param  string $pharFile The full path to the file to create
+     * @param  string            $pharFile The full path to the file to create
      * @throws \RuntimeException
      */
     public function compile($version, $pharFile = 'skylab.phar')
@@ -93,9 +93,9 @@ class Compiler
     }
 
     /**
-     * @param \Phar $phar
+     * @param \Phar        $phar
      * @param \SplFileInfo $file
-     * @param bool $strip
+     * @param bool         $strip
      */
     private function addFile(\Phar $phar, \SplFileInfo $file, $strip = true)
     {

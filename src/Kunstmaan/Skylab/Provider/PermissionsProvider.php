@@ -54,7 +54,7 @@ class PermissionsProvider extends AbstractProvider
     }
 
     /**
-     * @param string $userName The user name
+     * @param string $userName  The user name
      * @param string $groupName The group name
      */
     public function createUserIfNeeded($userName, $groupName)
@@ -123,11 +123,13 @@ class PermissionsProvider extends AbstractProvider
         if ($this->app["config"]["permissions"]["develmode"] || !$this->processProvider->commandExists("setfacl")) {
             if (!file_exists($this->fileSystemProvider->getProjectDirectory($project["name"]))) {
                 $this->dialogProvider->logNotice($this->fileSystemProvider->getProjectDirectory($project["name"]) . " does not exist, do not chmod");
+
                 return;
             }
             $this->processProvider->executeSudoCommand('chmod -R 777 ' . $this->fileSystemProvider->getProjectDirectory($project["name"]));
             if (!file_exists($this->fileSystemProvider->getProjectDirectory($project["name"]) . '/.ssh/')) {
                 $this->dialogProvider->logNotice($this->fileSystemProvider->getProjectDirectory($project["name"]) . '/.ssh/' . " does not exist, do not chmod");
+
                 return;
             }
             $this->processProvider->executeSudoCommand('chmod -R 700 ' . $this->fileSystemProvider->getProjectDirectory($project["name"]) . '/.ssh/');
@@ -156,7 +158,7 @@ class PermissionsProvider extends AbstractProvider
     }
 
     /**
-     * @param string $userName The user name
+     * @param string $userName  The user name
      * @param string $groupName The group name
      */
     public function removeUser($userName, $groupName)

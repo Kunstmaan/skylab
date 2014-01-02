@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Kunstmaan\Skylab\Provider;
-
 
 use Cilex\Application;
 use Symfony\Component\Console\Input\InputInterface;
@@ -72,10 +70,10 @@ trait UsesProviders
     protected $noInteraction = false;
 
     /**
-     * @param Application $app
-     * @param InputInterface $input
+     * @param Application     $app
+     * @param InputInterface  $input
      * @param OutputInterface $output
-     * @param bool $setupClassVars
+     * @param bool            $setupClassVars
      */
     public function setup(Application $app, InputInterface $input = null, OutputInterface $output = null, $setupClassVars = false)
     {
@@ -102,7 +100,7 @@ trait UsesProviders
         if ($input) {
             $this->noInteraction = $input->getOption("no-interaction");
             $app["no-interaction"] = true;
-        } else if ($app["no-interaction"]) {
+        } elseif ($app["no-interaction"]) {
             $this->noInteraction = $app["no-interaction"];
         } else {
             $this->noInteraction = false;

@@ -43,7 +43,7 @@ class AnacronSkeleton extends AbstractSkeleton
     }
 
     /**
-     * @param \ArrayObject $project
+     * @param  \ArrayObject $project
      * @return mixed
      */
     public function maintenance(\ArrayObject $project)
@@ -70,7 +70,7 @@ class AnacronSkeleton extends AbstractSkeleton
     }
 
     /**
-     * @param \ArrayObject $project
+     * @param  \ArrayObject $project
      * @return mixed
      */
     public function preBackup(\ArrayObject $project)
@@ -78,7 +78,7 @@ class AnacronSkeleton extends AbstractSkeleton
     }
 
     /**
-     * @param \ArrayObject $project
+     * @param  \ArrayObject $project
      * @return mixed
      */
     public function postBackup(\ArrayObject $project)
@@ -86,7 +86,7 @@ class AnacronSkeleton extends AbstractSkeleton
     }
 
     /**
-     * @param \ArrayObject $project
+     * @param  \ArrayObject $project
      * @return mixed
      */
     public function preRemove(\ArrayObject $project)
@@ -96,7 +96,7 @@ class AnacronSkeleton extends AbstractSkeleton
     }
 
     /**
-     * @param \ArrayObject $project
+     * @param  \ArrayObject $project
      * @return mixed
      */
     public function postRemove(\ArrayObject $project)
