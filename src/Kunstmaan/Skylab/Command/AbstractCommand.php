@@ -13,8 +13,8 @@ abstract class AbstractCommand extends Command
     use UsesProviders;
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
      * @return int|null|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -65,8 +65,8 @@ abstract class AbstractCommand extends Command
         $this
             ->addOption("--hideLogo", null, InputOption::VALUE_NONE, 'If set, no logo or statistics will be shown')
             ->addOption("--no-interactive", null, InputOption::VALUE_NONE, 'If set, no questions will be asked');
+
         return $this;
     }
-
 
 }

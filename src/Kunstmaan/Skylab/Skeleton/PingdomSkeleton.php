@@ -93,7 +93,6 @@ class PingdomSkeleton extends AbstractSkeleton
         // TODO: Implement postRemove() method.
     }
 
-
     /**
      * @return string[]
      */

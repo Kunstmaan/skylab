@@ -43,8 +43,8 @@ class DialogProvider extends AbstractProvider
 
     /**
      * @param $message
-     * @param null $argumentname
-     * @param null $default
+     * @param  null              $argumentname
+     * @param  null              $default
      * @return string
      * @throws \RuntimeException
      */
@@ -65,12 +65,13 @@ class DialogProvider extends AbstractProvider
         } else {
             $var = $this->dialog->ask($this->output, '<question>' . $message . '</question> ');
         }
+
         return $var;
     }
 
     /**
-     * @param string $question The question text
-     * @param bool $default The default action
+     * @param  string $question The question text
+     * @param  bool   $default  The default action
      * @return bool
      */
     public function askConfirmation($question, $default = true)
@@ -122,7 +123,7 @@ class DialogProvider extends AbstractProvider
     }
 
     /**
-     * @param string $message
+     * @param  string $message
      * @return string
      */
     public function logQuery($message)
@@ -132,6 +133,7 @@ class DialogProvider extends AbstractProvider
         } else {
             $this->progress->advance();
         }
+
         return $message;
     }
 
@@ -185,8 +187,8 @@ class DialogProvider extends AbstractProvider
 
     /**
      * @param OutputInterface $output
-     * @param $verbosity
-     * @param $startTime
+     *                                @param $verbosity
+     *                                @param $startTime
      */
     public static function logStatistics(OutputInterface $output, $verbosity, $startTime)
     {

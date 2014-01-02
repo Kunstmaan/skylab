@@ -144,6 +144,7 @@ class AwstatsSkeleton extends AbstractSkeleton
     public function writeConfig(\ArrayObject $project, \SimpleXMLElement $config)
     {
         $config = $this->projectConfigProvider->addVar($config, 'project.statsurl', $project["statsurl"]);
+
         return $config;
     }
 

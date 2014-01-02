@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Kunstmaan\Skylab\Provider;
-
 
 use Cilex\Application;
 
@@ -19,7 +17,6 @@ class RemoteProvider extends AbstractProvider
         $app['remote'] = $this;
         $this->app = $app;
     }
-
 
     /**
      * @param $url
@@ -48,6 +45,7 @@ class RemoteProvider extends AbstractProvider
         } else {
             return $result;
         }
+
         return false;
     }
 
@@ -57,8 +55,10 @@ class RemoteProvider extends AbstractProvider
             $tempFP = fopen($filename, 'w+');
             curl_setopt($ch, CURLOPT_FILE, $tempFP);
             curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
+
             return $tempFP;
         }
+
         return false;
     }
 

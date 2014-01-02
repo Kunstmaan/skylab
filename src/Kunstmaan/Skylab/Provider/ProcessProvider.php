@@ -23,9 +23,9 @@ class ProcessProvider extends AbstractProvider
 
     /**
      * @param string $command The command
-     * @param bool $silent Be silent or not
+     * @param bool   $silent  Be silent or not
      *
-     * @param callable $callback
+     * @param  callable    $callback
      * @return bool|string
      */
     public function executeCommand($command, $silent = false, \Closure $callback = null)
@@ -40,15 +40,17 @@ class ProcessProvider extends AbstractProvider
             if (!$silent) {
                 $this->dialogProvider->logError($process->getErrorOutput());
             }
+
             return false;
         }
+
         return $process->getOutput();
     }
 
     /**
      * @param string $command The command
-     * @param bool $silent Be silent or not
-     * @param string $sudoAs Sudo as a different user then the root user
+     * @param bool   $silent  Be silent or not
+     * @param string $sudoAs  Sudo as a different user then the root user
      *
      * @return bool|string
      */

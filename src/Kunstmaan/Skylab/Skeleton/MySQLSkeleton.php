@@ -140,9 +140,9 @@ class MySQLSkeleton extends AbstractSkeleton
         $config = $this->projectConfigProvider->addVar($config, 'project.mysqlpass', $project["mysqlpass"]);
         $config = $this->projectConfigProvider->addVar($config, 'project.mysqldbname', $project["mysqldbname"]);
         $config = $this->projectConfigProvider->addVar($config, 'project.mysqlserver', $project["mysqlserver"]);
+
         return $config;
     }
-
 
     /**
      * @return string[]

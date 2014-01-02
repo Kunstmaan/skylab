@@ -58,6 +58,7 @@ EOT
             $this->remoteProvider->curl($latest["assets"][0]["url"], $latest["assets"][0]["content_type"], $tempFilename);
             if (!file_exists($tempFilename)) {
                 $this->dialogProvider->logError('The download of the new Skylab version failed for an unexpected reason');
+
                 return 1;
             }
             try {
@@ -79,8 +80,8 @@ EOT
         } else {
             $this->dialogProvider->logTask('You are running the latest release: ' . $latest["tag_name"]);
         }
+
         return 0;
     }
-
 
 }

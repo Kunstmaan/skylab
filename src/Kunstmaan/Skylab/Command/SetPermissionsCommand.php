@@ -4,7 +4,6 @@ namespace Kunstmaan\Skylab\Command;
 use Kunstmaan\Skylab\Skeleton\BaseSkeleton;
 use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * SetPermissionsCommand
