@@ -14,7 +14,7 @@ class TomcatSkeleton extends AbstractSkeleton
      */
     public function getName()
     {
-        return TomcatSkeleton::NAME;
+        return self::NAME;
     }
 
     /**

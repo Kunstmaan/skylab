@@ -46,7 +46,7 @@ EOT
         }
 
         $json = $this->remoteProvider->curl('https://api.github.com/repos/kunstmaan/skylab/releases');
-        $data = json_decode($json, TRUE);
+        $data = json_decode($json, true);
 
         usort($data, function ($a, $b) {
             return version_compare($a["tag_name"], $b["tag_name"]) * -1;
@@ -58,17 +58,18 @@ EOT
             $this->remoteProvider->curl($latest["assets"][0]["url"], $latest["assets"][0]["content_type"], $tempFilename);
             if (!file_exists($tempFilename)) {
                 $this->dialogProvider->logError('The download of the new Skylab version failed for an unexpected reason');
+
                 return 1;
             }
             try {
-                @chmod($tempFilename, 0777 & ~umask());
+                chmod($tempFilename, 0777 & ~umask());
                 // test the phar validity
                 $phar = new \Phar($tempFilename);
                 // free the variable to unlock the file
                 unset($phar);
                 rename($tempFilename, $localFilename);
             } catch (\Exception $e) {
-                @unlink($tempFilename);
+                unlink($tempFilename);
                 if (!$e instanceof \UnexpectedValueException && !$e instanceof \PharException) {
                     throw $e;
                 }
@@ -79,8 +80,8 @@ EOT
         } else {
             $this->dialogProvider->logTask('You are running the latest release: ' . $latest["tag_name"]);
         }
+
         return 0;
     }
-
 
 }

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Kunstmaan\Skylab\Command;
-
 
 use Symfony\Component\Console\Input\InputArgument;
 
@@ -68,47 +66,47 @@ EOT
 
         if (!$this->fileSystemProvider->projectExists($projectname)) {
             $this->dialogProvider->logStep("Running the full rsync commands since " . $projectname . " is not on this computer");
-            $full_excludes = $excludes;
-            $full_excludes[] = "data/shared";
-            $full_excludes[] = "data/releases";
-            if ($type !== FetchCommand::TYPE_JAVA) {
-                $full_excludes[] = "data/" . $projectname;
+            $fullExcludes = $excludes;
+            $fullExcludes[] = "data/shared";
+            $fullExcludes[] = "data/releases";
+            if ($type !== self::TYPE_JAVA) {
+                $fullExcludes[] = "data/" . $projectname;
             }
             $this->fetchFolder(
                 $this->app["config"]["projects"]["path"] . '/',
                 $hostname,
                 "/home/projects/" . $projectname,
-                $full_excludes,
+                $fullExcludes,
                 true
             );
-            if ($type !== FetchCommand::TYPE_JAVA) {
-                $mv_command = "mv " . $this->fileSystemProvider->getProjectDirectory($projectname) . "/data/current " . $this->fileSystemProvider->getProjectDirectory($projectname) . "/data/" . $projectname;
-                $this->processProvider->executeCommand($mv_command);
+            if ($type !== self::TYPE_JAVA) {
+                $mvCommand = "mv " . $this->fileSystemProvider->getProjectDirectory($projectname) . "/data/current " . $this->fileSystemProvider->getProjectDirectory($projectname) . "/data/" . $projectname;
+                $this->processProvider->executeCommand($mvCommand);
             }
         } else {
             $this->dialogProvider->logStep("Running the update rsync commands since " . $projectname . " already is on this computer");
-            $update_excludes = $excludes;
-            $update_excludes[] = "data/*";
+            $updateExcludes = $excludes;
+            $updateExcludes[] = "data/*";
 
             $this->fetchFolderIfExists(
                 $this->fileSystemProvider->getProjectDirectory($projectname),
                 $hostname,
                 "/home/projects/" . $projectname,
-                $update_excludes
+                $updateExcludes
             );
 
             $this->fetchFolderIfExists(
                 $this->fileSystemProvider->getProjectDirectory($projectname) . "/data/" . $projectname . "/web/uploads/",
                 $hostname,
                 "/home/projects/" . $projectname . "/data/shared/web/uploads/*",
-                $update_excludes
+                $updateExcludes
             );
 
             $this->fetchFolderIfExists(
                 $this->fileSystemProvider->getProjectDirectory($projectname) . "/data/" . $projectname . "/sites/default/files/",
                 $hostname,
                 "/home/projects/" . $projectname . "/data/shared/sites/default/files/*",
-                $update_excludes
+                $updateExcludes
             );
         }
         $this->dialogProvider->logStep("Dropping the databases");
@@ -133,9 +131,10 @@ EOT
         $this->dialogProvider->logCommand($command);
         $found = $this->processProvider->executeCommand($command, true);
         if ($found) {
-            return FetchCommand::TYPE_JAVA;
+            return self::TYPE_JAVA;
         }
-        return FetchCommand::TYPE_PHP;
+
+        return self::TYPE_PHP;
     }
 
     /**
@@ -153,15 +152,16 @@ EOT
         if ($found) {
             return true;
         }
+
         return false;
     }
 
     /**
-     * @param string $folder
-     * @param string $hostname
-     * @param string $remoteFolder
+     * @param string   $folder
+     * @param string   $hostname
+     * @param string   $remoteFolder
      * @param string[] $excludes
-     * @param bool $links
+     * @param bool     $links
      */
     private function fetchFolderIfExists($folder, $hostname, $remoteFolder, $excludes, $links = false)
     {
@@ -171,22 +171,22 @@ EOT
     }
 
     /**
-     * @param string $folder
-     * @param string $hostname
-     * @param string $remoteFolder
+     * @param string   $folder
+     * @param string   $hostname
+     * @param string   $remoteFolder
      * @param string[] $excludes
-     * @param bool $links
+     * @param bool     $links
      */
     private function fetchFolder($folder, $hostname, $remoteFolder, $excludes, $links = false)
     {
-        $rsync_command = "rsync -r" . ($links ? "L" : "l") . "Dhz --info=progress2";
+        $rsyncCommand = "rsync -r" . ($links ? "L" : "l") . "Dhz --info=progress2";
         foreach ($excludes as $exclude) {
-            $rsync_command .= " --exclude=" . $exclude;
+            $rsyncCommand .= " --exclude=" . $exclude;
         }
-        $rsync_command .= " " . $hostname . ":" . $remoteFolder;
-        $rsync_command .= " " . $folder;
-        /** @noinspection PhpUnusedParameterInspection */
-        $this->processProvider->executeCommand($rsync_command, false, function ($type, $buffer) {
+        $rsyncCommand .= " " . $hostname . ":" . $remoteFolder;
+        $rsyncCommand .= " " . $folder;
+        $this->processProvider->executeCommand($rsyncCommand, false, function ($type, $buffer) {
+            strlen($type); // just to get rid of the scrutinizer error... sigh
             echo $buffer;
         });
     }

@@ -23,7 +23,7 @@ class ProjectConfigProvider extends AbstractProvider
     }
 
     /**
-     * @param string $projectname The project name
+     * @param  string       $projectname The project name
      * @return \ArrayObject
      */
     public function loadProjectConfig($projectname)
@@ -33,6 +33,7 @@ class ProjectConfigProvider extends AbstractProvider
         $config = $this->loadOwnership($projectname, $config);
         $config = $this->loadPermissions($projectname, $config);
         $config = $this->loadBackup($projectname, $config);
+
         return $config;
     }
 
@@ -46,22 +47,23 @@ class ProjectConfigProvider extends AbstractProvider
         $configPath = $this->fileSystemProvider->getProjectConfigDirectory($projectname) . "/config.xml";
         $xml = simplexml_load_file($configPath);
         foreach ($xml->{'var'} as $var) {
-            $tag = (string)$var["name"];
+            $tag = (string) $var["name"];
             switch ($tag) {
                 case "project.skeletons":
                     foreach ($var->{'item'} as $skel) {
-                        $config["skeletons"][(string)$skel["value"]] = (string)$skel["value"];
+                        $config["skeletons"][(string) $skel["value"]] = (string) $skel["value"];
                     }
                     break;
                 case "project.aliases":
                     foreach ($var->{'item'} as $alias) {
-                        $config["aliases"][] = (string)$alias["value"];
+                        $config["aliases"][] = (string) $alias["value"];
                     }
                     break;
                 default:
-                    $config[str_replace("project.", "", $tag)] = (string)$var["value"];
+                    $config[str_replace("project.", "", $tag)] = (string) $var["value"];
             }
         }
+
         return $config;
     }
 
@@ -75,9 +77,9 @@ class ProjectConfigProvider extends AbstractProvider
         $configPath = $this->fileSystemProvider->getProjectConfigDirectory($projectname) . "/ownership.xml";
         $xml = simplexml_load_file($configPath);
         foreach ($xml->{'var'} as $var) {
-            $name = (string)$var["name"];
-            $value = (string)$var["value"];
-            if (isset($project["permissions"][$name])) {
+            $name = (string) $var["name"];
+            $value = (string) $var["value"];
+            if (isset($config["permissions"][$name])) {
                 $permissionDefinition = $config["permissions"][$name];
             } else {
                 $permissionDefinition = new PermissionDefinition();
@@ -86,11 +88,12 @@ class ProjectConfigProvider extends AbstractProvider
             $permissionDefinition->setOwnership($value);
             $config["permissions"][$name] = $permissionDefinition;
         }
+
         return $config;
     }
 
     /**
-     * @param  string $value
+     * @param  string       $value
      * @param  \ArrayObject $config
      * @return string
      */
@@ -129,7 +132,7 @@ class ProjectConfigProvider extends AbstractProvider
         $configPath = $this->fileSystemProvider->getProjectConfigDirectory($projectname) . "/permissions.xml";
         $xml = simplexml_load_file($configPath);
         foreach ($xml->{'var'} as $var) {
-            $name = (string)$var["name"];
+            $name = (string) $var["name"];
             if (isset($config["permissions"][$name])) {
                 $permissionDefinition = $config["permissions"][$name];
             } else {
@@ -137,11 +140,12 @@ class ProjectConfigProvider extends AbstractProvider
             }
             $permissionDefinition->setPath($name);
             foreach ($var->{'item'} as $item) {
-                $value = (string)$item["value"];
+                $value = (string) $item["value"];
                 $permissionDefinition->addAcl($value);
             }
             $config["permissions"][$name] = $permissionDefinition;
         }
+
         return $config;
     }
 
@@ -155,9 +159,10 @@ class ProjectConfigProvider extends AbstractProvider
         $configPath = $this->fileSystemProvider->getProjectConfigDirectory($projectname) . "/backup.xml";
         $xml = simplexml_load_file($configPath);
         foreach ($xml->{'var'}[0]->item as $item) {
-            $value = (string)$item["value"];
+            $value = (string) $item["value"];
             $config["backupexcludes"][$value] = $value;
         }
+
         return $config;
     }
 
@@ -195,8 +200,8 @@ class ProjectConfigProvider extends AbstractProvider
 
     /**
      * @param  \SimpleXMLElement $node
-     * @param $name
-     * @param  array $items
+     *                                  @param $name
+     * @param  array             $items
      * @return \SimpleXMLElement
      *
      */
@@ -214,7 +219,7 @@ class ProjectConfigProvider extends AbstractProvider
 
     /**
      * @param  \SimpleXMLElement $var
-     * @param  string $value
+     * @param  string            $value
      * @return \SimpleXMLElement
      */
     public function addItem(\SimpleXMLElement $var, $value)
@@ -254,8 +259,8 @@ class ProjectConfigProvider extends AbstractProvider
 
     /**
      * @param  \SimpleXMLElement $node
-     * @param  string $name
-     * @param  string $value
+     * @param  string            $name
+     * @param  string            $value
      * @return \SimpleXMLElement
      */
     public function addVar(\SimpleXMLElement $node, $name, $value)

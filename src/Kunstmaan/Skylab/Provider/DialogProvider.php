@@ -3,7 +3,6 @@ namespace Kunstmaan\Skylab\Provider;
 
 use Cilex\Application;
 use Kunstmaan\Skylab\Application as Skylab;
-use RuntimeException;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Helper\ProgressHelper;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -43,8 +42,8 @@ class DialogProvider extends AbstractProvider
 
     /**
      * @param $message
-     * @param null $argumentname
-     * @param null $default
+     * @param  null              $argumentname
+     * @param  null              $default
      * @return string
      * @throws \RuntimeException
      */
@@ -65,12 +64,13 @@ class DialogProvider extends AbstractProvider
         } else {
             $var = $this->dialog->ask($this->output, '<question>' . $message . '</question> ');
         }
+
         return $var;
     }
 
     /**
-     * @param string $question The question text
-     * @param bool $default The default action
+     * @param  string $question The question text
+     * @param  bool   $default  The default action
      * @return bool
      */
     public function askConfirmation($question, $default = true)
@@ -83,12 +83,7 @@ class DialogProvider extends AbstractProvider
      */
     public function logStep($message)
     {
-        try {
-            $this->clearLine();
-            //$this->progress->finish();
-        } catch (\LogicException $e) {
-            //ignore
-        }
+        $this->clearLine();
         $this->output->writeln("<fg=green;options=bold>-  " . $message . '</fg=green;options=bold>');
     }
 
@@ -97,12 +92,7 @@ class DialogProvider extends AbstractProvider
      */
     public function logTask($message)
     {
-        try {
-            $this->clearLine();
-            //$this->progress->finish();
-        } catch (\LogicException $e) {
-            //ignore
-        }
+        $this->clearLine();
         $this->output->writeln('<fg=blue;options=bold>   > ' . $message . " </fg=blue;options=bold>");
         if ($this->output->getVerbosity() <= OutputInterface::VERBOSITY_NORMAL) {
             $this->progress->start($this->output);
@@ -122,7 +112,7 @@ class DialogProvider extends AbstractProvider
     }
 
     /**
-     * @param string $message
+     * @param  string $message
      * @return string
      */
     public function logQuery($message)
@@ -132,6 +122,7 @@ class DialogProvider extends AbstractProvider
         } else {
             $this->progress->advance();
         }
+
         return $message;
     }
 
@@ -185,8 +176,8 @@ class DialogProvider extends AbstractProvider
 
     /**
      * @param OutputInterface $output
-     * @param $verbosity
-     * @param $startTime
+     *                                @param $verbosity
+     *                                @param $startTime
      */
     public static function logStatistics(OutputInterface $output, $verbosity, $startTime)
     {

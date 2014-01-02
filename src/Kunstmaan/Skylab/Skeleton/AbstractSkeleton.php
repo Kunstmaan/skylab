@@ -12,7 +12,7 @@ abstract class AbstractSkeleton
 
     use UsesProviders;
 
-    function __construct(Application $app)
+    public function __construct(Application $app)
     {
         $this->setup($app);
     }
@@ -75,8 +75,8 @@ abstract class AbstractSkeleton
     abstract public function postRemove(\ArrayObject $project);
 
     /**
-     * @param  \ArrayObject $project
-     * @param  \SimpleXMLElement $config The configuration array
+     * @param  \ArrayObject      $project
+     * @param  \SimpleXMLElement $config  The configuration array
      * @return \SimpleXMLElement
      */
     public function writeConfig(/** @noinspection PhpUnusedParameterInspection */

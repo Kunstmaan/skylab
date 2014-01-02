@@ -16,7 +16,7 @@ class MySQLSkeleton extends AbstractSkeleton
      */
     public function getName()
     {
-        return MySQLSkeleton::NAME;
+        return self::NAME;
     }
 
     /**
@@ -68,7 +68,7 @@ class MySQLSkeleton extends AbstractSkeleton
                 $pdo->exec($this->dialogProvider->logQuery("create database " . $project["mysqldbname"] . " DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci"));
                 $finder = new Finder();
                 $finder->files()->in($backupDir)->name("mysql.dmp.gz");
-                if (sizeof(iterator_to_array($finder)) > 0) {
+                if (count(iterator_to_array($finder)) > 0) {
                     $this->processProvider->executeCommand('gzip -dc ' . $backupDir . '/mysql.dmp.gz | mysql -h ' . $project["mysqlserver"] . ' -u root -p' . $this->app["config"]["mysql"]["password"] . ' ' . $project["mysqldbname"]);
                 }
 
@@ -140,9 +140,9 @@ class MySQLSkeleton extends AbstractSkeleton
         $config = $this->projectConfigProvider->addVar($config, 'project.mysqlpass', $project["mysqlpass"]);
         $config = $this->projectConfigProvider->addVar($config, 'project.mysqldbname', $project["mysqldbname"]);
         $config = $this->projectConfigProvider->addVar($config, 'project.mysqlserver', $project["mysqlserver"]);
+
         return $config;
     }
-
 
     /**
      * @return string[]

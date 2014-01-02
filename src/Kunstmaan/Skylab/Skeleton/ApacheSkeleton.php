@@ -35,31 +35,26 @@ class ApacheSkeleton extends AbstractSkeleton
                 array()
             );
         }
-        // update config
-        {
-            // url
-            $defaultUrl = $project["name"] . ".be";
-            $project["url"] = $this->dialogProvider->askFor("Enter the base url", null, $defaultUrl);
-        }
-        {
-            // url aliases
-            $aliases = array();
-            if ($this->noInteraction) {
-                $this->dialogProvider->logNotice("--no-iteraction selected, using www." . $project["url"]);
-                $aliases[] = "www." . $project["url"];
-            } else {
-                $alias = null;
-                while (1 == 1) {
-                    $alias = $this->dialogProvider->askFor("Add an url alias (leave empty to stop adding):");
-                    if (empty($alias)) {
-                        break;
-                    } else {
-                        $aliases[] = $alias;
-                    }
+        // url
+        $defaultUrl = $project["name"] . ".be";
+        $project["url"] = $this->dialogProvider->askFor("Enter the base url", null, $defaultUrl);
+        // url aliases
+        $aliases = array();
+        if ($this->noInteraction) {
+            $this->dialogProvider->logNotice("--no-iteraction selected, using www." . $project["url"]);
+            $aliases[] = "www." . $project["url"];
+        } else {
+            $alias = null;
+            while (1 == 1) {
+                $alias = $this->dialogProvider->askFor("Add an url alias (leave empty to stop adding):");
+                if (empty($alias)) {
+                    break;
+                } else {
+                    $aliases[] = $alias;
                 }
             }
-            $project["aliases"] = $aliases;
         }
+        $project["aliases"] = $aliases;
     }
 
     /**
@@ -123,7 +118,7 @@ class ApacheSkeleton extends AbstractSkeleton
      */
     public function getName()
     {
-        return ApacheSkeleton::NAME;
+        return self::NAME;
     }
 
     private function writeNamevirtualhost()
@@ -212,8 +207,8 @@ class ApacheSkeleton extends AbstractSkeleton
     }
 
     /**
-     * @param  \ArrayObject $project
-     * @param  \SimpleXMLElement $config The configuration array
+     * @param  \ArrayObject      $project
+     * @param  \SimpleXMLElement $config  The configuration array
      * @return \SimpleXMLElement
      */
     public function writeConfig(\ArrayObject $project, \SimpleXMLElement $config)
@@ -222,6 +217,7 @@ class ApacheSkeleton extends AbstractSkeleton
         if (isset($project["aliases"])) {
             $config = $this->projectConfigProvider->addVarWithItems($config, 'project.aliases', $project["aliases"]);
         }
+
         return $config;
     }
 

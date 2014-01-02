@@ -13,7 +13,7 @@
         "symfony/yaml":             "~2.1",
         "symfony/serializer":       "~2.1",
         "roderik/pwgen-php":        "0.1.x",
-        "roderik/cilex-twig":       "dev-master"
+        "roderik/cilex-twig":       "1.0.x"
     },
     "autoload": {
         "psr-0": { "Kunstmaan": "src/" }

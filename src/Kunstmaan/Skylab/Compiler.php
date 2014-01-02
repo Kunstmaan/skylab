@@ -15,7 +15,7 @@ class Compiler
      * Compiles skylab into a single phar file
      *
      * @param $version
-     * @param  string $pharFile The full path to the file to create
+     * @param  string            $pharFile The full path to the file to create
      * @throws \RuntimeException
      */
     public function compile($version, $pharFile = 'skylab.phar')
@@ -30,7 +30,16 @@ class Compiler
         $this->versionDate = $date->format('Y-m-d H:i:s');
 
         $phar = new \Phar($pharFile, 0, 'skylab.phar');
-        $phar->setSignatureAlgorithm(\Phar::SHA1);
+        $sign = \Phar::getSupportedSignatures();
+        if (in_array(\Phar::SHA512, $sign)) {
+            $phar->setSignatureAlgorithm(\Phar::SHA512);
+        } elseif (in_array(\Phar::SHA256, $sign)) {
+            $phar->setSignatureAlgorithm(\Phar::SHA256);
+        } elseif (in_array(\Phar::SHA1, $sign)) {
+            $phar->setSignatureAlgorithm(\Phar::SHA1);
+        } elseif (in_array(\Phar::MD5, $sign)) {
+            $phar->setSignatureAlgorithm(\Phar::MD5);
+        }
 
         $phar->startBuffering();
 
@@ -78,24 +87,16 @@ class Compiler
         }
 
         $this->addSkylabBin($phar);
-
-        // Stubs
         $phar->setStub($this->getStub());
-
         $phar->stopBuffering();
-
-        // disabled for interoperability with systems without gzip ext
-        //$phar->compressFiles(\Phar::GZ);
-
         $this->addFile($phar, new \SplFileInfo(__DIR__ . '/../../../LICENSE'), false);
-
         unset($phar);
     }
 
     /**
-     * @param \Phar $phar
+     * @param \Phar        $phar
      * @param \SplFileInfo $file
-     * @param bool $strip
+     * @param bool         $strip
      */
     private function addFile(\Phar $phar, \SplFileInfo $file, $strip = true)
     {

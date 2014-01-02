@@ -16,7 +16,7 @@ class PHPSkeleton extends AbstractSkeleton
      */
     public function getName()
     {
-        return PHPSkeleton::NAME;
+        return self::NAME;
     }
 
     /**

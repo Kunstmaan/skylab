@@ -16,7 +16,7 @@ class SymfonySkeleton extends AbstractSkeleton
      */
     public function getName()
     {
-        return SymfonySkeleton::NAME;
+        return self::NAME;
     }
 
     /**

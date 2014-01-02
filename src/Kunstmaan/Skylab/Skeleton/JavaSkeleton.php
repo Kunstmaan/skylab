@@ -14,7 +14,7 @@ class JavaSkeleton extends AbstractSkeleton
      */
     public function getName()
     {
-        return JavaSkeleton::NAME;
+        return self::NAME;
     }
 
     /**

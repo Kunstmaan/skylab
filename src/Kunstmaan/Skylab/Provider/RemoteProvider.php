@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Kunstmaan\Skylab\Provider;
-
 
 use Cilex\Application;
 
@@ -20,7 +18,6 @@ class RemoteProvider extends AbstractProvider
         $this->app = $app;
     }
 
-
     /**
      * @param $url
      * @param  string $contentType
@@ -30,12 +27,12 @@ class RemoteProvider extends AbstractProvider
     public function curl($url, $contentType = null, $filename = null)
     {
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_REFERER, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         if ($contentType) {
             curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: " . $contentType));
         }
@@ -48,6 +45,7 @@ class RemoteProvider extends AbstractProvider
         } else {
             return $result;
         }
+
         return false;
     }
 
@@ -57,8 +55,10 @@ class RemoteProvider extends AbstractProvider
             $tempFP = fopen($filename, 'w+');
             curl_setopt($ch, CURLOPT_FILE, $tempFP);
             curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
+
             return $tempFP;
         }
+
         return false;
     }
 

@@ -36,6 +36,7 @@ class FileSystemProvider extends AbstractProvider
             ->filter(function (\SplFileInfo $file) {
                 return file_exists($file->getRealPath() . "/conf/config.xml");
             });
+
         return iterator_to_array($finder);
     }
 
@@ -47,17 +48,19 @@ class FileSystemProvider extends AbstractProvider
     {
         $finder = new Finder();
         $finder->files()->sortByName()->in($path)->depth('== 0');
+
         return iterator_to_array($finder);
     }
 
     /**
-     * @param string $projectname
+     * @param  string $projectname
      * @return bool
      */
     public function projectExists($projectname)
     {
         $finder = new Finder();
         $finder->directories()->sortByName()->in($this->app["config"]["projects"]["path"])->depth('== 0')->name($projectname);
+
         return $finder->count() != 0;
     }
 
@@ -92,7 +95,7 @@ class FileSystemProvider extends AbstractProvider
 
     /**
      * @param \ArrayObject $project The project
-     * @param string $path The relative path in the project folder
+     * @param string       $path    The relative path in the project folder
      */
     public function createDirectory(\ArrayObject $project, $path)
     {
@@ -102,13 +105,14 @@ class FileSystemProvider extends AbstractProvider
 
     /**
      * @param \ArrayObject $project The project
-     * @param string $path The relative path in the project folder
+     * @param string       $path    The relative path in the project folder
      *
      * @return string
      */
     public function getDirectory(\ArrayObject $project, $path)
     {
         $projectDirectory = $this->getProjectDirectory($project["name"]);
+
         return $projectDirectory . '/' . $path;
     }
 
@@ -143,7 +147,6 @@ class FileSystemProvider extends AbstractProvider
         return BASE_DIR . "/templates/apache/apache.d/";
     }
 
-
     /**
      * @param $callback
      */
@@ -159,7 +162,7 @@ class FileSystemProvider extends AbstractProvider
     }
 
     /**
-     * @param \ArrayObject $project
+     * @param  \ArrayObject $project
      * @return array
      */
     public function getProjectApacheConfigs(\ArrayObject $project)
@@ -175,6 +178,7 @@ class FileSystemProvider extends AbstractProvider
             ->notName("*.bak")
             ->notName("*-")
             ->depth('== 0');
+
         return iterator_to_array($finder);
     }
 
@@ -190,8 +194,8 @@ class FileSystemProvider extends AbstractProvider
     }
 
     /**
-     * @param string $sourcePath
-     * @param string $destinationPath
+     * @param string   $sourcePath
+     * @param string   $destinationPath
      * @param string[] $variables
      */
     public function render($sourcePath, $destinationPath, $variables)

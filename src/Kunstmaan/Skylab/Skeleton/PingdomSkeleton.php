@@ -14,7 +14,7 @@ class PingdomSkeleton extends AbstractSkeleton
      */
     public function getName()
     {
-        return PingdomSkeleton::NAME;
+        return self::NAME;
     }
 
     /**
@@ -92,7 +92,6 @@ class PingdomSkeleton extends AbstractSkeleton
     {
         // TODO: Implement postRemove() method.
     }
-
 
     /**
      * @return string[]

@@ -34,7 +34,7 @@ EOT
     /**
      * @throws \RuntimeException
      */
-    protected function DoExecute()
+    protected function doExecute()
     {
         $projectname = $this->dialogProvider->askFor("Please enter the name of the project. All lowercase, no spaces or special characters. Keep it short, yet descriptive", 'name');
         $this->dialogProvider->logStep("Creating project $projectname");

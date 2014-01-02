@@ -14,7 +14,7 @@ class AwstatsSkeleton extends AbstractSkeleton
      */
     public function getName()
     {
-        return AwstatsSkeleton::NAME;
+        return self::NAME;
     }
 
     /**
@@ -144,6 +144,7 @@ class AwstatsSkeleton extends AbstractSkeleton
     public function writeConfig(\ArrayObject $project, \SimpleXMLElement $config)
     {
         $config = $this->projectConfigProvider->addVar($config, 'project.statsurl', $project["statsurl"]);
+
         return $config;
     }
 

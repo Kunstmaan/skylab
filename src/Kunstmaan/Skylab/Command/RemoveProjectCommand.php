@@ -34,7 +34,6 @@ EOT
             );
     }
 
-
     protected function doExecute()
     {
         $projectname = $this->dialogProvider->askFor("Please enter the name of the project", 'name');
@@ -59,7 +58,7 @@ EOT
         $input = new ArrayInput($arguments);
         $returnCode = $command->run($input, $this->output);
 
-        if (is_null($returnCode)) {
+        if (!$returnCode) {
             $this->permissionsProvider->killProcesses($projectname, $this->output);
         }
 
@@ -69,7 +68,6 @@ EOT
             $this->dialogProvider->logTask("Running preRemove for skeleton " . $skeleton->getName());
             $skeleton->preRemove($project);
         }, new \ArrayObject($project["skeletons"]));
-
 
         $this->dialogProvider->logTask("Deleting the project folder at " . $this->fileSystemProvider->getProjectDirectory($projectname));
         $this->fileSystemProvider->removeProjectDirectory($project, $this->output);

@@ -14,7 +14,7 @@ class PostgreSQLSkeleton extends AbstractSkeleton
      */
     public function getName()
     {
-        return PostgreSQLSkeleton::NAME;
+        return self::NAME;
     }
 
     /**

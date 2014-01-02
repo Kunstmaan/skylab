@@ -14,7 +14,7 @@ class LogrotateSkeleton extends AbstractSkeleton
      */
     public function getName()
     {
-        return LogrotateSkeleton::NAME;
+        return self::NAME;
     }
 
     /**
