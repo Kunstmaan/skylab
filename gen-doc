@@ -116,6 +116,9 @@ function get_class_name($object = null)
 1. Do your thing, and send a Pull Request. But please make sure Travis is green and your code has been run through php-cs-fixer!
 
 
+[![Analytics](https://ga-beacon.appspot.com/UA-3160735-7/Kunstmaan/skylab)](https://github.com/igrigorik/ga-beacon)
+
+
 <?php
 
 echo "*Documentation generated on " . date_format(new DateTime(), "Y-m-d H:i:s") . "*";
