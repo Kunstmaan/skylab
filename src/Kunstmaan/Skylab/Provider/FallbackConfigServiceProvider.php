@@ -21,7 +21,7 @@ class FallbackConfigServiceProvider extends AbstractProvider
                     }
                     $parser = new Yaml\Parser();
                     $result = $parser->parse(file_get_contents($path));
-                    $config = array_merge_recursive($config, $result);
+                    $config = array_replace_recursive($config, $result);
                 }
 
                 return $config;
