@@ -59,7 +59,7 @@ class AwstatsSkeleton extends AbstractSkeleton
         );
         $this->fileSystemProvider->render(
             "/awstats/htaccess.twig",
-            $statsFolder . ".htaccess",
+            $statsFolder . "/.htaccess",
             array(
                 'statsdir' => $statsFolder,
                 'projectname' => $project["name"]

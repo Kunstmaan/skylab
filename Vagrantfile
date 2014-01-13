@@ -13,11 +13,12 @@ Vagrant.configure("2") do |config|
     saucy64.vm.hostname = 'saucy64.kunstmaan.be'
     saucy64.vm.provider :virtualbox do |vb|
       vb.customize ["modifyvm", :id, "--memory", "1024"]
+      vb.customize ["modifyvm", :id, "--cpus", 2]
     end
     saucy64.vm.provision :chef_solo do |chef|
      chef.cookbooks_path = "cookbooks"
      chef.add_recipe "skylab::default"
-     chef.log_level = :debug
+     chef.log_level = :info
     end
   end
 

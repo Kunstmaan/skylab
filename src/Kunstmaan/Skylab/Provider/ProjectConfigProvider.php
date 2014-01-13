@@ -4,6 +4,7 @@ namespace Kunstmaan\Skylab\Provider;
 
 use Cilex\Application;
 use Kunstmaan\Skylab\Entity\PermissionDefinition;
+use Symfony\Component\Finder\Finder;
 
 /**
  * ProjectConfigProvider

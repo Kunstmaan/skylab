@@ -19,7 +19,7 @@ before_script:
     - sudo a2enmod rewrite actions fastcgi alias version
     - sudo service mysql stop
     - sudo rm -Rf /var/lib/mysql/
-    - sudo chef-solo --log_level debug -c solo.rb -o "applications::packagemanager,git::default,skylab::postgresql,applications::mysql,skylab::apache,skylab::directories"
+    - sudo chef-solo --log_level debug -c solo.rb -o "skylab::default-nophp"
 
 script:
     - ./compile --version 0.0.0

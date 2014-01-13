@@ -164,7 +164,7 @@ class ApacheSkeleton extends AbstractSkeleton
             $configcontent .= $this->projectConfigProvider->searchReplacer(file_get_contents($config->getRealPath()), $project);
             $configcontent .= "\n#END " . $config->getRealPath() . "\n\n";
         }
-        if ($this->app["config"]["permissions"]["develmode"]) {
+        if ($this->app["config"]["develmode"]) {
             $configcontent = str_replace("-Indexes", "Indexes", $configcontent);
         }
         $this->fileSystemProvider->writeProtectedFile($this->app["config"]["apache"]["vhostdir"] . "/" . $project["name"] . ".conf", $configcontent);
@@ -226,7 +226,7 @@ class ApacheSkeleton extends AbstractSkeleton
      */
     public function dependsOn()
     {
-        return array("base", "awstats", "logrotate", "pingdom");
+        return array("base", "awstats", "pingdom");
     }
 
 }

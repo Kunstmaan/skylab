@@ -93,8 +93,8 @@ class SymfonySkeleton extends AbstractSkeleton
      */
     public function maintenance(\ArrayObject $project)
     {
-        if ($this->app["config"]["permissions"]["develmode"]) {
-            $this->processProvider->executeSudoCommand("rm " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/current");
+        if ($this->app["config"]["develmode"] || !file_exists($this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/current")) {
+            $this->processProvider->executeSudoCommand("rm -f " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/current");
             $this->processProvider->executeSudoCommand("ln -sf " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/" . $project["name"] . "/ " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/current");
         }
     }

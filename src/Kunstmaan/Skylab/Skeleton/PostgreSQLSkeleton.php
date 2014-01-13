@@ -1,5 +1,6 @@
 <?php
 namespace Kunstmaan\Skylab\Skeleton;
+use Symfony\Component\Finder\Finder;
 
 /**
  * PostgresQLSkeleton
@@ -24,7 +25,11 @@ class PostgreSQLSkeleton extends AbstractSkeleton
      */
     public function create(\ArrayObject $project)
     {
-        // TODO: Implement create() method.
+        $project["dbuser"] = $this->dialogProvider->askFor("Enter a PostgreSQL username", null, $project["name"]);
+        $pwgen = new \PWGen();
+        $project["dbpass"] = $this->dialogProvider->askFor("Enter a PostgreSQL password", null, $pwgen->generate());
+        $project["dbname"] = $this->dialogProvider->askFor("Enter a PostgreSQL databasename", null, $project["name"]);
+        $project["dbserver"] = $this->dialogProvider->askFor("Enter a PostgreSQL server host", null, "localhost");
     }
 
     /**
@@ -32,7 +37,6 @@ class PostgreSQLSkeleton extends AbstractSkeleton
      */
     public function preMaintenance()
     {
-        // TODO: Implement preMaintenance() method.
     }
 
     /**
@@ -40,7 +44,6 @@ class PostgreSQLSkeleton extends AbstractSkeleton
      */
     public function postMaintenance()
     {
-        // TODO: Implement postMaintenance() method.
     }
 
     /**
@@ -50,7 +53,27 @@ class PostgreSQLSkeleton extends AbstractSkeleton
      */
     public function maintenance(\ArrayObject $project)
     {
-        // TODO: Implement maintenance() method.
+        try {
+            new \PDO('psql:host=' . $project["dbserver"] . ';dbname=' . $project["dbname"], $project["dbuser"], $project["dbpass"]);
+        } catch (\PDOException $exLoginTest) {
+            $this->dialogProvider->logNotice("Cannot connect as " . $project["dbuser"] . ", lets test if the database exists (" . $exLoginTest->getMessage() . ")");
+            try {
+                new \PDO('psql:host=' . $project["dbserver"] . ';dbname=' . $project["dbname"], $this->app["config"]["postgresql"]["user"], $this->app["config"]["postgresql"]["password"]);
+                $this->dialogProvider->logNotice("Database " . $project["dbname"] . " exists!");
+            } catch (\PDOException $exDBTest) {
+                $this->dialogProvider->logNotice("Cannot connect to the " . $project["dbname"] . " database as " .$this->app["config"]["postgresql"]["user"]. " as well, lets create it. (" . $exDBTest->getMessage() . ")");
+                $backupDir = $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/backup/";
+                $pdo = new \PDO('psql:host=' . $project["dbserver"] . ";", $this->app["config"]["postgresql"]["user"], $this->app["config"]["postgresql"]["password"]);
+                $pdo->exec($this->dialogProvider->logQuery("create user " . $project["dbuser"]));
+                $pdo->exec($this->dialogProvider->logQuery("alter user ".$project["dbuser"]." with password '".$project["dbpass"]."'"));
+                $pdo->exec($this->dialogProvider->logQuery("create database " . $project["dbname"] . " with owner " . $project["dbuser"] . " encoding 'UNICODE'"));
+                $finder = new Finder();
+                $finder->files()->in($backupDir)->name("postgres-custom.dump");
+                if (count(iterator_to_array($finder)) > 0) {
+                    $this->processProvider->executeSudoCommand("PGOPTIONS='-c maintenance_work_mem=64MB' pg_restore --single-transaction --disable-triggers -j 4 -Fc ".$backupDir."/backup/".postgres-custom.dump ." -d ". $project["dbname"], false, $project["dbuser"]);
+                }
+            }
+        }
     }
 
     /**
@@ -91,6 +114,20 @@ class PostgreSQLSkeleton extends AbstractSkeleton
     public function postRemove(\ArrayObject $project)
     {
         // TODO: Implement postRemove() method.
+    }
+
+    /**
+     * @param \ArrayObject $project
+     * @param \SimpleXMLElement $config
+     * @return \SimpleXMLElement
+     */
+    public function writeConfig(\ArrayObject $project, \SimpleXMLElement $config)
+    {
+        $config = $this->projectConfigProvider->addVar($config, 'project.dbuser', $project["dbuser"]);
+        $config = $this->projectConfigProvider->addVar($config, 'project.dbpass', $project["dbpass"]);
+        $config = $this->projectConfigProvider->addVar($config, 'project.dbname', $project["dbname"]);
+        $config = $this->projectConfigProvider->addVar($config, 'project.dbserver', $project["dbserver"]);
+        return $config;
     }
 
     /**

@@ -59,12 +59,12 @@ class MySQLSkeleton extends AbstractSkeleton
         } catch (\PDOException $exLoginTest) {
             $this->dialogProvider->logNotice("Cannot connect as " . $project["mysqluser"] . ", lets test if the database exists (" . $exLoginTest->getMessage() . ")");
             try {
-                new \PDO('mysql:host=' . $project["mysqlserver"] . ';dbname=' . $project["mysqldbname"], "root", $this->app["config"]["mysql"]["password"]);
+                new \PDO('mysql:host=' . $project["mysqlserver"] . ';dbname=' . $project["mysqldbname"], $this->app["config"]["mysql"]["user"], $this->app["config"]["mysql"]["password"]);
                 $this->dialogProvider->logNotice("Database " . $project["mysqldbname"] . " exists!");
             } catch (\PDOException $exDBTest) {
-                $this->dialogProvider->logNotice("Cannot connect to the " . $project["mysqldbname"] . " database as the root user as well, lets create it. (" . $exDBTest->getMessage() . ")");
+                $this->dialogProvider->logNotice("Cannot connect to the " . $project["mysqldbname"] . " database as ".$this->app["config"]["mysql"]["user"]." as well, lets create it. (" . $exDBTest->getMessage() . ")");
                 $backupDir = $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/backup/";
-                $pdo = new \PDO('mysql:host=' . $project["mysqlserver"] . ";", "root", $this->app["config"]["mysql"]["password"]);
+                $pdo = new \PDO('mysql:host=' . $project["mysqlserver"] . ";", $this->app["config"]["mysql"]["user"], $this->app["config"]["mysql"]["password"]);
                 $pdo->exec($this->dialogProvider->logQuery("create database " . $project["mysqldbname"] . " DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci"));
                 $finder = new Finder();
                 $finder->files()->in($backupDir)->name("mysql.dmp.gz");
@@ -73,7 +73,7 @@ class MySQLSkeleton extends AbstractSkeleton
                 }
 
             }
-            $pdo = new \PDO('mysql:host=' . $project["mysqlserver"] . ";", "root", $this->app["config"]["mysql"]["password"]);
+            $pdo = new \PDO('mysql:host=' . $project["mysqlserver"] . ";", $this->app["config"]["mysql"]["user"], $this->app["config"]["mysql"]["password"]);
             $pdo->exec($this->dialogProvider->logQuery("GRANT ALL PRIVILEGES ON " . $project["mysqldbname"] . ".* TO " . $project["mysqluser"] . "@localhost IDENTIFIED BY '" . $project["mysqlpass"] . "'"));
             $pdo->exec($this->dialogProvider->logQuery("GRANT ALL PRIVILEGES ON " . $project["mysqldbname"] . ".* TO " . $project["mysqluser"] . "@'%%' IDENTIFIED BY '" . $project["mysqlpass"] . "'"));
         }
@@ -133,14 +133,17 @@ class MySQLSkeleton extends AbstractSkeleton
         $pdo->exec($this->dialogProvider->logQuery("drop database if exists " . $project["mysqldbname"]));
     }
 
-    public function writeConfig(/** @noinspection PhpUnusedParameterInspection */
-        \ArrayObject $project, \SimpleXMLElement $config)
+    /**
+     * @param \ArrayObject $project
+     * @param \SimpleXMLElement $config
+     * @return \SimpleXMLElement
+     */
+    public function writeConfig(\ArrayObject $project, \SimpleXMLElement $config)
     {
         $config = $this->projectConfigProvider->addVar($config, 'project.mysqluser', $project["mysqluser"]);
         $config = $this->projectConfigProvider->addVar($config, 'project.mysqlpass', $project["mysqlpass"]);
         $config = $this->projectConfigProvider->addVar($config, 'project.mysqldbname', $project["mysqldbname"]);
         $config = $this->projectConfigProvider->addVar($config, 'project.mysqlserver', $project["mysqlserver"]);
-
         return $config;
     }
 

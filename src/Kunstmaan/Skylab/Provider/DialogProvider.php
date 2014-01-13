@@ -49,6 +49,8 @@ class DialogProvider extends AbstractProvider
      */
     public function askFor($message, $argumentname = null, $default = null)
     {
+        $this->clearLine();
+        $this->output->writeln("\n");
         if ($argumentname) {
             $var = $this->input->getArgument($argumentname);
             if (!$var) {
@@ -64,7 +66,6 @@ class DialogProvider extends AbstractProvider
         } else {
             $var = $this->dialog->ask($this->output, '<question>' . $message . '</question> ');
         }
-
         return $var;
     }
 

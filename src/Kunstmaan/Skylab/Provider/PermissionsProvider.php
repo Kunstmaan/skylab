@@ -120,16 +120,14 @@ class PermissionsProvider extends AbstractProvider
      */
     public function applyPermissions(\ArrayObject $project)
     {
-        if ($this->app["config"]["permissions"]["develmode"] || !$this->processProvider->commandExists("setfacl")) {
+        if ($this->app["config"]["develmode"] || !$this->processProvider->commandExists("setfacl")) {
             if (!file_exists($this->fileSystemProvider->getProjectDirectory($project["name"]))) {
                 $this->dialogProvider->logNotice($this->fileSystemProvider->getProjectDirectory($project["name"]) . " does not exist, do not chmod");
-
                 return;
             }
             $this->processProvider->executeSudoCommand('chmod -R 777 ' . $this->fileSystemProvider->getProjectDirectory($project["name"]));
             if (!file_exists($this->fileSystemProvider->getProjectDirectory($project["name"]) . '/.ssh/')) {
                 $this->dialogProvider->logNotice($this->fileSystemProvider->getProjectDirectory($project["name"]) . '/.ssh/' . " does not exist, do not chmod");
-
                 return;
             }
             $this->processProvider->executeSudoCommand('chmod -R 700 ' . $this->fileSystemProvider->getProjectDirectory($project["name"]) . '/.ssh/');

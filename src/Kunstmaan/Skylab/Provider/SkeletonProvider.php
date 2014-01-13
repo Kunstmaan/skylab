@@ -4,6 +4,7 @@ namespace Kunstmaan\Skylab\Provider;
 
 use Cilex\Application;
 use Kunstmaan\Skylab\Skeleton\AbstractSkeleton;
+use Kunstmaan\Skylab\Utility\DependencySolver;
 use RuntimeException;
 
 /**
@@ -29,12 +30,11 @@ class SkeletonProvider extends AbstractProvider
      */
     public function applySkeleton(\ArrayObject $project, AbstractSkeleton $skeleton)
     {
-        $list = new \ArrayObject();
-        $list[$skeleton->getName()] = $skeleton;
-        $list = $this->resolveDependencies($skeleton, $project, $list);
-        /** @var AbstractSkeleton $theSkeleton */
-        foreach ($list as $theSkeleton) {
-            if (!isset($project["skeletons"]) || !array_key_exists($theSkeleton->getName(), $project["skeletons"])) {
+        $dependencies = new DependencySolver();
+        $this->resolveDependencies($skeleton, $dependencies);
+        foreach ($dependencies->getLoadOrder() as $theSkeletonName) {
+            if (!isset($project["skeletons"]) || !array_key_exists($theSkeletonName, $project["skeletons"])) {
+                $theSkeleton = $this->findSkeleton($theSkeletonName);
                 $this->dialogProvider->logTask("Running skeleton create for " . $theSkeleton->getName());
                 $theSkeleton->create($project);
                 $project["skeletons"][$theSkeleton->getName()] = $theSkeleton->getName();
@@ -44,22 +44,19 @@ class SkeletonProvider extends AbstractProvider
 
     /**
      * @param  AbstractSkeleton $theSkeleton
-     * @param  \ArrayObject     $project
-     * @param  \ArrayObject     $deps
+     * @param \Kunstmaan\Skylab\Utility\DependencySolver $dependencies
      * @return \ArrayObject
      */
-    private function resolveDependencies(AbstractSkeleton $theSkeleton, \ArrayObject $project, \ArrayObject $deps)
+    private function resolveDependencies(AbstractSkeleton $theSkeleton, DependencySolver $dependencies)
     {
-        $skeletonDeps = $theSkeleton->dependsOn();
-        foreach ($skeletonDeps as $skeletonDependencyName) {
-            if (!array_key_exists($skeletonDependencyName, $deps)) {
+        if (!$dependencies->itemExists($theSkeleton->getName())){
+            $skeletonDeps = $theSkeleton->dependsOn();
+            $dependencies->add($theSkeleton->getName(), $skeletonDeps);
+            foreach ($skeletonDeps as $skeletonDependencyName) {
                 $aSkeleton = $this->findSkeleton($skeletonDependencyName);
-                $deps[$aSkeleton->getName()] = $aSkeleton;
-                $deps = $this->resolveDependencies($aSkeleton, $project, $deps);
+                $this->resolveDependencies($aSkeleton, $dependencies);
             }
         }
-
-        return $deps;
     }
 
     /**
