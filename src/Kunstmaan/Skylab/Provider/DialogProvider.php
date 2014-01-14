@@ -114,12 +114,21 @@ class DialogProvider extends AbstractProvider
 
     /**
      * @param  string $message
+     * @param  string[] $extra
      * @return string
      */
-    public function logQuery($message)
+    public function logQuery($message, $extra=null)
     {
         if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
-            $this->output->writeln('<info>   ~</info> <comment>' . $message . '</comment> ');
+            $this->output->writeln('<info>   ~</info> <comment>' .
+                $message .
+                ($extra ?
+                    ' (' .
+                        implode(', ',
+                            array_map(function ($v, $k) { return $k . '=' . $v; }, $extra, array_keys($extra))
+                        ) .
+                    ')' : '') .
+            '</comment> ');
         } else {
             $this->progress->advance();
         }

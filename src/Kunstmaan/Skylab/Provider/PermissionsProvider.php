@@ -65,13 +65,13 @@ class PermissionsProvider extends AbstractProvider
                 $maxid = $maxid + 1;
                 $this->processProvider->executeSudoCommand('dscl . create /Users/' . $userName);
                 $this->processProvider->executeSudoCommand('dscl . create /Users/' . $userName . ' UserShell /bin/bash');
-                $this->processProvider->executeSudoCommand('dscl . create /Users/' . $userName . ' NFSHomeDirectory /var/www/' . $userName);
+                $this->processProvider->executeSudoCommand('dscl . create /Users/' . $userName . ' NFSHomeDirectory ' . $this->app["config"]["projects"]["path"] . "/" . $userName);
                 $this->processProvider->executeSudoCommand('dscl . create /Users/' . $userName . ' PrimaryGroupID 20');
                 $this->processProvider->executeSudoCommand('dscl . create /Users/' . $userName . ' UniqueID ' . $maxid);
                 $this->processProvider->executeSudoCommand('dscl . append /Groups/' . $groupName . ' GroupMembership ' . $userName);
                 $this->processProvider->executeSudoCommand('defaults write /Library/Preferences/com.apple.loginwindow HiddenUsersList -array-add ' . $userName);
             } else {
-                $this->processProvider->executeSudoCommand('adduser --firstuid 1000 --lastuid 1999 --disabled-password --system --quiet --ingroup ' . $groupName . ' --home "/var/www/' . $userName . '" --no-create-home --shell /bin/bash ' . $userName);
+                $this->processProvider->executeSudoCommand('adduser --firstuid 1000 --lastuid 1999 --disabled-password --system --quiet --ingroup ' . $groupName . ' --home "'.$this->app["config"]["projects"]["path"] . "/" . $userName . '" --no-create-home --shell /bin/bash ' . $userName);
             }
         }
     }

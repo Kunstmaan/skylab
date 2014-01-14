@@ -41,6 +41,7 @@ skeletons:
     tomcat:     Kunstmaan\Skylab\Skeleton\TomcatSkeleton
     smartcms:   Kunstmaan\Skylab\Skeleton\JavaSkeleton
     mongo:      false
+    dailycron:  false
 
 debug: true
 develmode: false
