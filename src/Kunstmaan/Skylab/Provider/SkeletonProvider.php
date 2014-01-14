@@ -96,7 +96,14 @@ class SkeletonProvider extends AbstractProvider
         if (!$skeletons) {
             $skeletons = new \ArrayObject(array_keys($this->app["config"]["skeletons"]));
         }
-        foreach ($skeletons as $skeletonName) {
+        $dependencies = new DependencySolver();
+        foreach ($skeletons as $skeleton) {
+            $theSkeleton = $this->findSkeleton($skeleton);
+            if ($theSkeleton){
+                $this->resolveDependencies($theSkeleton, $dependencies);
+            }
+        }
+        foreach ($dependencies->getLoadOrder() as $skeletonName) {
             $skeleton = $this->findSkeleton($skeletonName);
             if ($skeleton) {
                 $callback($skeleton);

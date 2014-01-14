@@ -40,6 +40,11 @@ class DependencySolver
             }
         }
 
+        $loadOrder = array_filter($loadOrder, function($skeleton){
+            return $skeleton != "base";
+        });
+        array_unshift($loadOrder, "base");
+
         return $loadOrder;
     }
 

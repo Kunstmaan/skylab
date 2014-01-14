@@ -78,7 +78,7 @@ class ApacheSkeleton extends AbstractSkeleton
     private function writeHostFile()
     {
         $hostlines = array();
-        $this->fileSystemProvider->projectsLoop(function ($project) use ($hostlines) {
+        $this->fileSystemProvider->projectsLoop(function ($project) use (&$hostlines) {
             if (array_key_exists($this->getName(), $project["skeletons"])) {
                 $hostlines[] = "127.0.0.1 " . $project["name"] . "." . $this->app["config"]["apache"]["hostmachine"] . " www." . $project["name"] . "." . $this->app["config"]["apache"]["hostmachine"] . "\n";
             }
