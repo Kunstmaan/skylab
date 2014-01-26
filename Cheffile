@@ -23,6 +23,9 @@ cookbook "composer",              :github => "kitchenplan/chef-composer"
 cookbook "nodejs",                :github => "roderik/chef-nodejs"
 cookbook "root_ssh_agent",        :github => "dergachev/chef_root_ssh_agent"
 cookbook "sudo",                  :github => "kitchenplan/sudo"
+cookbook "sysctl",                :github => "spheromak/sysctl-cookbook"
+cookbook "accumulator",           :github => "kisoku/chef-accumulator"
+cookbook "sysfs",                 :github => "Youscribe/sysfs-cookbook"
 
 # Make Librarian work
 cookbook 'windows',               :github => 'SimpleFinance/chef-windows'

@@ -5,7 +5,7 @@ Vagrant.configure("2") do |config|
     saucy64.vbguest.auto_update = true
     saucy64.ssh.forward_agent = true
     saucy64.cache.auto_detect = true
-    saucy64.cache.enable_nfs  = true
+    #saucy64.cache.enable_nfs  = true
     saucy64.vm.box = "skylab-saucy64"
     saucy64.vm.box_url = "http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-13.10_chef-provisionerless.box"
     saucy64.vm.network :private_network, ip: "33.33.33.33"

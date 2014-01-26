@@ -1,0 +1,12 @@
+<IfModule mod_jk.c>
+        JkMount /*                         @project.name@
+</IfModule>
+
+## Non Root Deploy
+#<IfModule mod_jk.c>
+#        JkMount /*.jsp                         @project.name@
+#        JkMount /@project.name@/*                 @project.name@
+#        JkMount /admin/*                @project.name@
+#        JkMount //@project.name@/*                 @project.name@
+#        JkMount /manager/*                 @project.name@
+#</IfModule>

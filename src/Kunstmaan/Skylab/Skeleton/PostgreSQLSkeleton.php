@@ -129,7 +129,6 @@ class PostgreSQLSkeleton extends AbstractSkeleton
      */
     public function postBackup(\ArrayObject $project)
     {
-        // TODO: Implement postBackup() method.
     }
 
     /**
@@ -139,7 +138,6 @@ class PostgreSQLSkeleton extends AbstractSkeleton
      */
     public function preRemove(\ArrayObject $project)
     {
-        // TODO: Implement preRemove() method.
     }
 
     /**
