@@ -1,25 +1,20 @@
-language: php
-
-cache: bundler
-
-php:
-  - 5.4
-  - 5.5
+language: c
 
 before_script:
-    - echo '' > ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
-    - composer install --prefer-source
-    - git config --global user.name travis-ci
-    - git config --global user.email travis@example.com
     - curl -L https://www.opscode.com/chef/install.sh | sudo bash
-    - gem install librarian-chef
+    - gem install librarian-chef --no-rdoc --no-ri
     - librarian-chef install
     - echo "cookbook_path [ \"/home/travis/build/Kunstmaan/skylab/cookbooks\" ]" > solo.rb
-    - sudo apt-get install apache2 libapache2-mod-fastcgi
-    - sudo a2enmod rewrite actions fastcgi alias version
     - sudo service mysql stop
+    - sudo apt-get -y purge mysql*
     - sudo rm -Rf /var/lib/mysql/
-    - sudo chef-solo --log_level debug -c solo.rb -o "skylab::default-nophp"
+    - sudo service postgresql stop
+    - sudo apt-get -y purge postgresql*
+    - sudo rm -Rf /etc/postgresql/
+    - sudo rm -Rf /etc/postgresql-common/
+    - sudo rm -Rf /var/lib/postgresql/
+    - sudo chef-solo --log_level debug -c solo.rb -o "skylab::default"
+    - composer install --prefer-source
 
 script:
     - ./compile --version 0.0.0
