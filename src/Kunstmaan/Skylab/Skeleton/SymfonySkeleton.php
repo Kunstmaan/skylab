@@ -97,6 +97,9 @@ class SymfonySkeleton extends AbstractSkeleton
             $this->processProvider->executeSudoCommand("rm -f " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/current");
             $this->processProvider->executeSudoCommand("ln -sf " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/" . $project["name"] . "/ " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/current");
         }
+
+        // prevent filemode issues in vendor folders
+        $this->processProvider->executeSudoCommand('find '.$this->fileSystemProvider->getProjectDirectory($project["name"])."/data/" . $project["name"] . '/vendor -type d -name .git -exec sh -c "cd {}; git config core.filemode false;" \;');
     }
 
     /**
