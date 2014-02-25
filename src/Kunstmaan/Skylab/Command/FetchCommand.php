@@ -111,10 +111,20 @@ EOT
         }
         $this->dialogProvider->logStep("Dropping the databases");
         $this->dialogProvider->logTask("Dropping the MySQL database");
-        $dbh = new \PDO('mysql:host=localhost;', "root", $this->app["config"]["mysql"]["password"]);
+        $dbh = new \PDO('mysql:host=localhost;', $this->app["config"]["mysql"]["user"], $this->app["config"]["mysql"]["password"]);
         $dbh->query("DROP DATABASE IF EXISTS " . $projectname);
         $this->dialogProvider->logTask("Dropping the PostgreSQL database");
-        $dbh = new \PDO("pgsql:host=localhost;dbname=template1", $this->app["config"]["postgresql"]["user"], $this->app["config"]["postgresql"]["password"]);
+        $dbh = new \PDO(
+            $this->dialogProvider->logQuery(
+                'pgsql:host=localhost;dbname=template1',
+                array(
+                    "user" =>$this->app["config"]["postgresql"]["user"],
+                    "password" => $this->app["config"]["postgresql"]["password"]
+                )
+            ),
+            $this->app["config"]["postgresql"]["user"],
+            $this->app["config"]["postgresql"]["password"]
+        );
         $dbh->query("DROP DATABASE IF EXISTS " . $projectname);
     }
 
