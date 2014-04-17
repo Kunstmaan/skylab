@@ -33,9 +33,9 @@ class BaseSkeleton extends AbstractSkeleton
             $permissionDefinition->addAcl("-R -m user::rwX");
             $permissionDefinition->addAcl("-R -m group::r-X");
             $permissionDefinition->addAcl("-R -m other::---");
-            $permissionDefinition->addAcl("-R -m u:" . $this->app["config"]["users"]["wwwuser"] . ":r-X");
-            $permissionDefinition->addAcl("-R -m u:" . $project["name"] . ":rwX");
-            $permissionDefinition->addAcl("-R -m u:" . $this->app["config"]["users"]["postgresuser"] . ":r-X");
+            $permissionDefinition->addAcl("-R -m u:@config.wwwuser@:r-X");
+            $permissionDefinition->addAcl("-R -m u:@project.user@:rwX");
+            $permissionDefinition->addAcl("-R -m u:@config.postgresuser@:r-X");
             $permissionDefinition->addAcl("-R -m group:admin:rwX");
             $project["permissions"]["/"] = $permissionDefinition;
         }
@@ -57,7 +57,7 @@ class BaseSkeleton extends AbstractSkeleton
             $permissionDefinition->setOwnership("-R @project.user@.@project.group@");
             $permissionDefinition->addAcl("-R -m user::rwX");
             $permissionDefinition->addAcl("-R -m group::r-X");
-            $permissionDefinition->addAcl("-R -m u:" . $this->app["config"]["users"]["wwwuser"] . ":r-X");
+            $permissionDefinition->addAcl("-R -m u:@config.wwwuser@:r-X");
             $permissionDefinition->addAcl("-R -m group:admin:r-X");
             $project["permissions"]["/stats"] = $permissionDefinition;
         }
@@ -69,7 +69,7 @@ class BaseSkeleton extends AbstractSkeleton
             $permissionDefinition->addAcl("-R -m user::rwX");
             $permissionDefinition->addAcl("-R -m group::r-X");
             $permissionDefinition->addAcl("-R -m other::---");
-            $permissionDefinition->addAcl("-R -m u:" . $this->app["config"]["users"]["wwwuser"] . ":rwX");
+            $permissionDefinition->addAcl("-R -m u:@config.wwwuser@:rwX");
             $project["permissions"]["/apachelogs"] = $permissionDefinition;
         }
         $this->fileSystemProvider->createDirectory($project, 'site');
@@ -80,7 +80,7 @@ class BaseSkeleton extends AbstractSkeleton
             $permissionDefinition->addAcl("-R -m user::rwX");
             $permissionDefinition->addAcl("-R -m group::r-X");
             $permissionDefinition->addAcl("-R -m other::---");
-            $permissionDefinition->addAcl("-R -m u:" . $this->app["config"]["users"]["wwwuser"] . ":r-X");
+            $permissionDefinition->addAcl("-R -m u:@config.wwwuser@:r-X");
             $project["permissions"]["/site"] = $permissionDefinition;
         }
         $this->fileSystemProvider->createDirectory($project, 'backup');
@@ -91,7 +91,7 @@ class BaseSkeleton extends AbstractSkeleton
             $permissionDefinition->addAcl("-R -m user::rwX");
             $permissionDefinition->addAcl("-R -m group::r-X");
             $permissionDefinition->addAcl("-R -m other::---");
-            $permissionDefinition->addAcl("-R -m u:" . $this->app["config"]["users"]["postgresuser"] . ":rwX");
+            $permissionDefinition->addAcl("-R -m u:@config.postgresuser@:rwX");
             $project["permissions"]["/backup"] = $permissionDefinition;
         }
         $this->fileSystemProvider->createDirectory($project, 'data');

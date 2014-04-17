@@ -3,7 +3,7 @@ language: c
 before_script:
     - curl -L https://www.opscode.com/chef/install.sh | sudo bash
     - gem install librarian-chef --no-rdoc --no-ri
-    - librarian-chef install
+    - librarian-chef install --verbose
     - echo "cookbook_path [ \"/home/travis/build/Kunstmaan/skylab/cookbooks\" ]" > solo.rb
     - sudo service mysql stop
     - sudo apt-get -y purge mysql*

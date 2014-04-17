@@ -34,7 +34,7 @@ class PHPSkeleton extends AbstractSkeleton
             $permissionDefinition->addAcl("-R -m user::rwX");
             $permissionDefinition->addAcl("-R -m group::r-X");
             $permissionDefinition->addAcl("-R -m other::---");
-            $permissionDefinition->addAcl("-R -m u:" . $this->app["config"]["users"]["wwwuser"] . ":r-X");
+            $permissionDefinition->addAcl("-R -m u:@config.wwwuser@:r-X");
             $project["permissions"]["/php5-fpm"] = $permissionDefinition;
         }
         $this->fileSystemProvider->createDirectory($project, 'tmp');
@@ -45,7 +45,7 @@ class PHPSkeleton extends AbstractSkeleton
             $permissionDefinition->addAcl("-R -m user::rwX");
             $permissionDefinition->addAcl("-R -m group::r-X");
             $permissionDefinition->addAcl("-R -m other::---");
-            $permissionDefinition->addAcl("-R -m u:" . $this->app["config"]["users"]["wwwuser"] . ":r-X");
+            $permissionDefinition->addAcl("-R -m u:@config.wwwuser@:r-X");
             $project["permissions"]["/tmp"] = $permissionDefinition;
         }
         $this->fileSystemProvider->render(
