@@ -35,7 +35,7 @@ class SymfonySkeleton extends AbstractSkeleton
             $permissionDefinition->addAcl("-R -m user::rwX");
             $permissionDefinition->addAcl("-R -m group::r-X");
             $permissionDefinition->addAcl("-R -m other::---");
-            $permissionDefinition->addAcl("-R -m u:" . $this->app["config"]["users"]["wwwuser"] . ":r-X");
+            $permissionDefinition->addAcl("-R -m u:@config.wwwuser@:r-X");
             $project["permissions"]["/data"] = $permissionDefinition;
         }
         $this->addReadWriteFolder("/data/" . $project["name"] . "/app/cache", $project);
@@ -68,7 +68,7 @@ class SymfonySkeleton extends AbstractSkeleton
         $permissionDefinition->addAcl("-R -m user::rwX");
         $permissionDefinition->addAcl("-R -m group::r-X");
         $permissionDefinition->addAcl("-R -m other::---");
-        $permissionDefinition->addAcl("-R -m u:" . $this->app["config"]["users"]["wwwuser"] . ":rwX");
+        $permissionDefinition->addAcl("-R -m u:@config.wwwuser@:rwX");
         $project["permissions"][$path] = $permissionDefinition;
     }
 

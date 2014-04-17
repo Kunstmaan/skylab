@@ -189,7 +189,7 @@ EOT
      */
     private function fetchFolder($folder, $hostname, $remoteFolder, $excludes, $links = false)
     {
-        $rsyncCommand = "rsync -r" . ($links ? "L" : "l") . "Dhz --info=progress2";
+        $rsyncCommand = "rsync --no-acls -r" . ($links ? "L" : "l") . "Dhz --info=progress2";
         foreach ($excludes as $exclude) {
             $rsyncCommand .= " --exclude=" . $exclude;
         }
