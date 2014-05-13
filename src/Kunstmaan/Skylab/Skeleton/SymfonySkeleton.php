@@ -99,7 +99,7 @@ class SymfonySkeleton extends AbstractSkeleton
         }
 
         // prevent filemode issues in vendor folders
-        $this->processProvider->executeSudoCommand('find '.$this->fileSystemProvider->getProjectDirectory($project["name"])."/data/" . $project["name"] . '/vendor -type d -name .git -exec sh -c "cd {}; git config core.filemode false;" \;');
+        $this->processProvider->executeSudoCommand('find '.$this->fileSystemProvider->getProjectDirectory($project["name"])."/data/" . $project["name"] . ' -type d -name .git -exec sh -c "cd {}; git config core.filemode false;" \;');
     }
 
     /**
