@@ -89,9 +89,9 @@ EOT
             $updateExcludes[] = "data/*";
 
             $this->fetchFolderIfExists(
-                $this->fileSystemProvider->getProjectDirectory($projectname),
+                $this->fileSystemProvider->getProjectDirectory($projectname). '/',
                 $hostname,
-                "/home/projects/" . $projectname,
+                "/home/projects/" . $projectname . '/*',
                 $updateExcludes
             );
 
