@@ -93,7 +93,7 @@ class AwstatsSkeleton extends AbstractSkeleton
     public function maintenance(\ArrayObject $project)
     {
         $this->dialogProvider->logConfig("Updating hostaliasses config file");
-        $hostmachine = $this->app["config"]["apache"]["hostmachine"];
+        $hostmachine = $this->app["config"]["webserver"]["hostmachine"];
         $serverAlias = $project["name"] . "." . $hostmachine . "\n";
         $serverAlias .= "www." . $project["name"] . "." . $hostmachine . "\n";
         if (isset($project["aliases"])) {

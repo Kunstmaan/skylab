@@ -2,12 +2,14 @@
 
 listen = /tmp/.{{ projectname }}-fpm.sock
 
-listen.owner = {{ projectuser }}
-listen.group = {{ projectgroup }}
-listen.mode = 0666
+{% if not develmode %}
+    listen.owner = {{ projectuser }}
+    listen.group = {{ projectgroup }}
+    listen.mode = 0666
 
-user = {{ projectuser }}
-group = {{ projectgroup}}
+    user = {{ projectuser }}
+    group = {{ projectgroup}}
+{% endif %}
 
 pm = dynamic
 
@@ -16,7 +18,7 @@ pm.start_servers = 5
 pm.min_spare_servers = 5
 pm.max_spare_servers = 10
 
-request_slowlog_timeout = 1s
+request_slowlog_timeout = {{ slowlog_timeout }}
 slowlog = {{ projectdir }}/apachelogs/phplog.slow
 
 php_admin_value[session.save_path]={{ projectdir }}/tmp
@@ -24,7 +26,3 @@ php_admin_value[upload_tmp_dir]={{ projectdir }}/tmp
 
 php_admin_value[newrelic.appname]="{{ projectname }}"
 php_admin_value[newrelic.enabled]= 1
-
-#php_admin_value[newrelic.framework] = "symfony"
-#php_admin_value[newrelic.framework] = "drupal"
-#php_admin_value[newrelic.framework.drupal.modules] = true

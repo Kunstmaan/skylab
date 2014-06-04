@@ -54,6 +54,9 @@ class SymfonySkeleton extends AbstractSkeleton
             $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/10permissions",
             array()
         );
+        if ($this->app["config"]["webserver"]["engine"] == 'nginx'){
+            $this->writeNginxFpmConfig($project);
+        }
     }
 
     /**
@@ -86,6 +89,17 @@ class SymfonySkeleton extends AbstractSkeleton
     {
     }
 
+    private function writeNginxFpmConfig(\ArrayObject $project){
+             $this->fileSystemProvider->render(
+                "/symfony/nginx.d/fpm.conf.twig",
+                $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/fpm.conf",
+                array(
+                    "projectdir" => $this->fileSystemProvider->getProjectDirectory($project["name"]),
+                    "projectname" => $project["name"],
+                )
+            );
+    }
+
     /**
      * @param \ArrayObject $project
      *
@@ -100,6 +114,10 @@ class SymfonySkeleton extends AbstractSkeleton
 
         // prevent filemode issues in vendor folders
         $this->processProvider->executeSudoCommand('find '.$this->fileSystemProvider->getProjectDirectory($project["name"])."/data/" . $project["name"] . ' -type d -name .git -exec sh -c "cd {}; git config core.filemode false;" \;');
+
+        if ($this->app["config"]["webserver"]["engine"] == 'nginx'){
+            $this->writeNginxFpmConfig($project);
+        }
     }
 
     /**

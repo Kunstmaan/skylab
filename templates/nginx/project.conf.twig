@@ -1,0 +1,11 @@
+server {
+    listen          {{port}};
+    server_name     {% for alias in aliases %}{{alias}} {% endfor %};
+    root            {{root}};
+    error_log       {{error_log}};
+    access_log      {{access_log}};
+
+    {% for config in configs %}
+        include         {{config}};
+    {% endfor %}
+}
