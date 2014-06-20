@@ -44,7 +44,7 @@ You can install Skylab to a specific directory by using the --install-dir option
 can be an absolute or relative path):
 
 ```
-$ curl -sSL https://raw.github.com/Kunstmaan/skylab/master/installer | php -- --install-dir=bin
+$ curl -sSL https://raw.github.com/Kunstmaan/skylab/master/installer | php -- --install-dir=/bin
 ```
 
 You can also install Skylab globally by running:
