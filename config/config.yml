@@ -39,6 +39,7 @@ skeletons:
     base:       Kunstmaan\Skylab\Skeleton\BaseSkeleton
     mysql:      Kunstmaan\Skylab\Skeleton\MySQLSkeleton
     apache:     Kunstmaan\Skylab\Skeleton\WebserverSkeleton
+    nginx:      Kunstmaan\Skylab\Skeleton\WebserverSkeleton
     php5:       Kunstmaan\Skylab\Skeleton\PHPSkeleton
     symfony:    Kunstmaan\Skylab\Skeleton\SymfonySkeleton
     awstats:    Kunstmaan\Skylab\Skeleton\AwstatsSkeleton
