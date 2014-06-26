@@ -18,6 +18,8 @@ pm.start_servers = 5
 pm.min_spare_servers = 5
 pm.max_spare_servers = 10
 
+catch_workers_output = yes
+
 request_slowlog_timeout = {{ slowlog_timeout }}
 slowlog = {{ projectdir }}/apachelogs/phplog.slow
 
