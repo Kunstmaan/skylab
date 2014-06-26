@@ -33,7 +33,7 @@ $ sudo chef-solo --log_level debug -c solo.rb -o "applications::packagemanager,g
 To actually get Skylab, run this command:
 
 ```
-$ curl -sS https://raw.github.com/Kunstmaan/skylab/master/installer | php
+$ curl -sSL https://raw.github.com/Kunstmaan/skylab/master/installer | php
 ```
 
 This will just check a few PHP settings and then download skylab.phar to your working directory. This file is the Skylab
@@ -44,13 +44,13 @@ You can install Skylab to a specific directory by using the --install-dir option
 can be an absolute or relative path):
 
 ```
-$ curl -sS https://raw.github.com/Kunstmaan/skylab/master/installer | php -- --install-dir=bin
+$ curl -sSL https://raw.github.com/Kunstmaan/skylab/master/installer | php -- --install-dir=/bin
 ```
 
 You can also install Skylab globally by running:
 
 ```
-$ curl -sS https://raw.github.com/Kunstmaan/skylab/master/installer | php
+$ curl -sSL https://raw.github.com/Kunstmaan/skylab/master/installer | php
 $ mv skylab.phar /usr/local/bin/skylab
 ```
 
@@ -162,4 +162,4 @@ Full details at [doc/SelfUpdateCommand.md](doc/SelfUpdateCommand.md)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/Kunstmaan/skylab/badges/quality-score.png?s=3d1f00bf9c2adbba818f274086db3ed4b2bcc4e2)](https://scrutinizer-ci.com/g/Kunstmaan/skylab/)
 
 
-*Documentation generated on 2014-01-02 09:13:57*
+*Documentation generated on 2014-06-20 16:04:40*
