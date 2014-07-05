@@ -13,10 +13,19 @@ listen = /tmp/.{{ projectname }}-fpm.sock
 
 pm = dynamic
 
-pm.max_children = 20
-pm.start_servers = 5
-pm.min_spare_servers = 5
-pm.max_spare_servers = 10
+#pm.max_children = 20
+#pm.start_servers = 5
+#pm.min_spare_servers = 5
+#pm.max_spare_servers = 10
+
+pm.max_children = 5
+pm.start_servers = 3
+pm.min_spare_servers = 2
+pm.max_spare_servers = 4
+
+pm.max_requests = 500
+
+catch_workers_output = yes
 
 request_slowlog_timeout = {{ slowlog_timeout }}
 slowlog = {{ projectdir }}/apachelogs/phplog.slow

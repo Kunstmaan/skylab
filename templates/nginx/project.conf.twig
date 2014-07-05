@@ -5,6 +5,10 @@ server {
     error_log       {{error_log}};
     access_log      {{access_log}};
 
+    location ~*  \.(jpg|jpeg|png|gif|ico|css|js|svg)$ {
+        expires 365d;
+    }
+
     {% for config in configs %}
         include         {{config}};
     {% endfor %}
