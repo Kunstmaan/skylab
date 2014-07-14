@@ -5,7 +5,7 @@ server {
     error_log       {{error_log}};
     access_log      {{access_log}};
 
-    location ~*  \.(jpg|jpeg|png|gif|ico|css|js|svg)$ {
+    location ~*  \.(jpg|jpeg|png|gif|ico|css|js|svg|woff)$ {
         expires 365d;
     }
 
