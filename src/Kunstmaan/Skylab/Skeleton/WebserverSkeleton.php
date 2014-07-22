@@ -206,7 +206,7 @@ class WebserverSkeleton extends AbstractSkeleton
             );
         } else {
             $serverAlias = "ServerAlias ";
-            foreach (aliases as $alias) {
+            foreach ($aliases as $alias) {
                 $serverAlias .= " " . $alias;
             }
             $serverAlias .= "\n";

@@ -111,7 +111,8 @@ class ProjectConfigProvider extends AbstractProvider
             "project.admin" => $this->app["config"]["apache"]["admin"],
             "project.dir" => $config["dir"],
             "config.projectsdir" => $this->app["config"]["projects"]["path"],
-            "project.name" => $config["name"]
+            "project.name" => $config["name"],
+            "project.statsurl" => "stats." . $config["url"],
         ));
 
         preg_match_all("/@(\w*?\.\w*?)@/", $value, $hits);
