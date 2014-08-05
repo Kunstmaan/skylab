@@ -7,6 +7,7 @@ server {
 
     location ~*  \.(jpg|jpeg|png|gif|ico|css|js|svg|woff)$ {
         expires 365d;
+        try_files $uri /app.php$is_args$args;
     }
 
     {% for config in configs %}
