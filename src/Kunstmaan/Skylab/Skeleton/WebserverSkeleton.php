@@ -199,8 +199,8 @@ class WebserverSkeleton extends AbstractSkeleton
                     "port" => $this->app["config"]["nginx"]["port"],
                     "aliases" => $aliases,
                     "root" => $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/current/web/",
-                    "error_log" => $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/apachelogs/nginx_access.log",
-                    "access_log" => $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/apachelogs/nginx_error.log",
+                    "error_log" => $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/apachelogs/nginx_error.log",
+                    "access_log" => $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/apachelogs/nginx_access.log",
                     "configs" => $configs
                 )
             );
