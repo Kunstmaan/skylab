@@ -2,6 +2,7 @@
 namespace Kunstmaan\Skylab\Skeleton;
 
 use Kunstmaan\Skylab\Entity\PermissionDefinition;
+use Symfony\Component\Finder\Finder;
 
 /**
  * ApacheSkeleton
@@ -87,19 +88,36 @@ class PHPSkeleton extends AbstractSkeleton
      */
     public function maintenance(\ArrayObject $project)
     {
-       if(!file_exists($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/php5-fpm.conf")){
-            $this->fileSystemProvider->render(
-                "/php/php5-fpm.conf.twig",
-                $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/php5-fpm.conf",
-                array(
-                    "projectdir" => $this->fileSystemProvider->getProjectDirectory($project["name"]),
-                    "projectname" => $project["name"],
-                    "projectuser" => $project["name"],
-                    "projectgroup" => $project["name"],
-                    "develmode" => $this->app["config"]["develmode"],
-                    "slowlog_timeout" => $this->app["config"]["php"]["slowlog_timeout"]
-                )
-            );
+
+
+       $this->processProvider->executeSudoCommand("mkdir -p " . $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/php5-fpm.d");
+        $this->fileSystemProvider->render(
+            "/php/php.d/01-base.conf.twig",
+            $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/php5-fpm.d/01-base.conf",
+            array(
+                "projectdir" => $this->fileSystemProvider->getProjectDirectory($project["name"]),
+                "projectname" => $project["name"],
+                "projectuser" => $project["name"],
+                "projectgroup" => $project["name"],
+                "develmode" => $this->app["config"]["develmode"],
+                "slowlog_timeout" => $this->app["config"]["php"]["slowlog_timeout"]
+            )
+        );
+
+        if(!file_exists($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/php5-fpm.d/02-tuning.conf")){
+             $this->fileSystemProvider->render(
+                 "/php/php.d/02-tuning.conf.twig",
+                 $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/php5-fpm.d/02-tuning.conf",
+                 array()
+             );
+        }
+
+        $this->processProvider->executeSudoCommand("rm " . $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/php5-fpm.conf");
+
+        $configs=$this->fileSystemProvider->getProjectPHPConfigs($project);
+
+        foreach ($configs as $config) {
+             $this->processProvider->executeSudoCommand("cat " . $config . " >> " . $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/php5-fpm.conf");
         }
 
         $this->processProvider->executeSudoCommand("mkdir -p /etc/php5/fpm/pool.d/");

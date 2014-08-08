@@ -148,6 +148,13 @@ class FileSystemProvider extends AbstractProvider
     }
 
     /**
+     * @return string
+     */
+    public function getPHPConfigTemplateDir()
+    {
+        return BASE_DIR . "/templates/php/php.d/";
+    }
+    /**
      * @param $callback
      */
     public function projectsLoop($callback)
@@ -171,6 +178,27 @@ class FileSystemProvider extends AbstractProvider
         $finder->files()
             ->sortByName()
             ->in($this->getProjectConfigDirectory($project["name"]) . "/apache.d/")
+            ->ignoreVCS(true)
+            ->ignoreDotFiles(true)
+            ->notName("*~")
+            ->notName("*.swp")
+            ->notName("*.bak")
+            ->notName("*-")
+            ->depth('== 0');
+
+        return iterator_to_array($finder);
+    }
+
+    /**
+     * @param  \ArrayObject $project
+     * @return array
+     */
+    public function getProjectPHPConfigs(\ArrayObject $project)
+    {
+        $finder = new Finder();
+        $finder->files()
+            ->sortByName()
+            ->in($this->getProjectConfigDirectory($project["name"]) . "/php5-fpm.d/")
             ->ignoreVCS(true)
             ->ignoreDotFiles(true)
             ->notName("*~")
