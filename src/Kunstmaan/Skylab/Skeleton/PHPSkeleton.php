@@ -87,18 +87,21 @@ class PHPSkeleton extends AbstractSkeleton
      */
     public function maintenance(\ArrayObject $project)
     {
-        $this->fileSystemProvider->render(
-            "/php/php5-fpm.conf.twig",
-            $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/php5-fpm.conf",
-            array(
-                "projectdir" => $this->fileSystemProvider->getProjectDirectory($project["name"]),
-                "projectname" => $project["name"],
-                "projectuser" => $project["name"],
-                "projectgroup" => $project["name"],
-                "develmode" => $this->app["config"]["develmode"],
-                "slowlog_timeout" => $this->app["config"]["php"]["slowlog_timeout"]
-            )
-        );
+       if(!file_exists($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/php5-fpm.conf")){
+            $this->fileSystemProvider->render(
+                "/php/php5-fpm.conf.twig",
+                $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/php5-fpm.conf",
+                array(
+                    "projectdir" => $this->fileSystemProvider->getProjectDirectory($project["name"]),
+                    "projectname" => $project["name"],
+                    "projectuser" => $project["name"],
+                    "projectgroup" => $project["name"],
+                    "develmode" => $this->app["config"]["develmode"],
+                    "slowlog_timeout" => $this->app["config"]["php"]["slowlog_timeout"]
+                )
+            );
+        }
+
         $this->processProvider->executeSudoCommand("mkdir -p /etc/php5/fpm/pool.d/");
         $this->processProvider->executeSudoCommand("ln -sf " . $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/php5-fpm.conf /etc/php5/fpm/pool.d/" . $project["name"] . ".conf");
 
@@ -106,6 +109,7 @@ class PHPSkeleton extends AbstractSkeleton
             $this->writeNginxFpmConfig($project);
         }
     }
+
 
     private function writeNginxFpmConfig(\ArrayObject $project){
              $this->fileSystemProvider->render(
