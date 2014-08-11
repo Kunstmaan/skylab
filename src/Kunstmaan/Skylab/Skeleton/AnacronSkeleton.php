@@ -59,9 +59,9 @@ class AnacronSkeleton extends AbstractSkeleton
             $this->processProvider->executeSudoCommand("cat " . $cronjob->getRealPath() . " >> " . $cronjobscript);
             $this->processProvider->executeSudoCommand("sed -i -e '\$a\\' " . $cronjobscript);
         }
-        $projectAnacrontab = $this->fileSystemProvider->getProjectDirectory($project["name"]) . "data/current/app/config/anacrontab";
+        $projectAnacrontab = $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/current/app/config/anacrontab";
         if (file_exists($projectAnacrontab)) {
-            $this->processProvider->executeSudoCommand($projectAnacrontab . " >> " . $cronjobscript);
+            $this->processProvider->executeSudoCommand("cat " . $projectAnacrontab . " >> " . $cronjobscript);
             $this->processProvider->executeSudoCommand("sed -i -e '\$a\\' " . $cronjobscript);
         }
         $this->processProvider->executeSudoCommand('printf "\n" >> ' . $cronjobscript);
