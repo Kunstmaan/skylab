@@ -140,8 +140,6 @@ class BaseSkeleton extends AbstractSkeleton
      */
     public function maintenance(\ArrayObject $project)
     {
-        $this->setPermissions($project);
-
     }
 
     /**
