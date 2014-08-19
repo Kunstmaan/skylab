@@ -52,6 +52,8 @@ class AnacronSkeleton extends AbstractSkeleton
         $crontab = $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/anacrontab";
         // cleanup
         $this->processProvider->executeSudoCommand("rm -f " . $cronjobscript);
+        $this->processProvider->executeSudoCommand("rm -f " . $crontab);
+
         $this->processProvider->executeSudoCommand("crontab -r -u " . $project["name"], true);
         // generate anacronjobs file
         $cronjobs = $this->fileSystemProvider->getDotDFiles($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/fcron.d/");
@@ -61,10 +63,11 @@ class AnacronSkeleton extends AbstractSkeleton
         }
         $projectAnacrontab = $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/current/app/config/anacrontab";
         if (file_exists($projectAnacrontab)) {
-            $this->processProvider->executeSudoCommand("cat " . $projectAnacrontab . " >> " . $cronjobscript);
-            $this->processProvider->executeSudoCommand("sed -i -e '\$a\\' " . $cronjobscript);
+            $this->processProvider->executeSudoCommand("cat " . $projectAnacrontab . " >> " . $crontab);
+            $this->processProvider->executeSudoCommand("sed -i -e '\$a\\' " . $crontab);
         }
-        $this->processProvider->executeSudoCommand('printf "\n" >> ' . $cronjobscript);
+        $this->processProvider->executeSudoCommand('printf "\n" >> ' . $crontab);
+        $this->processProvider->executeSudoCommand('echo "' . '0 3 * * * ' . $cronjobscript . '" >> ' . $crontab);
         // load the anacrontab file
         $this->processProvider->executeSudoCommand("crontab -u " . $project["name"] . " " . $crontab);
     }
