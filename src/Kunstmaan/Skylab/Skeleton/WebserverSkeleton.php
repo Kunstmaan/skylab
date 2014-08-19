@@ -192,11 +192,17 @@ class WebserverSkeleton extends AbstractSkeleton
             foreach ($finder as $config) {
                 $configs[$config->getFilename()] = $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/" . $config->getFilename();
             }
+
+            $ports=$project["ports"];
+            if(is_null($ports)){
+                $ports=array("80", "[::]:80");
+            }
+
             $this->fileSystemProvider->render(
                 "/nginx/project.conf.twig",
                 $this->app["config"]["nginx"]["sitesavailable"]. "/" . $project["name"] . ".conf",
                 array(
-                    "ports" => $project["ports"],
+                    "ports" => $ports,
                     "aliases" => $aliases,
                     "root" => $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/current/web/",
                     "error_log" => $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/apachelogs/nginx_error.log",
