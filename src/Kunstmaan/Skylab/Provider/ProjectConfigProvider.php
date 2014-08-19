@@ -60,6 +60,11 @@ class ProjectConfigProvider extends AbstractProvider
                         $config["aliases"][] = (string) $alias["value"];
                     }
                     break;
+                case "project.ports":
+                    foreach ($var->{'item'} as $port) {
+                        $config["ports"][] = (string) $port["value"];
+                    }
+                    break;
                 default:
                     $config[str_replace("project.", "", $tag)] = (string) $var["value"];
             }

@@ -196,7 +196,7 @@ class WebserverSkeleton extends AbstractSkeleton
                 "/nginx/project.conf.twig",
                 $this->app["config"]["nginx"]["sitesavailable"]. "/" . $project["name"] . ".conf",
                 array(
-                    "port" => $this->app["config"]["nginx"]["port"],
+                    "ports" => $project["ports"],
                     "aliases" => $aliases,
                     "root" => $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/current/web/",
                     "error_log" => $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/apachelogs/nginx_error.log",
@@ -269,6 +269,7 @@ class WebserverSkeleton extends AbstractSkeleton
     public function writeConfig(\ArrayObject $project, \SimpleXMLElement $config)
     {
         $config = $this->projectConfigProvider->addVar($config, 'project.url', $project["url"]);
+        $config = $this->projectConfigProvider->addVarWithItems($config, 'project.ports', array("80", "[::]:80"));
         if (isset($project["aliases"])) {
             $config = $this->projectConfigProvider->addVarWithItems($config, 'project.aliases', $project["aliases"]);
         }
