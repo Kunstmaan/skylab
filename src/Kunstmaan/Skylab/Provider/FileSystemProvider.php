@@ -148,6 +148,14 @@ class FileSystemProvider extends AbstractProvider
     }
 
     /**
+     * @return string
+     */
+    public function getNginxConfigTemplateDir()
+    {
+        return BASE_DIR . "/templates/nginx/";
+    }
+
+    /**
      * @param $callback
      */
     public function projectsLoop($callback)
@@ -182,6 +190,26 @@ class FileSystemProvider extends AbstractProvider
         return iterator_to_array($finder);
     }
 
+    /**
+     * @param  \ArrayObject $project
+     * @return array
+     */
+    public function getProjectNginxConfigs(\ArrayObject $project)
+    {
+        $finder = new Finder();
+        $finder->files()
+            ->sortByName()
+            ->in($this->getProjectConfigDirectory($project["name"]) . "/nginx.d/")
+            ->ignoreVCS(true)
+            ->ignoreDotFiles(true)
+            ->notName("*~")
+            ->notName("*.swp")
+            ->notName("*.bak")
+            ->notName("*-")
+            ->depth('== 0');
+
+        return iterator_to_array($finder);
+    }
     /**
      * @param $path
      * @param $content

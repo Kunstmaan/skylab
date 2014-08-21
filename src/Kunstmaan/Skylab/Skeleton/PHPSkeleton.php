@@ -60,9 +60,6 @@ class PHPSkeleton extends AbstractSkeleton
                 "projectdir" => $this->fileSystemProvider->getProjectDirectory($project["name"])
             )
         );
-        if ($this->app["config"]["webserver"]["engine"] == 'nginx'){
-            $this->writeNginxFpmConfig($project);
-        }
     }
 
     /**
@@ -102,21 +99,8 @@ class PHPSkeleton extends AbstractSkeleton
         $this->processProvider->executeSudoCommand("mkdir -p /etc/php5/fpm/pool.d/");
         $this->processProvider->executeSudoCommand("ln -sf " . $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/php5-fpm.conf /etc/php5/fpm/pool.d/" . $project["name"] . ".conf");
 
-        if ($this->app["config"]["webserver"]["engine"] == 'nginx'){
-            $this->writeNginxFpmConfig($project);
-        }
     }
 
-    private function writeNginxFpmConfig(\ArrayObject $project){
-             $this->fileSystemProvider->render(
-                "/php/nginx.d/fpm.conf.twig",
-                $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/fpm.conf",
-                array(
-                    "projectdir" => $this->fileSystemProvider->getProjectDirectory($project["name"]),
-                    "projectname" => $project["name"],
-                )
-            );
-    }
 
     /**
      * @param \ArrayObject $project

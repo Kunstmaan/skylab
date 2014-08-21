@@ -29,11 +29,31 @@ class WebserverSkeleton extends AbstractSkeleton
     {
         if ($this->app["config"]["webserver"]["engine"] == 'nginx'){
             $this->prepareNginxDirectories($project);
-            $this->fileSystemProvider->render(
-                "/nginx/extra.conf.twig",
-                $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/extra.conf.twig",
-                array()
-            );
+
+            $hostmachine = $this->app["config"]["webserver"]["hostmachine"];
+            $aliases = $project["aliases"];
+            $aliases[] = $project["name"] . "." . $hostmachine;
+            $aliases[] = "www." .$project["name"] . "." . $hostmachine;
+
+            // render templates
+            $finder = new Finder();
+            $finder->files()->in($this->fileSystemProvider->getNginxConfigTemplateDir())->name("*.conf.twig");
+             foreach ($finder as $config) {
+                $this->fileSystemProvider->render(
+                    "/nginx/" . $config->getFilename(),
+                    $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/" . str_replace(".conf.twig", "", $config->getFilename()),
+                    array(
+                        "projectname" => $project["name"],
+                        "port" => $this->app["config"]["nginx"]["port"],
+                        "aliases" => $aliases,
+                        "root" => $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/current/web/",
+                        "error_log" => $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/apachelogs/nginx_error.log",
+                        "access_log" => $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/apachelogs/nginx_access.log",
+                        "configs" => $configs
+                    )
+                );
+            }
+
         } else {
             $this->processProvider->executeSudoCommand("mkdir -p " . $this->app["config"]["apache"]["vhostdir"]);
             $this->processProvider->executeSudoCommand("mkdir -p " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/apachelogs");
@@ -182,6 +202,8 @@ class WebserverSkeleton extends AbstractSkeleton
         $aliases = $project["aliases"];
         $aliases[] = $project["name"] . "." . $hostmachine;
         $aliases[] = "www." .$project["name"] . "." . $hostmachine;
+        
+        $configcontent = '';
 
         if ($this->app["config"]["webserver"]["engine"] == 'nginx'){
             $this->prepareNginxDirectories($project);
@@ -192,18 +214,17 @@ class WebserverSkeleton extends AbstractSkeleton
             foreach ($finder as $config) {
                 $configs[$config->getFilename()] = $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/" . $config->getFilename();
             }
-            $this->fileSystemProvider->render(
-                "/nginx/project.conf.twig",
-                $this->app["config"]["nginx"]["sitesavailable"]. "/" . $project["name"] . ".conf",
-                array(
-                    "port" => $this->app["config"]["nginx"]["port"],
-                    "aliases" => $aliases,
-                    "root" => $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/current/web/",
-                    "error_log" => $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/apachelogs/nginx_error.log",
-                    "access_log" => $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/apachelogs/nginx_access.log",
-                    "configs" => $configs
-                )
-            );
+
+            foreach ($this->fileSystemProvider->getProjectNginxConfigs($project) as $config) {
+                $configcontent .= "\n#BEGIN " . $config->getRealPath() . "\n\n";
+                $configcontent .= $this->projectConfigProvider->searchReplacer(file_get_contents($config->getRealPath()), $project);
+                $configcontent .= "\n#END " . $config->getRealPath() . "\n\n";
+            }
+
+            $this->fileSystemProvider->writeProtectedFile($this->app["config"]["nginx"]["sitesavailable"]. "/" . $project["name"] . ".conf", $configcontent);
+
+
+
         } else {
             $serverAlias = "ServerAlias ";
             foreach ($aliases as $alias) {
@@ -211,7 +232,7 @@ class WebserverSkeleton extends AbstractSkeleton
             }
             $serverAlias .= "\n";
             $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/05aliases", $serverAlias);
-            $configcontent = "";
+ 
             /** @var \SplFileInfo $config */
             foreach ($this->fileSystemProvider->getProjectApacheConfigs($project) as $config) {
                 $configcontent .= "\n#BEGIN " . $config->getRealPath() . "\n\n";
