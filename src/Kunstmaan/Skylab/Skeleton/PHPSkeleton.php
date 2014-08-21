@@ -60,9 +60,6 @@ class PHPSkeleton extends AbstractSkeleton
                 "projectdir" => $this->fileSystemProvider->getProjectDirectory($project["name"])
             )
         );
-        if ($this->app["config"]["webserver"]["engine"] == 'nginx'){
-            $this->writeNginxFpmConfig($project);
-        }
     }
 
     /**
