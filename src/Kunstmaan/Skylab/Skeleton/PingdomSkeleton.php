@@ -50,7 +50,15 @@ class PingdomSkeleton extends AbstractSkeleton
      */
     public function maintenance(\ArrayObject $project)
     {
-        // TODO: Implement maintenance() method.
+
+        $username = $this->app["config"]["pingdom"]["username"];
+        $password = $this->app["config"]["pingdom"]["password"];
+        $token    = $this->app["config"]["pingdom"]["token"];
+
+        $pingdom = new \Pingdom\Client($username, $password, $token);
+
+        $pingdom->addHTTPCheck($project['name'], $project['url'], "/", "true", "true", "true", "10426046, 10504851");
+
     }
 
     /**

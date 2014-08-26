@@ -8,12 +8,18 @@
             "email": "roderik@vanderveer.be"
         }
     ],
+    "repositories": [{
+            "url": "https://github.com/thomasmeeus/pingdom.git",
+            "type": "vcs"
+        }
+    ],
     "require": {
         "cilex/cilex":              "1.0.*",
         "symfony/yaml":             "~2.1",
         "symfony/serializer":       "~2.1",
         "roderik/pwgen-php":        "0.1.x",
-        "roderik/cilex-twig":       "1.0.x"
+        "roderik/cilex-twig":       "1.0.x",
+        "sgrodzicki/pingdom":       "dev-master"
     },
     "autoload": {
         "psr-0": { "Kunstmaan": "src/" }

@@ -3,8 +3,8 @@ projects:
     backuppath: "/home/backupped-projects"
 
 users:
-    superuser:      root
-    supergroup:     root
+    superuser:      thomas
+    supergroup:     staff
     wwwuser:        nginx
     postgresuser:   postgres
 
@@ -35,6 +35,11 @@ postgresql:
     user:     skylab
     password: password
 
+pingdom:
+    username:
+    password:
+    token:
+
 skeletons:
     base:       Kunstmaan\Skylab\Skeleton\BaseSkeleton
     mysql:      Kunstmaan\Skylab\Skeleton\MySQLSkeleton
@@ -56,4 +61,4 @@ skeletons:
     dailycron:  false
 
 debug: true
-develmode: true
+develmode: false
