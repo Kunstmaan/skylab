@@ -57,8 +57,8 @@ EOT
 
         if (!$this->input->getOption('quick')) {
             $this->fileSystemProvider->projectsLoop(function ($project) {
-             $this->dialogProvider->logStep("Running fixperms on " . $project["name"]);
-             $this->skeletonProvider->findSkeleton('base')->setPermissions(new \ArrayObject($project));
+                $this->dialogProvider->logStep("Running fixperms on " . $project["name"]);
+                $this->skeletonProvider->findSkeleton('base')->setPermissions(new \ArrayObject($project));
             });
         }
     }

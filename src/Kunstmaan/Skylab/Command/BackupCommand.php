@@ -47,7 +47,7 @@ EOT
             }, new \ArrayObject($project["skeletons"]));
             if (!$this->input->getOption('quick')) {
                 $this->dialogProvider->logTask("Tarring the project folder");
-                $this->fileSystemProvider->runTar($project, $this->output);
+                $this->fileSystemProvider->runTar($project);
             }
             $this->skeletonProvider->skeletonLoop(function (AbstractSkeleton $theSkeleton) use ($project) {
                 $this->dialogProvider->logTask("Running postBackup for skeleton " . $theSkeleton->getName());

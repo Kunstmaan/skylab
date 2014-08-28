@@ -14,7 +14,7 @@ class Compiler
     /**
      * Compiles skylab into a single phar file
      *
-     * @param $version
+     * @param string $version
      * @param  string            $pharFile The full path to the file to create
      * @throws \RuntimeException
      */

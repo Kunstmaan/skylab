@@ -59,10 +59,10 @@ EOT
         $returnCode = $command->run($input, $this->output);
 
         if (!$returnCode) {
-            $this->permissionsProvider->killProcesses($projectname, $this->output);
+            $this->permissionsProvider->killProcesses($projectname);
         }
 
-        $project = $this->projectConfigProvider->loadProjectConfig($projectname, $this->output);
+        $project = $this->projectConfigProvider->loadProjectConfig($projectname);
 
         $this->skeletonProvider->skeletonLoop(function (AbstractSkeleton $skeleton) use ($project) {
             $this->dialogProvider->logTask("Running preRemove for skeleton " . $skeleton->getName());
@@ -70,7 +70,7 @@ EOT
         }, new \ArrayObject($project["skeletons"]));
 
         $this->dialogProvider->logTask("Deleting the project folder at " . $this->fileSystemProvider->getProjectDirectory($projectname));
-        $this->fileSystemProvider->removeProjectDirectory($project, $this->output);
+        $this->fileSystemProvider->removeProjectDirectory($project);
 
         $this->skeletonProvider->skeletonLoop(function (AbstractSkeleton $skeleton) use ($project) {
             $this->dialogProvider->logTask("Running postRemove for skeleton " . $skeleton->getName());

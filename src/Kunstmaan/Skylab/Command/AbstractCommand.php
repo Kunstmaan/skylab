@@ -25,6 +25,9 @@ abstract class AbstractCommand extends Command
         $this->doPostExecute();
     }
 
+    /**
+     * @return void
+     */
     abstract protected function doExecute();
 
     /**
@@ -40,7 +43,7 @@ abstract class AbstractCommand extends Command
 
         if (defined('SKYLAB_DEV_WARNING_TIME') && $this->getName() !== 'self-update') {
             if (time() > SKYLAB_DEV_WARNING_TIME) {
-                $this->dialogProvider->logWarning($this->output, OutputInterface::VERBOSITY_NORMAL, 'Warning: This build of Skylab is over 30 days old. It is recommended to update it by running "' . $_SERVER['PHP_SELF'] . ' self-update" to get the latest version.');
+                $this->dialogProvider->logWarning('Warning: This build of Skylab is over 30 days old. It is recommended to update it by running "' . $_SERVER['PHP_SELF'] . ' self-update" to get the latest version.');
             }
         }
     }

@@ -43,13 +43,13 @@ EOT
             throw new RuntimeException("A project with name $projectname already exists!");
         } else {
             $this->dialogProvider->logTask("Creating project directory for $projectname");
-            $this->fileSystemProvider->createProjectDirectory($projectname, $this->output);
+            $this->fileSystemProvider->createProjectDirectory($projectname);
         }
         $project = new \ArrayObject();
         $project["name"] = $projectname;
         $project["dir"] = $this->fileSystemProvider->getProjectDirectory($projectname);
-        $this->skeletonProvider->applySkeleton($project, $this->skeletonProvider->findSkeleton("base", $this->output), $this->output);
-        $this->projectConfigProvider->writeProjectConfig($project, $this->output);
+        $this->skeletonProvider->applySkeleton($project, $this->skeletonProvider->findSkeleton("base"));
+        $this->projectConfigProvider->writeProjectConfig($project);
 
     }
 }

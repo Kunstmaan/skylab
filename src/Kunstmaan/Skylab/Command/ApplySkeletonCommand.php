@@ -41,8 +41,7 @@ EOT
     protected function doExecute()
     {
         if ($this->input->getOption('list')) {
-            $this->skeletonProvider->listSkeletons($this->output);
-
+            $this->skeletonProvider->listSkeletons();
             return;
         }
         $projectname = $this->dialogProvider->askFor("Please enter the name of the project", 'project');
@@ -51,10 +50,10 @@ EOT
             throw new RuntimeException("A project with name $projectname should already exists!");
         }
         $skeletonname = $this->dialogProvider->askFor("Please enter the name of the skeleton", 'skeleton');
-        $theSkeleton = $this->skeletonProvider->findSkeleton($skeletonname, $this->output);
-        $project = $this->projectConfigProvider->loadProjectConfig($projectname, $this->output);
-        $this->skeletonProvider->applySkeleton($project, $theSkeleton, $this->output);
-        $this->projectConfigProvider->writeProjectConfig($project, $this->output);
+        $theSkeleton = $this->skeletonProvider->findSkeleton($skeletonname);
+        $project = $this->projectConfigProvider->loadProjectConfig($projectname);
+        $this->skeletonProvider->applySkeleton($project, $theSkeleton);
+        $this->projectConfigProvider->writeProjectConfig($project);
     }
 
 }

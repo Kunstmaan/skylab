@@ -42,7 +42,7 @@ EOT
 
         $this->dialogProvider->logStep("Checking preconditions");
         $this->dialogProvider->logTask("Checking the server");
-        $exists = $this->remoteProjectExists($projectname, $hostname);
+        $exists = $this->isRemoteProjectAvailable($projectname, $hostname);
         if (!$exists) {
             throw new \RuntimeException("The project " . $projectname . " does not exist on " . $hostname);
         }
@@ -154,7 +154,7 @@ EOT
      * @param string $hostname
      * @return bool
      */
-    private function remoteProjectExists($projectname, $hostname)
+    private function isRemoteProjectAvailable($projectname, $hostname)
     {
         $command = "ssh " . $hostname . " 'test -d /home/projects/" . $projectname . " && echo found'";
         $this->dialogProvider->logCommand($command);
