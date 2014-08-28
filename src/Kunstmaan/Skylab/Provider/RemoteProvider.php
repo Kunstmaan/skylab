@@ -22,7 +22,7 @@ class RemoteProvider extends AbstractProvider
      * @param $url
      * @param  string $contentType
      * @param  string $filename
-     * @return mixed
+     * @return string
      */
     public function curl($url, $contentType = null, $filename = null)
     {
@@ -49,6 +49,10 @@ class RemoteProvider extends AbstractProvider
         return false;
     }
 
+    /**
+     * @param string|null $filename
+     * @param resource $ch
+     */
     private function setDownloadHeaders($filename, $ch)
     {
         if ($filename) {

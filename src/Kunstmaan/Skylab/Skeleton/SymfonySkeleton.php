@@ -54,14 +54,14 @@ class SymfonySkeleton extends AbstractSkeleton
             $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/10permissions",
             array()
         );
-        if ($this->app["config"]["webserver"]["engine"] == 'nginx'){
+        if ($this->app["config"]["webserver"]["engine"] == 'nginx') {
             $this->writeNginxFpmConfig($project);
         }
     }
 
     /**
      * @param $path
-     * @param \ArrayObject $project
+     * @param  \ArrayObject $project
      * @return \ArrayObject
      */
     private function addReadWriteFolder($path, \ArrayObject $project)
@@ -74,6 +74,7 @@ class SymfonySkeleton extends AbstractSkeleton
         $permissionDefinition->addAcl("-R -m other::---");
         $permissionDefinition->addAcl("-R -m u:@config.wwwuser@:rwX");
         $project["permissions"][$path] = $permissionDefinition;
+
         return $project;
     }
 
@@ -91,7 +92,8 @@ class SymfonySkeleton extends AbstractSkeleton
     {
     }
 
-    private function writeNginxFpmConfig(\ArrayObject $project){
+    private function writeNginxFpmConfig(\ArrayObject $project)
+    {
              $this->fileSystemProvider->render(
                 "/symfony/nginx.d/fpm.conf.twig",
                 $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/fpm.conf",

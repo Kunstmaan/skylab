@@ -43,13 +43,13 @@ class SkeletonProvider extends AbstractProvider
     }
 
     /**
-     * @param  AbstractSkeleton $theSkeleton
-     * @param \Kunstmaan\Skylab\Utility\DependencySolver $dependencies
+     * @param  AbstractSkeleton                           $theSkeleton
+     * @param  \Kunstmaan\Skylab\Utility\DependencySolver $dependencies
      * @return \ArrayObject
      */
     private function resolveDependencies(AbstractSkeleton $theSkeleton, DependencySolver $dependencies)
     {
-        if (!$dependencies->itemExists($theSkeleton->getName())){
+        if (!$dependencies->itemExists($theSkeleton->getName())) {
             $skeletonDeps = $theSkeleton->dependsOn();
             $dependencies->add($theSkeleton->getName(), $skeletonDeps);
             foreach ($skeletonDeps as $skeletonDependencyName) {
@@ -88,7 +88,7 @@ class SkeletonProvider extends AbstractProvider
     }
 
     /**
-     * @param $callback
+     * @param \Closure $callback
      * @param \ArrayObject $skeletons
      */
     public function skeletonLoop($callback, \ArrayObject $skeletons = null)
@@ -99,7 +99,7 @@ class SkeletonProvider extends AbstractProvider
         $dependencies = new DependencySolver();
         foreach ($skeletons as $skeleton) {
             $theSkeleton = $this->findSkeleton($skeleton);
-            if ($theSkeleton){
+            if ($theSkeleton) {
                 $this->resolveDependencies($theSkeleton, $dependencies);
             }
         }

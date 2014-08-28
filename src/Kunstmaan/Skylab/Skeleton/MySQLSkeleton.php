@@ -134,8 +134,8 @@ class MySQLSkeleton extends AbstractSkeleton
     }
 
     /**
-     * @param \ArrayObject $project
-     * @param \SimpleXMLElement $config
+     * @param  \ArrayObject      $project
+     * @param  \SimpleXMLElement $config
      * @return \SimpleXMLElement
      */
     public function writeConfig(\ArrayObject $project, \SimpleXMLElement $config)
@@ -144,6 +144,7 @@ class MySQLSkeleton extends AbstractSkeleton
         $config = $this->projectConfigProvider->addVar($config, 'project.mysqlpass', $project["mysqlpass"]);
         $config = $this->projectConfigProvider->addVar($config, 'project.mysqldbname', $project["mysqldbname"]);
         $config = $this->projectConfigProvider->addVar($config, 'project.mysqlserver', $project["mysqlserver"]);
+
         return $config;
     }
 

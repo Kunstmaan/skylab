@@ -41,7 +41,7 @@ class FileSystemProvider extends AbstractProvider
     }
 
     /**
-     * @param $path
+     * @param string $path
      * @return SplFileInfo[]
      */
     public function getDotDFiles($path)
@@ -156,7 +156,7 @@ class FileSystemProvider extends AbstractProvider
     }
 
     /**
-     * @param $callback
+     * @param \Closure $callback
      */
     public function projectsLoop($callback)
     {

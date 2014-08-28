@@ -101,7 +101,6 @@ class PHPSkeleton extends AbstractSkeleton
 
     }
 
-
     /**
      * @param \ArrayObject $project
      *

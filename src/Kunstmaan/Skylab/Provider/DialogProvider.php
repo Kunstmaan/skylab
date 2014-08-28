@@ -41,8 +41,8 @@ class DialogProvider extends AbstractProvider
     }
 
     /**
-     * @param $message
-     * @param  null              $argumentname
+     * @param string $message
+     * @param  string|null              $argumentname
      * @param  null              $default
      * @return string
      * @throws \RuntimeException
@@ -66,6 +66,7 @@ class DialogProvider extends AbstractProvider
         } else {
             $var = $this->dialog->ask($this->output, '<question>' . $message . '</question> ');
         }
+
         return $var;
     }
 
@@ -113,7 +114,7 @@ class DialogProvider extends AbstractProvider
     }
 
     /**
-     * @param  string $message
+     * @param  string   $message
      * @param  string[] $extra
      * @return string
      */
@@ -176,6 +177,9 @@ class DialogProvider extends AbstractProvider
         $this->output->writeln("<fg=black;bg=yellow;options=bold>\n\n" . $message . "\n</fg=black;bg=yellow;options=bold>\n\n");
     }
 
+    /**
+     * @param string $txt
+     */
     public static function logo(OutputInterface $output, $verbosity, $txt)
     {
         if ($output->getVerbosity() >= $verbosity) {
@@ -186,8 +190,8 @@ class DialogProvider extends AbstractProvider
 
     /**
      * @param OutputInterface $output
-     *                                @param $verbosity
-     *                                @param $startTime
+     * @param $verbosity
+     * @param $startTime
      */
     public static function logStatistics(OutputInterface $output, $verbosity, $startTime)
     {

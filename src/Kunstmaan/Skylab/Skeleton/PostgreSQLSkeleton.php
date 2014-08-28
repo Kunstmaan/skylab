@@ -163,8 +163,8 @@ class PostgreSQLSkeleton extends AbstractSkeleton
     }
 
     /**
-     * @param \ArrayObject $project
-     * @param \SimpleXMLElement $config
+     * @param  \ArrayObject      $project
+     * @param  \SimpleXMLElement $config
      * @return \SimpleXMLElement
      */
     public function writeConfig(\ArrayObject $project, \SimpleXMLElement $config)
@@ -173,6 +173,7 @@ class PostgreSQLSkeleton extends AbstractSkeleton
         $config = $this->projectConfigProvider->addVar($config, 'project.dbpass', $project["dbpass"]);
         $config = $this->projectConfigProvider->addVar($config, 'project.dbname', $project["dbname"]);
         $config = $this->projectConfigProvider->addVar($config, 'project.dbserver', $project["dbserver"]);
+
         return $config;
     }
 

@@ -12,8 +12,8 @@ class WebserverSkeleton extends AbstractSkeleton
 
     const NAME = "apache";
 
-
-    private function prepareNginxDirectories(\ArrayObject $project){
+    private function prepareNginxDirectories(\ArrayObject $project)
+    {
         $this->processProvider->executeSudoCommand("mkdir -p " . $this->app["config"]["nginx"]["sitesavailable"]);
         $this->processProvider->executeSudoCommand("mkdir -p " . $this->app["config"]["nginx"]["sitesenabled"]);
         $this->processProvider->executeSudoCommand("mkdir -p " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/apachelogs");
@@ -27,7 +27,7 @@ class WebserverSkeleton extends AbstractSkeleton
      */
     public function create(\ArrayObject $project)
     {
-        if ($this->app["config"]["webserver"]["engine"] == 'nginx'){
+        if ($this->app["config"]["webserver"]["engine"] == 'nginx') {
             $this->prepareNginxDirectories($project);
 
             $hostmachine = $this->app["config"]["webserver"]["hostmachine"];
@@ -99,7 +99,7 @@ class WebserverSkeleton extends AbstractSkeleton
      */
     public function preMaintenance()
     {
-        if ($this->app["config"]["webserver"]["engine"] == 'nginx'){
+        if ($this->app["config"]["webserver"]["engine"] == 'nginx') {
             $this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["nginx"]["sitesavailable"] . "/*");
             $this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["nginx"]["sitesenabled"] . "/*");
         } else {
@@ -113,7 +113,7 @@ class WebserverSkeleton extends AbstractSkeleton
     public function postMaintenance()
     {
         $this->writeHostFile();
-        if ($this->app["config"]["webserver"]["engine"] == 'nginx'){
+        if ($this->app["config"]["webserver"]["engine"] == 'nginx') {
             $finder = new Finder();
             $finder->files()->in($this->app["config"]["nginx"]["sitesavailable"])->name("*.conf");
             /** @var SplFileInfo $config */
@@ -202,10 +202,10 @@ class WebserverSkeleton extends AbstractSkeleton
         $aliases = $project["aliases"];
         $aliases[] = $project["name"] . "." . $hostmachine;
         $aliases[] = "www." .$project["name"] . "." . $hostmachine;
-        
+
         $configcontent = '';
 
-        if ($this->app["config"]["webserver"]["engine"] == 'nginx'){
+        if ($this->app["config"]["webserver"]["engine"] == 'nginx') {
             $this->prepareNginxDirectories($project);
             foreach ($this->fileSystemProvider->getProjectNginxConfigs($project) as $config) {
                 $configcontent .= "\n#BEGIN " . $config->getRealPath() . "\n\n";
@@ -220,7 +220,7 @@ class WebserverSkeleton extends AbstractSkeleton
             }
             $serverAlias .= "\n";
             $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/05aliases", $serverAlias);
- 
+
             /** @var \SplFileInfo $config */
             foreach ($this->fileSystemProvider->getProjectApacheConfigs($project) as $config) {
                 $configcontent .= "\n#BEGIN " . $config->getRealPath() . "\n\n";
