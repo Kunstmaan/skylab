@@ -2,7 +2,7 @@ maintenance
 -----------
 
 * Description: Run maintenance on all Skylab projects
-* Usage: `maintenance [--hideLogo] [--no-interactive]`
+* Usage: `maintenance [--hideLogo] [--no-interactive] [--quick]`
 * Aliases: <none>
 
 The <info>maintenance</info> command will run the maintenance commands of all skeletons on a project. Most notably, it
@@ -31,6 +31,16 @@ will create the apache config files and make sure the the databases are availabl
 * Is value required: no
 * Is multiple: no
 * Description: If set, no questions will be asked
+* Default: `false`
+
+**quick:**
+
+* Name: `--quick`
+* Shortcut: <none>
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Description: If set, no fixperms will be executed
 * Default: `false`
 
 **help:**
@@ -103,4 +113,4 @@ will create the apache config files and make sure the the databases are availabl
 * Description: Do not ask any interactive question.
 * Default: `false`
 
-*Documentation generated on 2014-06-20 16:04:39*
+*Documentation generated on 2014-08-28 23:08:47*

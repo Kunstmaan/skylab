@@ -112,4 +112,4 @@ The <info>permissions</info> command will fix the permissions of a project.
 * Description: Do not ask any interactive question.
 * Default: `false`
 
-*Documentation generated on 2014-06-20 16:04:39*
+*Documentation generated on 2014-08-28 23:08:47*
