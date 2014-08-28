@@ -49,7 +49,6 @@ class WebserverSkeleton extends AbstractSkeleton
                         "root" => $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/current/web/",
                         "error_log" => $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/apachelogs/nginx_error.log",
                         "access_log" => $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/apachelogs/nginx_access.log",
-                        "configs" => $configs
                     )
                 );
             }
@@ -81,7 +80,6 @@ class WebserverSkeleton extends AbstractSkeleton
             $this->dialogProvider->logNotice("--no-iteraction selected, using www." . $project["url"]);
             $aliases[] = "www." . $project["url"];
         } else {
-            $alias = null;
             while (1 == 1) {
                 $alias = $this->dialogProvider->askFor("Add an url alias (leave empty to stop adding):");
                 if (empty($alias)) {

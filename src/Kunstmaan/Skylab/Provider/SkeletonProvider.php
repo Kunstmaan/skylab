@@ -61,7 +61,7 @@ class SkeletonProvider extends AbstractProvider
 
     /**
      * @param  string                $skeletonname
-     * @return bool|AbstractSkeleton
+     * @return AbstractSkeleton
      * @throws \RuntimeException
      */
     public function findSkeleton($skeletonname)

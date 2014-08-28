@@ -159,11 +159,7 @@ EOT
         $command = "ssh " . $hostname . " 'test -d /home/projects/" . $projectname . " && echo found'";
         $this->dialogProvider->logCommand($command);
         $found = $this->processProvider->executeCommand($command, true);
-        if ($found) {
-            return true;
-        }
-
-        return false;
+        return (bool) $found;
     }
 
     /**
