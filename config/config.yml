@@ -3,8 +3,8 @@ projects:
     backuppath: "/home/backupped-projects"
 
 users:
-    superuser:      thomas
-    supergroup:     staff
+    superuser:      root
+    supergroup:     root
     wwwuser:        nginx
     postgresuser:   postgres
 
@@ -61,4 +61,4 @@ skeletons:
     dailycron:  false
 
 debug: true
-develmode: false
+develmode: true
