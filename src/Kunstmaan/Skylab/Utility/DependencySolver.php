@@ -97,7 +97,7 @@ class DependencySolver
      */
     private function hasDependents($item)
     {
-        if ($this->itemExists($item) AND is_array($this->items[$item])) {
+        if ($this->itemExists($item) && is_array($this->items[$item])) {
             return true;
         }
 
