@@ -1,14 +1,10 @@
 <?php
-
-
 namespace Kunstmaan\Skylab\Utility;
-
 
 class DependencySolver
 {
 
     private $items = array();
-    private $dependencies = array();
 
     /**
      * @param $item
@@ -17,10 +13,6 @@ class DependencySolver
     public function add($item, $dependencies = array())
     {
         $this->items[$item] = (count($dependencies) > 0) ? $dependencies : null;
-
-        foreach ($dependencies as $dependency) {
-            $this->dependencies[$dependency][] = $item;
-        }
     }
 
     /**
