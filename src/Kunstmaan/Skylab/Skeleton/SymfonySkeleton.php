@@ -38,12 +38,12 @@ class SymfonySkeleton extends AbstractSkeleton
             $permissionDefinition->addAcl("-R -m u:@config.wwwuser@:r-X");
             $project["permissions"]["/data"] = $permissionDefinition;
         }
-        $this->addReadWriteFolder("/data/" . $project["name"] . "/app/cache", $project);
-        $this->addReadWriteFolder("/data/" . $project["name"] . "/app/logs", $project);
-        $this->addReadWriteFolder("/data/" . $project["name"] . "/web/media", $project);
-        $this->addReadWriteFolder("/data/current/app/cache", $project);
-        $this->addReadWriteFolder("/data/current/app/logs", $project);
-        $this->addReadWriteFolder("/data/current/web/media", $project);
+        $project = $this->addReadWriteFolder("/data/" . $project["name"] . "/app/cache", $project);
+        $project = $this->addReadWriteFolder("/data/" . $project["name"] . "/app/logs", $project);
+        $project = $this->addReadWriteFolder("/data/" . $project["name"] . "/web/media", $project);
+        $project = $this->addReadWriteFolder("/data/current/app/cache", $project);
+        $project = $this->addReadWriteFolder("/data/current/app/logs", $project);
+        $project = $this->addReadWriteFolder("/data/current/web/media", $project);
         $this->fileSystemProvider->render(
             "/symfony/apache.d/01start.conf.twig",
             $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/01start",
@@ -62,6 +62,7 @@ class SymfonySkeleton extends AbstractSkeleton
     /**
      * @param $path
      * @param \ArrayObject $project
+     * @return \ArrayObject
      */
     private function addReadWriteFolder($path, \ArrayObject $project)
     {
@@ -73,6 +74,7 @@ class SymfonySkeleton extends AbstractSkeleton
         $permissionDefinition->addAcl("-R -m other::---");
         $permissionDefinition->addAcl("-R -m u:@config.wwwuser@:rwX");
         $project["permissions"][$path] = $permissionDefinition;
+        return $project;
     }
 
     /**
