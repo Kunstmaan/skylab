@@ -38,7 +38,7 @@ class ProjectConfigProvider extends AbstractProvider
     }
 
     /**
-     * @param $projectname
+     * @param string $projectname
      * @param $config
      * @return \ArrayObject
      */
@@ -68,7 +68,7 @@ class ProjectConfigProvider extends AbstractProvider
     }
 
     /**
-     * @param $projectname
+     * @param string $projectname
      * @param  \ArrayObject $config
      * @return \ArrayObject
      */
@@ -123,7 +123,7 @@ class ProjectConfigProvider extends AbstractProvider
     }
 
     /**
-     * @param $projectname
+     * @param string $projectname
      * @param  \ArrayObject $config
      * @return \ArrayObject
      */
@@ -150,7 +150,7 @@ class ProjectConfigProvider extends AbstractProvider
     }
 
     /**
-     * @param $projectname
+     * @param string $projectname
      * @param  \ArrayObject $config
      * @return \ArrayObject
      */
@@ -200,7 +200,7 @@ class ProjectConfigProvider extends AbstractProvider
 
     /**
      * @param  \SimpleXMLElement $node
-     *                                  @param $name
+     *                                  @param string $name
      * @param  array             $items
      * @return \SimpleXMLElement
      *
@@ -232,7 +232,7 @@ class ProjectConfigProvider extends AbstractProvider
 
     /**
      * @param $xml
-     * @param $path
+     * @param string $path
      */
     private function writeToFile($xml, $path)
     {

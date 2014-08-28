@@ -7,8 +7,8 @@ class DependencySolver
     private $items = array();
 
     /**
-     * @param $item
-     * @param array $dependencies
+     * @param string $item
+     * @param string[] $dependencies
      */
     public function add($item, $dependencies = array())
     {
@@ -32,7 +32,7 @@ class DependencySolver
             }
         }
 
-        $loadOrder = array_filter($loadOrder, function($skeleton){
+        $loadOrder = array_filter($loadOrder, function ($skeleton) {
             return $skeleton != "base";
         });
         array_unshift($loadOrder, "base");
@@ -42,7 +42,7 @@ class DependencySolver
 
     /**
      * @param $item
-     * @param array $seen
+     * @param  array $seen
      * @return array
      */
     private function getDependents($item, $seen = array())

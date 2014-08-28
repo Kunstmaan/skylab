@@ -25,7 +25,7 @@ class ProcessProvider extends AbstractProvider
      * @param string $command The command
      * @param bool   $silent  Be silent or not
      *
-     * @param  callable    $callback
+     * @param  \Closure    $callback
      * @return bool|string
      */
     public function executeCommand($command, $silent = false, \Closure $callback = null)

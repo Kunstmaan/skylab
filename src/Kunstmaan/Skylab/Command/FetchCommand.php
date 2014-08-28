@@ -131,8 +131,8 @@ EOT
     /**
      * Tries to detect if the remote project is a Java project.
      *
-     * @param $projectname
-     * @param $hostname
+     * @param string $projectname
+     * @param string $hostname
      * @return string
      */
     private function detectProjectType($projectname, $hostname)
@@ -150,8 +150,8 @@ EOT
     /**
      * Tries to detect if the remote project exists
      *
-     * @param $projectname
-     * @param $hostname
+     * @param string $projectname
+     * @param string $hostname
      * @return bool
      */
     private function remoteProjectExists($projectname, $hostname)
