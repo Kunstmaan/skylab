@@ -1,19 +1,20 @@
-language: c
+language: php
+
+php:
+  - 5.3
+  - 5.4
+  - 5.5
+  - 5.6
+  - hhvm-nightly
+
+matrix:
+    allow_failures:
+        - php: hhvm-nightly
 
 before_script:
-    - curl -L https://www.opscode.com/chef/install.sh | sudo bash
-    - gem install librarian-chef --no-rdoc --no-ri
-    - librarian-chef install
-    - echo "cookbook_path [ \"/home/travis/build/Kunstmaan/skylab/cookbooks\" ]" > solo.rb
-    - sudo service mysql stop
-    - sudo apt-get -y purge mysql*
-    - sudo rm -Rf /var/lib/mysql/
-    - sudo service postgresql stop
-    - sudo apt-get -y purge postgresql*
-    - sudo rm -Rf /etc/postgresql/
-    - sudo rm -Rf /etc/postgresql-common/
-    - sudo rm -Rf /var/lib/postgresql/
-    - sudo chef-solo --log_level debug -c solo.rb -o "skylab::default"
+    - sh -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm-nightly" ]; then echo "" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini; fi;'
+    - sh -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm-nightly" ] && [ $(php -r "echo PHP_MINOR_VERSION;") -le 4 ]; then echo "extension = apc.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi;'
+    - sudo locale-gen nl_BE.UTF-8 && sudo update-locale
     - composer install --prefer-source
 
 script:
