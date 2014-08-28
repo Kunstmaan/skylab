@@ -24,9 +24,14 @@ class PingdomSkeleton extends AbstractSkeleton
      */
     public function create(\ArrayObject $project)
     {
-        // TODO: Implement create() method.
-    }
+        $username = $this->app["config"]["pingdom"]["username"];
+        $password = $this->app["config"]["pingdom"]["password"];
+        $token    = $this->app["config"]["pingdom"]["token"];
 
+        $pingdom = new \Pingdom\Client($username, $password, $token);
+
+        $pingdom->addHTTPCheck($project['name'], $project['url'], "/", "true", "true", "true", "10426046, 10504851");
+    }
     /**
      * @return mixed
      */
@@ -50,15 +55,7 @@ class PingdomSkeleton extends AbstractSkeleton
      */
     public function maintenance(\ArrayObject $project)
     {
-
-        $username = $this->app["config"]["pingdom"]["username"];
-        $password = $this->app["config"]["pingdom"]["password"];
-        $token    = $this->app["config"]["pingdom"]["token"];
-
-        $pingdom = new \Pingdom\Client($username, $password, $token);
-
-        $pingdom->addHTTPCheck($project['name'], $project['url'], "/", "true", "true", "true", "10426046, 10504851");
-
+        // TODO: Implement maintenance() method.
     }
 
     /**
@@ -98,7 +95,17 @@ class PingdomSkeleton extends AbstractSkeleton
      */
     public function postRemove(\ArrayObject $project)
     {
-        // TODO: Implement postRemove() method.
+        $username = $this->app["config"]["pingdom"]["username"];
+        $password = $this->app["config"]["pingdom"]["password"];
+        $token    = $this->app["config"]["pingdom"]["token"];
+
+        $pingdom = new \Pingdom\Client($username, $password, $token);
+
+        foreach ($pingdom->getChecks() as $key => $value) {
+            if($value['name'] == $project['name']){
+                $pingdom->removeCheck($value['id']);
+            }
+        }
     }
 
     /**
