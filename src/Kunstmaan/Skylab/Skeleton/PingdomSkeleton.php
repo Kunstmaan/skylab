@@ -24,13 +24,14 @@ class PingdomSkeleton extends AbstractSkeleton
      */
     public function create(\ArrayObject $project)
     {
+        $contactIds = $this->app["config"]["pingdom"]["contactids"];
         $username = $this->app["config"]["pingdom"]["username"];
         $password = $this->app["config"]["pingdom"]["password"];
         $token    = $this->app["config"]["pingdom"]["token"];
 
         $pingdom = new \Pingdom\Client($username, $password, $token);
 
-        $pingdom->addHTTPCheck($project['name'], $project['url'], "/", "true", "true", "true", "10426046, 10504851");
+        $pingdom->addHTTPCheck($project['name'], $project['url'], "/", "true", "true", "true", $contactIds);
     }
     /**
      * @return mixed
@@ -55,15 +56,17 @@ class PingdomSkeleton extends AbstractSkeleton
      */
     public function maintenance(\ArrayObject $project)
     {
-        $username = $this->app["config"]["pingdom"]["username"];
-        $password = $this->app["config"]["pingdom"]["password"];
-        $token    = $this->app["config"]["pingdom"]["token"];
+
+        $contactIds = $this->app["config"]["pingdom"]["contactids"];
+        $username   = $this->app["config"]["pingdom"]["username"];
+        $password   = $this->app["config"]["pingdom"]["password"];
+        $token      = $this->app["config"]["pingdom"]["token"];
 
         $pingdom = new \Pingdom\Client($username, $password, $token);
 
         $checkId=$pingdom->getCheck($project['name']);
         if (!is_null($checkId)){
-            $pingdom->updateHTTPCheck($checkId, $project['name'], $project['url'], "/", "true", "true", "true", "10426046, 10504851");
+            $pingdom->updateHTTPCheck($checkId, $project['name'], $project['url'], "/", "true", "true", "true", $contactIds);
         }else{
             $this->create($project);
         }
