@@ -9,3 +9,5 @@ sudo mkdir -p /home/projects
 echo "USE mysql;\nUPDATE user SET password=PASSWORD('password') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root
 
 sudo apt-get install nginx
+
+composer install --prefer-source
