@@ -31,7 +31,7 @@ class WebserverSkeleton extends AbstractSkeleton
             $this->prepareNginxDirectories($project);
 
             $hostmachine = $this->app["config"]["webserver"]["hostmachine"];
-            $aliases = $project["aliases"];
+            $aliases = (isset($project["aliases"])?$project["aliases"]:array());
             $aliases[] = $project["name"] . "." . $hostmachine;
             $aliases[] = "www." .$project["name"] . "." . $hostmachine;
 
