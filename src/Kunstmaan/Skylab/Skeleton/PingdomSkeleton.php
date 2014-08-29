@@ -24,14 +24,7 @@ class PingdomSkeleton extends AbstractSkeleton
      */
     public function create(\ArrayObject $project)
     {
-        $contactIds = $this->app["config"]["pingdom"]["contactids"];
-        $username = $this->app["config"]["pingdom"]["username"];
-        $password = $this->app["config"]["pingdom"]["password"];
-        $token    = $this->app["config"]["pingdom"]["token"];
 
-        $pingdom = new \Pingdom\Client($username, $password, $token);
-
-        $pingdom->addHTTPCheck($project['name'], $project['url'], "/", "true", "true", "true", $contactIds);
     }
     /**
      * @return mixed
@@ -68,7 +61,7 @@ class PingdomSkeleton extends AbstractSkeleton
         if (!is_null($checkId)){
             $pingdom->updateHTTPCheck($checkId, $project['name'], $project['url'], "/", "true", "true", "true", $contactIds);
         }else{
-            $this->create($project);
+            $pingdom->addHTTPCheck($project['name'], $project['url'], "/", "true", "true", "true", $contactIds);
         }
     }
 

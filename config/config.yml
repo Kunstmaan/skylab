@@ -40,8 +40,6 @@ pingdom:
     password:
     token:
     contactids:
-        -
-        -
 
 skeletons:
     base:       Kunstmaan\Skylab\Skeleton\BaseSkeleton
