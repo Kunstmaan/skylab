@@ -55,13 +55,15 @@ class PingdomSkeleton extends AbstractSkeleton
         $password   = $this->app["config"]["pingdom"]["password"];
         $token      = $this->app["config"]["pingdom"]["token"];
 
-        $pingdom = new \Pingdom\Client($username, $password, $token);
+        if (!(empty($contactIds) && empty($username) && empty($password) && empty($token))){
+            $pingdom = new \Pingdom\Client($username, $password, $token);
 
-        $checkId=$pingdom->getCheck($project['name']);
-        if (!is_null($checkId)){
-            $pingdom->updateHTTPCheck($checkId, $project['name'], $project['url'], "/", "true", "true", "true", $contactIds);
-        }else{
-            $pingdom->addHTTPCheck($project['name'], $project['url'], "/", "true", "true", "true", $contactIds);
+            $checkId=$pingdom->getCheck($project['name']);
+            if (!is_null($checkId)){
+                $pingdom->updateHTTPCheck($checkId, $project['name'], $project['url'], "/", "true", "true", "true", $contactIds);
+            }else{
+                $pingdom->addHTTPCheck($project['name'], $project['url'], "/", "true", "true", "true", $contactIds);
+            }
         }
     }
 
