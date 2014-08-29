@@ -108,11 +108,13 @@ class PingdomSkeleton extends AbstractSkeleton
         $password = $this->app["config"]["pingdom"]["password"];
         $token    = $this->app["config"]["pingdom"]["token"];
 
-        $pingdom = new \Pingdom\Client($username, $password, $token);
+        if (!(empty($contactIds) && empty($username) && empty($password) && empty($token))){
+            $pingdom = new \Pingdom\Client($username, $password, $token);
 
-        foreach ($pingdom->getAllChecks() as $key => $value) {
-            if($value['name'] == $project['name']){
-                $pingdom->removeCheck($value['id']);
+            foreach ($pingdom->getAllChecks() as $key => $value) {
+                if($value['name'] == $project['name']){
+                    $pingdom->removeCheck($value['id']);
+                }
             }
         }
     }
