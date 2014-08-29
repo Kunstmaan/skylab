@@ -116,7 +116,7 @@ class WebserverSkeleton extends AbstractSkeleton
             $finder->files()->in($this->app["config"]["nginx"]["sitesavailable"])->name("*.conf");
             /** @var SplFileInfo $config */
             foreach ($finder as $config) {
-                $this->processProvider->executeCommand("ln -sf " . $this->app["config"]["nginx"]["sitesavailable"] . "/" . $config->getFilename() . " " . $this->app["config"]["nginx"]["sitesenabled"] . "/" . $config->getFilename());
+                $this->processProvider->executeSudoCommand("ln -sf " . $this->app["config"]["nginx"]["sitesavailable"] . "/" . $config->getFilename() . " " . $this->app["config"]["nginx"]["sitesenabled"] . "/" . $config->getFilename());
             }
         } else {
             $this->writeNamevirtualhost();
