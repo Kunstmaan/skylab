@@ -55,7 +55,18 @@ class PingdomSkeleton extends AbstractSkeleton
      */
     public function maintenance(\ArrayObject $project)
     {
-        // TODO: Implement maintenance() method.
+        $username = $this->app["config"]["pingdom"]["username"];
+        $password = $this->app["config"]["pingdom"]["password"];
+        $token    = $this->app["config"]["pingdom"]["token"];
+
+        $pingdom = new \Pingdom\Client($username, $password, $token);
+
+        $checkId=$pingdom->getCheck($project['name']);
+        if (!is_null($checkId)){
+            $pingdom->updateHTTPCheck($checkId, $project['name'], $project['url'], "/", "true", "true", "true", "10426046, 10504851");
+        }else{
+            $this->create($project);
+        }
     }
 
     /**
@@ -101,7 +112,7 @@ class PingdomSkeleton extends AbstractSkeleton
 
         $pingdom = new \Pingdom\Client($username, $password, $token);
 
-        foreach ($pingdom->getChecks() as $key => $value) {
+        foreach ($pingdom->getAllChecks() as $key => $value) {
             if($value['name'] == $project['name']){
                 $pingdom->removeCheck($value['id']);
             }
