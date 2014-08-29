@@ -24,9 +24,8 @@ class PingdomSkeleton extends AbstractSkeleton
      */
     public function create(\ArrayObject $project)
     {
-        // TODO: Implement create() method.
-    }
 
+    }
     /**
      * @return mixed
      */
@@ -50,7 +49,22 @@ class PingdomSkeleton extends AbstractSkeleton
      */
     public function maintenance(\ArrayObject $project)
     {
-        // TODO: Implement maintenance() method.
+
+        $contactIds = $this->app["config"]["pingdom"]["contactids"];
+        $username   = $this->app["config"]["pingdom"]["username"];
+        $password   = $this->app["config"]["pingdom"]["password"];
+        $token      = $this->app["config"]["pingdom"]["token"];
+
+        if (!(empty($contactIds) && empty($username) && empty($password) && empty($token))){
+            $pingdom = new \Pingdom\Client($username, $password, $token);
+
+            $checkId=$pingdom->getCheck($project['name']);
+            if (!is_null($checkId)){
+                $pingdom->updateHTTPCheck($checkId, $project['name'], $project['url'], "/", "true", "true", "true", $contactIds);
+            }else{
+                $pingdom->addHTTPCheck($project['name'], $project['url'], "/", "true", "true", "true", $contactIds);
+            }
+        }
     }
 
     /**
@@ -90,7 +104,19 @@ class PingdomSkeleton extends AbstractSkeleton
      */
     public function postRemove(\ArrayObject $project)
     {
-        // TODO: Implement postRemove() method.
+        $username = $this->app["config"]["pingdom"]["username"];
+        $password = $this->app["config"]["pingdom"]["password"];
+        $token    = $this->app["config"]["pingdom"]["token"];
+
+        if (!(empty($contactIds) && empty($username) && empty($password) && empty($token))){
+            $pingdom = new \Pingdom\Client($username, $password, $token);
+
+            foreach ($pingdom->getAllChecks() as $key => $value) {
+                if($value['name'] == $project['name']){
+                    $pingdom->removeCheck($value['id']);
+                }
+            }
+        }
     }
 
     /**

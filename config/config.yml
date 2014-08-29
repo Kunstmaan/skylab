@@ -35,6 +35,12 @@ postgresql:
     user:     skylab
     password: password
 
+pingdom:
+    username:
+    password:
+    token:
+    contactids:
+
 skeletons:
     base:       Kunstmaan\Skylab\Skeleton\BaseSkeleton
     mysql:      Kunstmaan\Skylab\Skeleton\MySQLSkeleton
