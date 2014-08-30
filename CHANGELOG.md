@@ -1,4 +1,50 @@
 
+0.0.4/ 2014-08-30
+==================
+
+ * Release: Update documentation
+ * Fix: Check if pingdom credentials are configured
+ * Fix password
+ * Fix: Add postgres settings and create the tomcat folder
+ * Fix: New tomcat version
+ * Fix: Permissions while symlinking
+ * Fix: Creation fails because site url isn't set
+ * Fix: Revert to travis.yml
+ * Fix: run composer install
+ * Fix: Don't configure nginx
+ * Fix: Move to a separate before script with nginx installed
+ * Fix: Change contactid to array instead of csv string
+ * Fix: Set mysql password to run the commands
+ * Improvement: Add maintenance method
+ * Fix undefined variable aliasses
+ * Fix: create /home/projects
+ * Fix: getting Travis running again
+ * Improvement: Update documentation
+ * Fix: More scrutiniser fixes
+ * Fix: fix a lot of scrutiniser errors
+ * Fix: Scrutinizer Auto-Fixes
+ * Fix: Text files should end with a newline character (fixes #24 and #25)
+ * Fix: Unused method, property, variable or parameter (fixes #23)
+ * Fix: Remove stale config files and fix templates should not be too long (fixes #22)
+ * Fix: Logical operators should be avoided (fixes #18)
+ * Fix: Fixed unused method, property, variable or parameter (fixes #20)
+ * Fix: Remove unused method, property, variable or parameter (fixes #19)
+ * Fix: Removed unused use statement (fixes #21)
+ * Fix: Reset config.yml
+ * Fix: Move create-check to create function and add remove option
+ * Feature: First bits of Pingdom skeleton. Can add a pingdom check when maintenance is ran
+ * Improvement: Only check on filesize for rsync
+ * Fix: Correct location directive
+ * Fix: Undefined variable: configcontent
+ * Fix: Also remove fpm-config when from symfony skeleton when running maintenance
+ * Improvement: Fpm config file is embedded in nginx config now
+ * Improvement: Add --delete to rsync to remove obsolete local files
+ * Fix: Only generate a default nginx config at project creation. Then allow customizations
+ * Fix: Fix anacrontab generation
+ * Fix: Correct nginx error and accesslog filename
+ * Feature: Add maintenance quick option without fixperms
+ * Fix: Add fallback to app.php for images which are not in the cache
+
 0.0.3 / 2014-07-22
 ==================
 
