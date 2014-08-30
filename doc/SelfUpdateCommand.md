@@ -102,4 +102,4 @@ The <info>self-update</info> command will check if there is an updated skylab.ph
 * Description: Do not ask any interactive question.
 * Default: `false`
 
-*Documentation generated on 2014-08-28 23:08:48*
+*Documentation generated on 2014-08-30 18:59:58*
