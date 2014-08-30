@@ -49,5 +49,5 @@ script:
     - ./skylab permissions test -vvv --no-interaction
     - ./skylab remove test --force -vvv --no-interaction
     - php skylab.phar self-update --no-interaction
-    - cd /tmp && curl -sS https://raw.github.com/Kunstmaan/skylab/master/installer.php | php
+    - cd /tmp && curl -sS https://raw.githubusercontent.com/Kunstmaan/skylab/master/installer | php
 
