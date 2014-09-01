@@ -226,7 +226,7 @@ class WebserverSkeleton extends AbstractSkeleton
                 $configcontent .= "\n#END " . $config->getRealPath() . "\n\n";
             }
             if ($this->app["config"]["develmode"]) {
-                $configcontent = str_replace("-Indexes", "Indexes", $configcontent);
+                $configcontent = str_replace("-Indexes", "+Indexes", $configcontent);
             }
             $this->fileSystemProvider->writeProtectedFile($this->app["config"]["apache"]["vhostdir"] . "/" . $project["name"] . ".conf", $configcontent);
         }
