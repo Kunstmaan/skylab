@@ -202,7 +202,7 @@ class WebserverSkeleton extends AbstractSkeleton
         $aliases = $project["aliases"];
         $aliases[] = $project["name"] . "." . $hostmachine;
         $aliases[] = "www." .$project["name"] . "." . $hostmachine;
-        
+
         $configcontent = '';
 
         if ($this->app["config"]["webserver"]["engine"] == 'nginx'){
@@ -232,7 +232,7 @@ class WebserverSkeleton extends AbstractSkeleton
             }
             $serverAlias .= "\n";
             $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/05aliases", $serverAlias);
- 
+
             /** @var \SplFileInfo $config */
             foreach ($this->fileSystemProvider->getProjectApacheConfigs($project) as $config) {
                 $configcontent .= "\n#BEGIN " . $config->getRealPath() . "\n\n";
@@ -302,7 +302,7 @@ class WebserverSkeleton extends AbstractSkeleton
      */
     public function dependsOn()
     {
-        return array("base", "pingdom");
+        return array("base");
     }
 
 }
