@@ -288,7 +288,7 @@ class WebserverSkeleton extends AbstractSkeleton
      */
     public function dependsOn()
     {
-        return array("base", "pingdom");
+        return array("base");
     }
 
 }
