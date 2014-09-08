@@ -199,13 +199,32 @@ class WebserverSkeleton extends AbstractSkeleton
     {
         $this->dialogProvider->logConfig("Updating aliases webserver config file");
         $hostmachine = $this->app["config"]["webserver"]["hostmachine"];
-        $aliases = $project["aliases"];
         $aliases[] = $project["name"] . "." . $hostmachine;
         $aliases[] = "www." .$project["name"] . "." . $hostmachine;
 
         $configcontent = '';
 
         if ($this->app["config"]["webserver"]["engine"] == 'nginx'){
+
+            // render 01-base template
+            $finder = new Finder();
+            $finder->files()->in($this->fileSystemProvider->getNginxConfigTemplateDir())->name("*.conf.twig");
+             foreach ($finder as $config) {
+                $this->fileSystemProvider->render(
+                    "/nginx/" . $config->getFilename(),
+                    $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/" . str_replace(".conf.twig", "", $config->getFilename()),
+                    array(
+                        "projectname" => $project["name"],
+                        "port" => $this->app["config"]["nginx"]["port"],
+                        "aliases" => $aliases,
+                        "root" => $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/current/web/",
+                        "error_log" => $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/apachelogs/nginx_error.log",
+                        "access_log" => $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/apachelogs/nginx_access.log",
+                    )
+                );
+            }
+
+            // render extra templates
             $this->prepareNginxDirectories($project);
             $configs = array();
             $finder = new Finder();
@@ -226,6 +245,7 @@ class WebserverSkeleton extends AbstractSkeleton
 
 
         } else {
+            $aliases[] = $project["aliases"];
             $serverAlias = "ServerAlias ";
             foreach ($aliases as $alias) {
                 $serverAlias .= " " . $alias;
