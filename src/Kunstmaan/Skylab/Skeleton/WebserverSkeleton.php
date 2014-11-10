@@ -197,7 +197,7 @@ class WebserverSkeleton extends AbstractSkeleton
     {
         $this->dialogProvider->logConfig("Updating aliases webserver config file");
         $hostmachine = $this->app["config"]["webserver"]["hostmachine"];
-        $aliases = $project["aliases"];
+        $aliases = (isset($project["aliases"]))?$project["aliases"]:array();
         $aliases[] = $project["name"] . "." . $hostmachine;
         $aliases[] = "www." .$project["name"] . "." . $hostmachine;
 
