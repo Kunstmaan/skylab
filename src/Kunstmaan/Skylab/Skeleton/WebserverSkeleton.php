@@ -12,14 +12,6 @@ class WebserverSkeleton extends AbstractSkeleton
 
     const NAME = "apache";
 
-    private function prepareNginxDirectories(\ArrayObject $project)
-    {
-        $this->processProvider->executeSudoCommand("mkdir -p " . $this->app["config"]["nginx"]["sitesavailable"]);
-        $this->processProvider->executeSudoCommand("mkdir -p " . $this->app["config"]["nginx"]["sitesenabled"]);
-        $this->processProvider->executeSudoCommand("mkdir -p " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/apachelogs");
-        $this->processProvider->executeSudoCommand("mkdir -p " . $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d");
-    }
-
     /**
      * @param \ArrayObject $project
      *
@@ -27,69 +19,14 @@ class WebserverSkeleton extends AbstractSkeleton
      */
     public function create(\ArrayObject $project)
     {
+        $this->handleAliases($project, $aliases);
         if ($this->app["config"]["webserver"]["engine"] == 'nginx') {
             $this->prepareNginxDirectories($project);
-
-            $hostmachine = $this->app["config"]["webserver"]["hostmachine"];
-            $aliases = (isset($project["aliases"])?$project["aliases"]:array());
-            $aliases[] = $project["name"] . "." . $hostmachine;
-            $aliases[] = "www." .$project["name"] . "." . $hostmachine;
-
-            // render templates
-            $finder = new Finder();
-            $finder->files()->in($this->fileSystemProvider->getNginxConfigTemplateDir())->name("*.conf.twig");
-             foreach ($finder as $config) {
-                $this->fileSystemProvider->render(
-                    "/nginx/" . $config->getFilename(),
-                    $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/" . str_replace(".conf.twig", "", $config->getFilename()),
-                    array(
-                        "projectname" => $project["name"],
-                        "port" => $this->app["config"]["nginx"]["port"],
-                        "aliases" => $aliases,
-                        "root" => $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/current/web/",
-                        "error_log" => $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/apachelogs/nginx_error.log",
-                        "access_log" => $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/apachelogs/nginx_access.log",
-                    )
-                );
-            }
-
+            $this->renderConfig($this->fileSystemProvider->getNginxConfigTemplateDir(),$this->fileSystemProvider->getNginxConfigTemplateDir(true),$this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/");
         } else {
-            $this->processProvider->executeSudoCommand("mkdir -p " . $this->app["config"]["apache"]["vhostdir"]);
-            $this->processProvider->executeSudoCommand("mkdir -p " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/apachelogs");
-            $this->processProvider->executeSudoCommand("mkdir -p " . $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d");
-            $this->processProvider->executeSudoCommand("mkdir -p " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/stats");
-            $this->processProvider->executeSudoCommand("chmod -R 777 " . $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/");
-            // render templates
-            $finder = new Finder();
-            $finder->files()->in($this->fileSystemProvider->getApacheConfigTemplateDir())->name("*.conf.twig");
-            /** @var SplFileInfo $config */
-            foreach ($finder as $config) {
-                $this->fileSystemProvider->render(
-                    "/apache/apache.d/" . $config->getFilename(),
-                    $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/" . str_replace(".conf.twig", "", $config->getFilename()),
-                    array()
-                );
-            }
+            $this->prepareApacheDirectories($project);
+            $this->renderConfig($this->fileSystemProvider->getApacheConfigTemplateDir(),$this->fileSystemProvider->getApacheConfigTemplateDir(true),$this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/");
         }
-        // url
-        $defaultUrl = $project["name"] . ".be";
-        $project["url"] = $this->dialogProvider->askFor("Enter the base url", null, $defaultUrl);
-        // url aliases
-        $aliases = array();
-        if ($this->noInteraction) {
-            $this->dialogProvider->logNotice("--no-iteraction selected, using www." . $project["url"]);
-            $aliases[] = "www." . $project["url"];
-        } else {
-            while (1 == 1) {
-                $alias = $this->dialogProvider->askFor("Add an url alias (leave empty to stop adding):");
-                if (empty($alias)) {
-                    break;
-                } else {
-                    $aliases[] = $alias;
-                }
-            }
-        }
-        $project["aliases"] = $aliases;
     }
 
     /**
@@ -196,20 +133,20 @@ class WebserverSkeleton extends AbstractSkeleton
     public function maintenance(\ArrayObject $project)
     {
         $this->dialogProvider->logConfig("Updating aliases webserver config file");
-        $hostmachine = $this->app["config"]["webserver"]["hostmachine"];
-        $aliases = (isset($project["aliases"]))?$project["aliases"]:array();
-        $aliases[] = $project["name"] . "." . $hostmachine;
-        $aliases[] = "www." .$project["name"] . "." . $hostmachine;
-
-        $configcontent = '';
+        $this->generateBasicAliases($project, $aliases);
 
         if ($this->app["config"]["webserver"]["engine"] == 'nginx') {
             $this->prepareNginxDirectories($project);
-            foreach ($this->fileSystemProvider->getProjectNginxConfigs($project) as $config) {
-                $configcontent .= "\n#BEGIN " . $config->getRealPath() . "\n\n";
-                $configcontent .= $this->projectConfigProvider->searchReplacer(file_get_contents($config->getRealPath()), $project);
-                $configcontent .= "\n#END " . $config->getRealPath() . "\n\n";
+
+            $serverName = "server_name ";
+            foreach ($aliases as $alias) {
+                $serverName .= " " . $alias;
             }
+            $serverName .= "\n";
+            $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/05servername.conf", $serverName);
+
+
+            $configcontent = $this->processConfigFiles($project, $this->fileSystemProvider->getProjectNginxConfigs($project));
             $this->fileSystemProvider->writeProtectedFile($this->app["config"]["nginx"]["sitesavailable"]. "/" . $project["name"] . ".conf", $configcontent);
         } else {
             $serverAlias = "ServerAlias ";
@@ -219,12 +156,7 @@ class WebserverSkeleton extends AbstractSkeleton
             $serverAlias .= "\n";
             $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/05aliases", $serverAlias);
 
-            /** @var \SplFileInfo $config */
-            foreach ($this->fileSystemProvider->getProjectApacheConfigs($project) as $config) {
-                $configcontent .= "\n#BEGIN " . $config->getRealPath() . "\n\n";
-                $configcontent .= $this->projectConfigProvider->searchReplacer(file_get_contents($config->getRealPath()), $project);
-                $configcontent .= "\n#END " . $config->getRealPath() . "\n\n";
-            }
+            $configcontent = $this->processConfigFiles($project, $this->fileSystemProvider->getProjectApacheConfigs($project));
             if ($this->app["config"]["develmode"]) {
                 $configcontent = str_replace("-Indexes", "+Indexes", $configcontent);
             }
@@ -289,6 +221,104 @@ class WebserverSkeleton extends AbstractSkeleton
     public function dependsOn()
     {
         return array("base");
+    }
+
+    /**
+     * @param \ArrayObject $project
+     */
+    private function prepareNginxDirectories(\ArrayObject $project)
+    {
+        $this->processProvider->executeSudoCommand("mkdir -p " . $this->app["config"]["nginx"]["sitesavailable"]);
+        $this->processProvider->executeSudoCommand("mkdir -p " . $this->app["config"]["nginx"]["sitesenabled"]);
+        $this->processProvider->executeSudoCommand("mkdir -p " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/apachelogs");
+        $this->processProvider->executeSudoCommand("mkdir -p " . $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d");
+    }
+
+    /**
+     * @param \ArrayObject $project
+     */
+    public function prepareApacheDirectories(\ArrayObject $project)
+    {
+        $this->processProvider->executeSudoCommand("mkdir -p " . $this->app["config"]["apache"]["vhostdir"]);
+        $this->processProvider->executeSudoCommand("mkdir -p " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/apachelogs");
+        $this->processProvider->executeSudoCommand("mkdir -p " . $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d");
+        $this->processProvider->executeSudoCommand("mkdir -p " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/stats");
+        $this->processProvider->executeSudoCommand("chmod -R 777 " . $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/");
+    }
+
+    /**
+     * @param $location
+     * @param $cleanedLocation
+     * @param $target
+     */
+    private function renderConfig($location, $cleanedLocation, $target)
+    {
+        // render templates
+        $finder = new Finder();
+        $finder->files()->in($location)->name("*.conf.twig");
+        foreach ($finder as $config) {
+            $this->fileSystemProvider->render(
+                $cleanedLocation . $config->getFilename(),
+                $target . str_replace(".conf.twig", "", $config->getFilename()),
+                array()
+            );
+        }
+    }
+
+    /**
+     * @param \ArrayObject $project
+     * @param $aliases
+     */
+    private function handleAliases(\ArrayObject &$project, &$aliases)
+    {
+        $this->generateBasicAliases($project, $aliases);
+
+        // url
+        $defaultUrl = $project["name"] . ".be";
+        $project["url"] = $this->dialogProvider->askFor("Enter the base url", null, $defaultUrl);
+        // url aliases
+        $aliases = array();
+        if ($this->noInteraction) {
+            $this->dialogProvider->logNotice("--no-iteraction selected, using www." . $project["url"]);
+            $aliases[] = "www." . $project["url"];
+        } else {
+            while (1 == 1) {
+                $alias = $this->dialogProvider->askFor("Add an url alias (leave empty to stop adding):");
+                if (empty($alias)) {
+                    break;
+                } else {
+                    $aliases[] = $alias;
+                }
+            }
+        }
+        $project["aliases"] = $aliases;
+    }
+
+    /**
+     * @param \ArrayObject $project
+     * @param $aliases
+     */
+    private function generateBasicAliases(\ArrayObject &$project, &$aliases)
+    {
+        $hostmachine = $this->app["config"]["webserver"]["hostmachine"];
+        $aliases = (isset($project["aliases"])) ? $project["aliases"] : array();
+        $aliases[] = $project["name"] . "." . $hostmachine;
+        $aliases[] = "www." . $project["name"] . "." . $hostmachine;
+    }
+
+    /**
+     * @param \ArrayObject $project
+     * @return string
+     */
+    private function processConfigFiles(\ArrayObject $project, $configs)
+    {
+        $configcontent = '';
+        foreach ($configs as $config) {
+            $configcontent .= "\n#BEGIN " . $config->getRealPath() . "\n\n";
+            $configcontent .= $this->projectConfigProvider->searchReplacer(file_get_contents($config->getRealPath()), $project) . "\n";
+            $configcontent .= "\n#END " . $config->getRealPath() . "\n\n";
+        }
+        return $configcontent;
     }
 
 }

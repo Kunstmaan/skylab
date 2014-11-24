@@ -142,17 +142,17 @@ class FileSystemProvider extends AbstractProvider
     /**
      * @return string
      */
-    public function getApacheConfigTemplateDir()
+    public function getApacheConfigTemplateDir($clean=false)
     {
-        return BASE_DIR . "/templates/apache/apache.d/";
+        return ($clean?"/apache/apache.d/":BASE_DIR . "/templates/apache/apache.d/");
     }
 
     /**
      * @return string
      */
-    public function getNginxConfigTemplateDir()
+    public function getNginxConfigTemplateDir($clean=false)
     {
-        return BASE_DIR . "/templates/nginx/";
+        return ($clean?"/nginx/nginx.d/":BASE_DIR . "/templates/nginx/nginx.d/");
     }
 
     /**
