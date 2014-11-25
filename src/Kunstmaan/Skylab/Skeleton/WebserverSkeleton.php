@@ -20,13 +20,12 @@ class WebserverSkeleton extends AbstractSkeleton
     public function create(\ArrayObject $project)
     {
         $this->handleAliases($project, $aliases);
-        if ($this->app["config"]["webserver"]["engine"] == 'nginx') {
-            $this->prepareNginxDirectories($project);
-            $this->renderConfig($this->fileSystemProvider->getNginxConfigTemplateDir(),$this->fileSystemProvider->getNginxConfigTemplateDir(true),$this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/");
-        } else {
-            $this->prepareApacheDirectories($project);
-            $this->renderConfig($this->fileSystemProvider->getApacheConfigTemplateDir(),$this->fileSystemProvider->getApacheConfigTemplateDir(true),$this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/");
-        }
+        // nginx
+        $this->prepareNginxDirectories($project);
+        $this->renderConfig($this->fileSystemProvider->getNginxConfigTemplateDir(),$this->fileSystemProvider->getNginxConfigTemplateDir(true),$this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/");
+        // apache
+        $this->prepareApacheDirectories($project);
+        $this->renderConfig($this->fileSystemProvider->getApacheConfigTemplateDir(),$this->fileSystemProvider->getApacheConfigTemplateDir(true),$this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/");
     }
 
     /**
@@ -39,6 +38,33 @@ class WebserverSkeleton extends AbstractSkeleton
             $this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["nginx"]["sitesenabled"] . "/*");
         } else {
             $this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["apache"]["vhostdir"] . "/*");
+        }
+    }
+
+    /**
+     * @param \ArrayObject $project
+     *
+     * @return mixed
+     */
+    public function maintenance(\ArrayObject $project)
+    {
+        $this->dialogProvider->logConfig("Updating aliases webserver config file");
+        $this->generateBasicAliases($project, $aliases);
+
+        if ($this->app["config"]["webserver"]["engine"] == 'nginx') {
+            $this->prepareNginxDirectories($project);
+            $serverName = $this->generateAliasLine($aliases, $this->app["config"]["webserver"]["engine"]);
+            $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/05servername.conf", $serverName);
+            $configcontent = $this->processConfigFiles($project, $this->fileSystemProvider->getProjectNginxConfigs($project));
+            $this->fileSystemProvider->writeProtectedFile($this->app["config"]["nginx"]["sitesavailable"]. "/" . $project["name"] . ".conf", $configcontent);
+        } else {
+            $serverAlias = $this->generateAliasLine($aliases, $this->app["config"]["webserver"]["engine"]);
+            $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/05aliases", $serverAlias);
+            $configcontent = $this->processConfigFiles($project, $this->fileSystemProvider->getProjectApacheConfigs($project));
+            if ($this->app["config"]["develmode"]) {
+                $configcontent = str_replace("-Indexes", "+Indexes", $configcontent);
+            }
+            $this->fileSystemProvider->writeProtectedFile($this->app["config"]["apache"]["vhostdir"] . "/" . $project["name"] . ".conf", $configcontent);
         }
     }
 
@@ -125,32 +151,7 @@ class WebserverSkeleton extends AbstractSkeleton
         ));
     }
 
-    /**
-     * @param \ArrayObject $project
-     *
-     * @return mixed
-     */
-    public function maintenance(\ArrayObject $project)
-    {
-        $this->dialogProvider->logConfig("Updating aliases webserver config file");
-        $this->generateBasicAliases($project, $aliases);
 
-        if ($this->app["config"]["webserver"]["engine"] == 'nginx') {
-            $this->prepareNginxDirectories($project);
-            $serverName = $this->generateAliasLine($aliases, $this->app["config"]["webserver"]["engine"]);
-            $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/05servername.conf", $serverName);
-            $configcontent = $this->processConfigFiles($project, $this->fileSystemProvider->getProjectNginxConfigs($project));
-            $this->fileSystemProvider->writeProtectedFile($this->app["config"]["nginx"]["sitesavailable"]. "/" . $project["name"] . ".conf", $configcontent);
-        } else {
-            $serverAlias = $this->generateAliasLine($aliases, $this->app["config"]["webserver"]["engine"]);
-            $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/05aliases", $serverAlias);
-            $configcontent = $this->processConfigFiles($project, $this->fileSystemProvider->getProjectApacheConfigs($project));
-            if ($this->app["config"]["develmode"]) {
-                $configcontent = str_replace("-Indexes", "+Indexes", $configcontent);
-            }
-            $this->fileSystemProvider->writeProtectedFile($this->app["config"]["apache"]["vhostdir"] . "/" . $project["name"] . ".conf", $configcontent);
-        }
-    }
 
     /**
      * @param \ArrayObject $project
@@ -319,7 +320,7 @@ class WebserverSkeleton extends AbstractSkeleton
         foreach ($aliases as $alias) {
             $serverName .= " " . $alias;
         }
-        $serverName .= "\n";
+        $serverName .= ($type == 'nginx'?";\n":"\n");
         return $serverName;
     }
 

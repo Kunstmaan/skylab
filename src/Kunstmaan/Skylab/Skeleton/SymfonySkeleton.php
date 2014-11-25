@@ -54,9 +54,16 @@ class SymfonySkeleton extends AbstractSkeleton
             $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/10permissions",
             array()
         );
-        if ($this->app["config"]["webserver"]["engine"] == 'nginx') {
-            $this->writeNginxFpmConfig($project);
-        }
+        $this->fileSystemProvider->render(
+            "/symfony/nginx.d/01start.conf.twig",
+            $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/01start",
+            array()
+        );
+        $this->fileSystemProvider->render(
+            "/symfony/nginx.d/10location.conf.twig",
+            $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/10location",
+            array()
+        );
     }
 
     /**
@@ -90,18 +97,6 @@ class SymfonySkeleton extends AbstractSkeleton
      */
     public function postMaintenance()
     {
-    }
-
-    private function writeNginxFpmConfig(\ArrayObject $project)
-    {
-             $this->fileSystemProvider->render(
-                "/symfony/nginx.d/fpm.conf.twig",
-                $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/fpm.conf",
-                array(
-                    "projectdir" => $this->fileSystemProvider->getProjectDirectory($project["name"]),
-                    "projectname" => $project["name"],
-                )
-            );
     }
 
     /**
