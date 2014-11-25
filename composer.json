@@ -5,7 +5,7 @@
     "authors": [
         {
             "name": "Roderik van der Veer",
-            "email": "roderik@vanderveer.be"
+            "email": "roderik.van.der.veer@kunstmaan.be"
         }
     ],
     "repositories": [{
@@ -14,12 +14,12 @@
         }
     ],
     "require": {
-        "cilex/cilex":              "dev-master",
+        "cilex/cilex":              "~1.1",
         "symfony/yaml":             "~2.1",
         "symfony/serializer":       "~2.1",
         "roderik/pwgen-php":        "0.1.x",
         "roderik/cilex-twig":       "1.0.x",
-        "sgrodzicki/pingdom":       "dev-master"
+        "sgrodzicki/pingdom":       "~1.1.5"
     },
     "autoload": {
         "psr-0": { "Kunstmaan": "src/" }

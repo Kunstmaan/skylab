@@ -142,7 +142,7 @@ class PermissionsProvider extends AbstractProvider
                         $this->dialogProvider->logNotice($path . " does not exist, do not chmod");
                         continue;
                     }
-                    $result = $this->processProvider->executeSudoCommand('setfacl ' . $this->projectConfigProvider->searchReplacer($acl, $project) . ' ' . $path, true);
+                    $this->processProvider->executeSudoCommand('setfacl ' . $this->projectConfigProvider->searchReplacer($acl, $project) . ' ' . $path, true);
                 }
             }
         }
