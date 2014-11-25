@@ -13,29 +13,7 @@ Kunstmaan wouldn't be Kunstmaan is we didn't open-source this, so here it is. [M
 
 ## Installation
 
-### Skylab chef recipe
-
-To install a sever ready for Skylab, first install Chef and Librarian.
-
-```
-$ curl -L https://www.opscode.com/chef/install.sh | sudo bash
-$ gem install librarian-chef
-```
-
-Then get the Cheffile, get the cookbooks and run Chef
-
-```
-$ mkdir skylab-chef
-$ cd skylab-chef
-$ wget https://github.com/Kunstmaan/skylab/blob/master/Cheffile
-$ librarian-chef install
-$ echo "cookbook_path [ \"/home/travis/build/Kunstmaan/skylab/cookbooks\" ]" > solo.rb
-$ sudo chef-solo --log_level debug -c solo.rb -o "applications::packagemanager,git::default,skylab::postgresql,applications::mysql,skylab::apache,skylab::directories"
-```
-
-### Skylab application
-
-To actually get Skylab, run this command:
+To install Skylab, run this command:
 
 ```
 $ curl -sSL https://raw.github.com/Kunstmaan/skylab/master/installer | php
@@ -116,7 +94,6 @@ function get_class_name($object = null)
 1. Do your thing, and send a Pull Request. But please make sure Travis is green and your code has been run through php-cs-fixer!
 
 
-[![Analytics](https://ga-beacon.appspot.com/UA-3160735-7/Kunstmaan/skylab)](https://github.com/igrigorik/ga-beacon)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/Kunstmaan/skylab/badges/quality-score.png?s=3d1f00bf9c2adbba818f274086db3ed4b2bcc4e2)](https://scrutinizer-ci.com/g/Kunstmaan/skylab/)
 
 

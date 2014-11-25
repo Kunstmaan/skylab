@@ -8,15 +8,18 @@ Kunstmaan wouldn't be Kunstmaan is we didn't open-source this, so here it is. [M
 
 ## Installation
 
-To get Skylab, run this command:
+To install Skylab, run this command:
 
 ```
 $ curl -sSL https://raw.github.com/Kunstmaan/skylab/master/installer | php
 ```
 
-This will just check a few PHP settings and then download skylab.phar to your working directory. This file is the Skylab binary. It is a PHAR (PHP archive), which is an archive format for PHP which can be run on the command line, amongst other things.
+This will just check a few PHP settings and then download skylab.phar to your working directory. This file is the Skylab
+binary. It is a PHAR (PHP archive), which is an archive format for PHP which can be run on the command line, amongst
+other things.
 
-You can install Skylab to a specific directory by using the --install-dir option and providing a target directory (it can be an absolute or relative path):
+You can install Skylab to a specific directory by using the --install-dir option and providing a target directory (it
+can be an absolute or relative path):
 
 ```
 $ curl -sSL https://raw.github.com/Kunstmaan/skylab/master/installer | php -- --install-dir=/bin
@@ -133,8 +136,7 @@ Full details at [doc/SelfUpdateCommand.md](doc/SelfUpdateCommand.md)
 1. Do your thing, and send a Pull Request. But please make sure Travis is green and your code has been run through php-cs-fixer!
 
 
-[![Analytics](https://ga-beacon.appspot.com/UA-3160735-7/Kunstmaan/skylab)](https://github.com/igrigorik/ga-beacon)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/Kunstmaan/skylab/badges/quality-score.png?s=3d1f00bf9c2adbba818f274086db3ed4b2bcc4e2)](https://scrutinizer-ci.com/g/Kunstmaan/skylab/)
 
 
-*Documentation generated on 2014-11-25 10:53:46*
+*Documentation generated on 2014-11-25 12:15:26*

@@ -1,4 +1,9 @@
 
+0.0.6 / 2014-11-25
+==================
+
+  * Add completion via https://github.com/stecman/symfony-console-completion
+
 0.0.5 / 2014-11-25
 ==================
 
