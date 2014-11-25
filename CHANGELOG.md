@@ -1,4 +1,22 @@
 
+0.0.5 / 2014-11-25
+==================
+
+  * More doc updates
+  * Update documentation
+  * Fix config file in phar
+  * Insight remarks
+  * Up the dependencies
+  * Symfony skeleton fixes
+  * Modular PHP config for nginx
+  * Basic split up nginx config
+  * Merge pull request #34 from kimausloos/master
+  * Fix notice about uninitialized index
+  * Merge pull request #29 from Kunstmaan/pingdom
+  * Remove pingdom dependency
+  * Fix for Apache 2.4
+  * Fix: the download url for the production release
+
 0.0.4/ 2014-08-30
 ==================
 
