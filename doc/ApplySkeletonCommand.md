@@ -90,7 +90,7 @@ method in the skeleton to setup all the requirements for that skeleton.
 * Accept value: no
 * Is value required: no
 * Is multiple: no
-* Description: Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+* Description: Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug.
 * Default: `false`
 
 **version:**
@@ -133,4 +133,4 @@ method in the skeleton to setup all the requirements for that skeleton.
 * Description: Do not ask any interactive question.
 * Default: `false`
 
-*Documentation generated on 2014-08-30 18:59:58*
+*Documentation generated on 2014-11-25 10:52:49*

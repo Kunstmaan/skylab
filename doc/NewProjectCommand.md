@@ -71,7 +71,7 @@ which is responsible for setting up users, permissions and ownership.
 * Accept value: no
 * Is value required: no
 * Is multiple: no
-* Description: Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+* Description: Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug.
 * Default: `false`
 
 **version:**
@@ -114,4 +114,4 @@ which is responsible for setting up users, permissions and ownership.
 * Description: Do not ask any interactive question.
 * Default: `false`
 
-*Documentation generated on 2014-08-30 18:59:57*
+*Documentation generated on 2014-11-25 10:52:48*

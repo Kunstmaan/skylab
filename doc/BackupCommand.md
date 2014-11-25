@@ -81,7 +81,7 @@ The <info>backup</info> command will dump all your databases and create a tarbal
 * Accept value: no
 * Is value required: no
 * Is multiple: no
-* Description: Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+* Description: Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug.
 * Default: `false`
 
 **version:**
@@ -124,4 +124,4 @@ The <info>backup</info> command will dump all your databases and create a tarbal
 * Description: Do not ask any interactive question.
 * Default: `false`
 
-*Documentation generated on 2014-08-30 18:59:58*
+*Documentation generated on 2014-11-25 10:52:49*
