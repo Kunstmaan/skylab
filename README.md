@@ -8,40 +8,15 @@ Kunstmaan wouldn't be Kunstmaan is we didn't open-source this, so here it is. [M
 
 ## Installation
 
-### Skylab chef recipe
-
-To install a sever ready for Skylab, first install Chef and Librarian.
-
-```
-$ curl -L https://www.opscode.com/chef/install.sh | sudo bash
-$ gem install librarian-chef
-```
-
-Then get the Cheffile, get the cookbooks and run Chef
-
-```
-$ mkdir skylab-chef
-$ cd skylab-chef
-$ wget https://github.com/Kunstmaan/skylab/blob/master/Cheffile
-$ librarian-chef install
-$ echo "cookbook_path [ \"/home/travis/build/Kunstmaan/skylab/cookbooks\" ]" > solo.rb
-$ sudo chef-solo --log_level debug -c solo.rb -o "applications::packagemanager,git::default,skylab::postgresql,applications::mysql,skylab::apache,skylab::directories"
-```
-
-### Skylab application
-
-To actually get Skylab, run this command:
+To get Skylab, run this command:
 
 ```
 $ curl -sSL https://raw.github.com/Kunstmaan/skylab/master/installer | php
 ```
 
-This will just check a few PHP settings and then download skylab.phar to your working directory. This file is the Skylab
-binary. It is a PHAR (PHP archive), which is an archive format for PHP which can be run on the command line, amongst
-other things.
+This will just check a few PHP settings and then download skylab.phar to your working directory. This file is the Skylab binary. It is a PHAR (PHP archive), which is an archive format for PHP which can be run on the command line, amongst other things.
 
-You can install Skylab to a specific directory by using the --install-dir option and providing a target directory (it
-can be an absolute or relative path):
+You can install Skylab to a specific directory by using the --install-dir option and providing a target directory (it can be an absolute or relative path):
 
 ```
 $ curl -sSL https://raw.github.com/Kunstmaan/skylab/master/installer | php -- --install-dir=/bin
