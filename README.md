@@ -80,7 +80,7 @@ Full details at [doc/SetPermissionsCommand.md](doc/SetPermissionsCommand.md)
 
 ### MaintenanceCommand
 
-Usage: ```php skylab.phar maintenance [--hideLogo] [--no-interactive]```
+Usage: ```php skylab.phar maintenance [--hideLogo] [--no-interactive] [--quick]```
 
 The ```maintenance``` command will run the maintenance commands of all skeletons on a project. Most notably, it
 will create the apache config files and make sure the the databases are available.
@@ -162,4 +162,4 @@ Full details at [doc/SelfUpdateCommand.md](doc/SelfUpdateCommand.md)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/Kunstmaan/skylab/badges/quality-score.png?s=3d1f00bf9c2adbba818f274086db3ed4b2bcc4e2)](https://scrutinizer-ci.com/g/Kunstmaan/skylab/)
 
 
-*Documentation generated on 2014-06-20 16:04:40*
+*Documentation generated on 2014-11-25 10:53:46*
