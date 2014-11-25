@@ -19,7 +19,8 @@
         "symfony/serializer":       "~2.1",
         "roderik/pwgen-php":        "0.1.x",
         "roderik/cilex-twig":       "1.0.x",
-        "sgrodzicki/pingdom":       "~1.1.5"
+        "sgrodzicki/pingdom":       "~1.1.5",
+        "stecman/symfony-console-completion": "~0.4.4"
     },
     "autoload": {
         "psr-0": { "Kunstmaan": "src/" }
