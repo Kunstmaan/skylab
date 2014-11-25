@@ -14,7 +14,7 @@
         }
     ],
     "require": {
-        "cilex/cilex":              "1.0.*",
+        "cilex/cilex":              "dev-master",
         "symfony/yaml":             "~2.1",
         "symfony/serializer":       "~2.1",
         "roderik/pwgen-php":        "0.1.x",
