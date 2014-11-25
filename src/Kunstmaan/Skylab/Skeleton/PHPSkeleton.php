@@ -48,11 +48,24 @@ class PHPSkeleton extends AbstractSkeleton
             $permissionDefinition->addAcl("-R -m u:@config.wwwuser@:r-X");
             $project["permissions"]["/tmp"] = $permissionDefinition;
         }
-        $this->fileSystemProvider->render(
-            "/php/apache.d/19php.conf.twig",
-            $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/19php",
-            array()
-        );
+        if ($this->app["config"]["webserver"]["engine"] == 'nginx') {
+            $this->fileSystemProvider->render(
+                "/php/nginx.d/19php.conf.twig",
+                $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/19php",
+                array()
+            );
+            $this->fileSystemProvider->render(
+                "/php/nginx.d/10location.conf.twig",
+                $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/10location",
+                array()
+            );
+        } else {
+            $this->fileSystemProvider->render(
+                "/php/apache.d/19php.conf.twig",
+                $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/19php",
+                array()
+            );
+        }
         $this->fileSystemProvider->render(
             "/php/fcron.d/01php5.twig",
             $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/fcron.d/01php5",

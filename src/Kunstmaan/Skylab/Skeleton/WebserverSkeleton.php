@@ -137,25 +137,13 @@ class WebserverSkeleton extends AbstractSkeleton
 
         if ($this->app["config"]["webserver"]["engine"] == 'nginx') {
             $this->prepareNginxDirectories($project);
-
-            $serverName = "server_name ";
-            foreach ($aliases as $alias) {
-                $serverName .= " " . $alias;
-            }
-            $serverName .= "\n";
+            $serverName = $this->generateAliasLine($aliases, $this->app["config"]["webserver"]["engine"]);
             $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/05servername.conf", $serverName);
-
-
             $configcontent = $this->processConfigFiles($project, $this->fileSystemProvider->getProjectNginxConfigs($project));
             $this->fileSystemProvider->writeProtectedFile($this->app["config"]["nginx"]["sitesavailable"]. "/" . $project["name"] . ".conf", $configcontent);
         } else {
-            $serverAlias = "ServerAlias ";
-            foreach ($aliases as $alias) {
-                $serverAlias .= " " . $alias;
-            }
-            $serverAlias .= "\n";
+            $serverAlias = $this->generateAliasLine($aliases, $this->app["config"]["webserver"]["engine"]);
             $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/05aliases", $serverAlias);
-
             $configcontent = $this->processConfigFiles($project, $this->fileSystemProvider->getProjectApacheConfigs($project));
             if ($this->app["config"]["develmode"]) {
                 $configcontent = str_replace("-Indexes", "+Indexes", $configcontent);
@@ -319,6 +307,20 @@ class WebserverSkeleton extends AbstractSkeleton
             $configcontent .= "\n#END " . $config->getRealPath() . "\n\n";
         }
         return $configcontent;
+    }
+
+    /**
+     * @param $aliases
+     * @return string
+     */
+    private function generateAliasLine($aliases, $type)
+    {
+        $serverName = ($type == 'nginx'?"server_name ":"ServerAlias ");
+        foreach ($aliases as $alias) {
+            $serverName .= " " . $alias;
+        }
+        $serverName .= "\n";
+        return $serverName;
     }
 
 }
