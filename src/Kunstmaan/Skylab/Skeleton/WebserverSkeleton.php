@@ -54,7 +54,12 @@ class WebserverSkeleton extends AbstractSkeleton
         if ($this->app["config"]["webserver"]["engine"] == 'nginx') {
             $this->prepareNginxDirectories($project);
             $serverName = $this->generateAliasLine($aliases, $this->app["config"]["webserver"]["engine"]);
-            $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/05servername.conf", $serverName);
+            $this->processProvider->executeSudoCommand("rm " . $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/05servername*");
+            $finder = new Finder();
+            $finder->files()->in($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/")->name("01-base");
+            if ($finder->count() == 0){
+                $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/05servername", $serverName);
+            }
             $configcontent = $this->processConfigFiles($project, $this->fileSystemProvider->getProjectNginxConfigs($project));
             $this->fileSystemProvider->writeProtectedFile($this->app["config"]["nginx"]["sitesavailable"]. "/" . $project["name"] . ".conf", $configcontent);
         } else {
