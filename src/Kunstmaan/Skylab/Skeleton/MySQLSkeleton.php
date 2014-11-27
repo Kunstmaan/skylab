@@ -54,6 +54,9 @@ class MySQLSkeleton extends AbstractSkeleton
      */
     public function maintenance(\ArrayObject $project)
     {
+        if (!isset($project["mysqlserver"]) || !isset($project["mysqldbname"]) || !isset($project["mysqluser"]) || !isset($project["mysqlpass"])){
+            $this->dialogProvider->logNotice("Required MySQL configuration is missing");
+        }
         try {
             new \PDO('mysql:host=' . $project["mysqlserver"] . ';dbname=' . $project["mysqldbname"], $project["mysqluser"], $project["mysqlpass"]);
         } catch (\PDOException $exLoginTest) {
