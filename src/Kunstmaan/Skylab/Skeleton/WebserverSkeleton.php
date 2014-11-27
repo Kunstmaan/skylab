@@ -291,7 +291,7 @@ class WebserverSkeleton extends AbstractSkeleton
     {
         $hostmachine = $this->app["config"]["webserver"]["hostmachine"];
         $aliases = (isset($project["aliases"])) ? $project["aliases"] : array();
-        $aliases = $project["url"];
+        $aliases[] = $project["url"];
         $aliases[] = $project["name"] . "." . $hostmachine;
         $aliases[] = "www." . $project["name"] . "." . $hostmachine;
     }
