@@ -265,12 +265,11 @@ class WebserverSkeleton extends AbstractSkeleton
      */
     private function handleAliases(\ArrayObject &$project, &$aliases)
     {
-        $this->generateBasicAliases($project, $aliases);
-
         // url
         $defaultUrl = $project["name"] . ".be";
         $project["url"] = $this->dialogProvider->askFor("Enter the base url", null, $defaultUrl);
         // url aliases
+        $this->generateBasicAliases($project, $aliases);
         $aliases = array();
         if ($this->noInteraction) {
             $this->dialogProvider->logNotice("--no-iteraction selected, using www." . $project["url"]);
