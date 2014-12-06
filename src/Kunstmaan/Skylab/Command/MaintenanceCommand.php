@@ -59,6 +59,8 @@ EOT
             $this->fileSystemProvider->projectsLoop(function ($project) {
                 $this->dialogProvider->logStep("Running fixperms on " . $project["name"]);
                 $this->skeletonProvider->findSkeleton('base')->setPermissions(new \ArrayObject($project));
+                $this->dialogProvider->logStep("Preventing filemode issues in vendor folders of " . $project["name"]);
+                $this->processProvider->executeSudoCommand('find '.$this->fileSystemProvider->getProjectDirectory($project["name"]).'/data/current -type d -name .git -exec sh -c "cd {}; git config core.filemode false;" \;');
             });
         }
     }
