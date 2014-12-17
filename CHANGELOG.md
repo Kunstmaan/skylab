@@ -1,4 +1,19 @@
 
+0.0.7 / 2014-12-17 
+==================
+
+ * Fix error with nginx ipv6 options
+ * Speed up maintenance quick
+ * Fixes for antares
+ * Fix project creation
+ * Don't fail if certain db drivers are not installed
+ * Actually return
+ * More errors
+ * Fix warnings for strnagely configured applications
+ * Fix compatibility with older nginx projects
+ * Typo
+ * Also add main url
+
 0.0.6 / 2014-11-25
 ==================
 
