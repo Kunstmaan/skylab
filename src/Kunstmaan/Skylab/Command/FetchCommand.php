@@ -98,14 +98,14 @@ EOT
             $this->fetchFolderIfExists(
                 $this->fileSystemProvider->getProjectDirectory($projectname) . "/data/" . $projectname . "/web/uploads/",
                 $hostname,
-                "/home/projects/" . $projectname . "/data/shared/web/uploads/*",
+		"/home/projects/" . $projectname . "/data/current/web/uploads/*",
                 $updateExcludes
             );
 
             $this->fetchFolderIfExists(
                 $this->fileSystemProvider->getProjectDirectory($projectname) . "/data/" . $projectname . "/sites/default/files/",
                 $hostname,
-                "/home/projects/" . $projectname . "/data/shared/sites/default/files/*",
+		"/home/projects/" . $projectname . "/data/current/sites/default/files/*",
                 $updateExcludes
             );
         }
