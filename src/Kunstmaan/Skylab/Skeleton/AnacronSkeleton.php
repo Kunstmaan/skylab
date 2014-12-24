@@ -48,6 +48,9 @@ class AnacronSkeleton extends AbstractSkeleton
      */
     public function maintenance(\ArrayObject $project)
     {
+        $this->permissionsProvider->createGroupIfNeeded($project["name"]);
+        $this->permissionsProvider->createUserIfNeeded($project["name"], $project["name"]);
+
         $cronjobscript = $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/anacronjobs";
         $crontab = $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/anacrontab";
         // cleanup
