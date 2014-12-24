@@ -66,11 +66,19 @@ class WebserverSkeleton extends AbstractSkeleton
             $serverAlias = $this->generateAliasLine($aliases, $this->app["config"]["webserver"]["engine"]);
             $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/05aliases", $serverAlias);
             $configcontent = $this->processConfigFiles($project, $this->fileSystemProvider->getProjectApacheConfigs($project));
+            $configcontent = $this->fixApache24Compat($configcontent);
             if ($this->app["config"]["develmode"]) {
                 $configcontent = str_replace("-Indexes", "+Indexes", $configcontent);
             }
             $this->fileSystemProvider->writeProtectedFile($this->app["config"]["apache"]["vhostdir"] . "/" . $project["name"] . ".conf", $configcontent);
         }
+    }
+
+    private function fixApache24Compat($configcontent){
+        if (strpos($configcontent, "Require all granted") === false) {
+            return preg_replace('/(<Directory.*\ >)(.*)(<\/Directory>)/s', "\${1}\nOptions -Indexes +MultiViews +Includes +FollowSymLinks\nAllowOverride All\n<IfVersion < 2.4>\nOrder allow,deny\nAllow from all\n</IfVersion>\n<IfVersion >= 2.4>\nRequire all granted\n</IfVersion>\n\${3}", $configcontent);
+        }
+        return $configcontent;
     }
 
     /**
