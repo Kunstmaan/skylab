@@ -55,7 +55,7 @@ class PostgreSQLSkeleton extends AbstractSkeleton
     {
         $this->permissionsProvider->createGroupIfNeeded($project["name"]);
         $this->permissionsProvider->createUserIfNeeded($project["name"], $project["name"]);
-        
+
         try {
             new \PDO(
                 $this->dialogProvider->logQuery(
