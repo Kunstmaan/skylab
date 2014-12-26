@@ -2,14 +2,12 @@
 
 listen = /tmp/.{{ projectname }}-fpm.sock
 
-{% if not develmode %}
-    listen.owner = {{ projectuser }}
-    listen.group = {{ projectgroup }}
-    listen.mode = 0666
+listen.owner = {{ projectuser }}
+listen.group = {{ projectgroup }}
+listen.mode = 0666
 
-    user = {{ projectuser }}
-    group = {{ projectgroup}}
-{% endif %}
+user = {{ projectuser }}
+group = {{ projectgroup}}
 
 pm = dynamic
 
