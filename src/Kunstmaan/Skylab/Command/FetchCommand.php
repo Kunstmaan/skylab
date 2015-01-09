@@ -3,6 +3,7 @@
 namespace Kunstmaan\Skylab\Command;
 
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
 class FetchCommand extends AbstractCommand
 {
@@ -21,6 +22,8 @@ class FetchCommand extends AbstractCommand
             ->setDescription('Fetches a project from a production server')
             ->addArgument('project', InputArgument::OPTIONAL, 'The name of the Skylab project')
             ->addArgument('host', InputArgument::OPTIONAL, 'The hostname of the server to fetch from')
+            ->addOption('location', 'l', InputOption::VALUE_OPTIONAL, 'Override the target location')
+            ->addOption('no-database', null, InputOption::VALUE_NONE, 'Don\'t delete the local database')
             ->setHelp(<<<EOT
 The <info>fetch</info> command fetches a Skylab project from a server and puts it in the right locations on your computer. It
 will also drop the databases, so be very careful if you want to use this on a production server to do a migration.
@@ -37,6 +40,16 @@ EOT
      */
     protected function doExecute()
     {
+
+        $location = $this->input->getOption("location");
+        if ($location){
+            $config = $this->app["config"];
+            $projects = $config["projects"];
+            $projects["path"] = $location;
+            $config["projects"] = $projects;
+            $this->app["config"]= $config;
+        }
+
         $projectname = $this->dialogProvider->askFor("Please enter the name of the project", 'project');
         $hostname = $this->dialogProvider->askFor("Please enter the hostname of the server", 'host');
 
@@ -109,27 +122,28 @@ EOT
                 $updateExcludes
             );
         }
-        $this->dialogProvider->logStep("Dropping the databases");
-        if (in_array("mysql",\PDO::getAvailableDrivers(),TRUE))
-        {
-            $this->dialogProvider->logTask("Dropping the MySQL database");
-            $dbh = new \PDO('mysql:host=localhost;', $this->app["config"]["mysql"]["user"], $this->app["config"]["mysql"]["password"]);
-            $dbh->query("DROP DATABASE IF EXISTS " . $projectname);
-        }
-        if (in_array("postgresql",\PDO::getAvailableDrivers(),TRUE)) {
-            $this->dialogProvider->logTask("Dropping the PostgreSQL database");
-            $dbh = new \PDO(
-                $this->dialogProvider->logQuery(
-                    'pgsql:host=localhost;dbname=template1',
-                    array(
-                        "user" => $this->app["config"]["postgresql"]["user"],
-                        "password" => $this->app["config"]["postgresql"]["password"]
-                    )
-                ),
-                $this->app["config"]["postgresql"]["user"],
-                $this->app["config"]["postgresql"]["password"]
-            );
-            $dbh->query("DROP DATABASE IF EXISTS " . $projectname);
+        if (!$this->input->getOption('no-database')) {
+            $this->dialogProvider->logStep("Dropping the databases");
+            if (in_array("mysql", \PDO::getAvailableDrivers(), TRUE)) {
+                $this->dialogProvider->logTask("Dropping the MySQL database");
+                $dbh = new \PDO('mysql:host=localhost;', $this->app["config"]["mysql"]["user"], $this->app["config"]["mysql"]["password"]);
+                $dbh->query("DROP DATABASE IF EXISTS " . $projectname);
+            }
+            if (in_array("postgresql", \PDO::getAvailableDrivers(), TRUE)) {
+                $this->dialogProvider->logTask("Dropping the PostgreSQL database");
+                $dbh = new \PDO(
+                    $this->dialogProvider->logQuery(
+                        'pgsql:host=localhost;dbname=template1',
+                        array(
+                            "user" => $this->app["config"]["postgresql"]["user"],
+                            "password" => $this->app["config"]["postgresql"]["password"]
+                        )
+                    ),
+                    $this->app["config"]["postgresql"]["user"],
+                    $this->app["config"]["postgresql"]["password"]
+                );
+                $dbh->query("DROP DATABASE IF EXISTS " . $projectname);
+            }
         }
     }
 
