@@ -16,10 +16,12 @@ before_script:
     - sudo locale-gen nl_BE.UTF-8 && sudo update-locale
     - sudo mkdir -p /home/projects
     - echo "USE mysql;\nUPDATE user SET password=PASSWORD('password') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root
+    - sudo apt-get update
     - sudo apt-get install nginx
     - psql -d template1 -c 'create user skylab with SUPERUSER;' -U postgres
     - psql -d template1 -c "alter user skylab with password 'password';" -U postgres
     - psql -d template1 -c 'GRANT SELECT ON pg_shadow TO skylab;' -U postgres
+    - sudo composer selfupdate
     - composer install --prefer-source
 
 script:
