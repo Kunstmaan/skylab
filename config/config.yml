@@ -60,6 +60,7 @@ skeletons:
     smartcms:   Kunstmaan\Skylab\Skeleton\JavaSkeleton
     mongo:      false
     dailycron:  false
+    solr:       false
 
 debug: true
 develmode: true
