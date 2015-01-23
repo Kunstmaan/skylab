@@ -46,6 +46,18 @@ which is responsible for setting up users, permissions and ownership.
 
 Full details at [doc/NewProjectCommand.md](doc/NewProjectCommand.md)
 
+### FetchCommand
+
+Usage: ```php skylab.phar fetch [--hideLogo] [--no-interactive] [-l|--location[="..."]] [--no-database] [project] [host]```
+
+The ```fetch``` command fetches a Skylab project from a server and puts it in the right locations on your computer. It
+will also drop the databases, so be very careful if you want to use this on a production server to do a migration.
+
+```php skylab.phar fetch```
+```php skylab.phar fetch testproject server```
+
+Full details at [doc/FetchCommand.md](doc/FetchCommand.md)
+
 ### SetPermissionsCommand
 
 Usage: ```php skylab.phar permissions [--hideLogo] [--no-interactive] name```
