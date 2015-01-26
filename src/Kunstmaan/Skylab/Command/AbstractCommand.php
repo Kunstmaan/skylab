@@ -2,6 +2,7 @@
 namespace Kunstmaan\Skylab\Command;
 
 use Cilex\Command\Command;
+use Kunstmaan\Skylab\Application;
 use Kunstmaan\Skylab\Provider\UsesProviders;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -41,11 +42,18 @@ abstract class AbstractCommand extends Command
 
         $this->processProvider->executeCommand('sudo -p "Please enter your sudo password: " -v', true);
 
-        if (defined('SKYLAB_DEV_WARNING_TIME') && $this->getName() !== 'self-update') {
-            if (time() > SKYLAB_DEV_WARNING_TIME) {
-                $this->dialogProvider->logWarning('Warning: This build of Skylab is over 30 days old. It is recommended to update it by running "' . $_SERVER['PHP_SELF'] . ' self-update" to get the latest version.');
-            }
-        }
+        $json = $this->remoteProvider->curl('https://api.github.com/repos/kunstmaan/skylab/releases');
+        $data = json_decode($json, true);
+
+        usort($data, function ($a, $b) {
+            return version_compare($a["tag_name"], $b["tag_name"]) * -1;
+        });
+
+        $latest = $data[0];
+
+        if ($this->getName() !== 'self-update' && version_compare(Application::VERSION, $latest["tag_name"]) < 0) {
+            $this->dialogProvider->logWarning('Warning: There is a new release available of Skylab. It is recommended to update it by running "' . $_SERVER['PHP_SELF'] . ' self-update" to get the latest version.');
+	}
     }
 
     /**
