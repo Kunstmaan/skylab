@@ -20,6 +20,7 @@ nginx:
 webserver:
     engine: nginx
     hostmachine:    dev.kunstmaan.be
+    localip: 127.0.0.1
 
 php:
     slowlog_timeout: 10s

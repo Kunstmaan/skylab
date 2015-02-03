@@ -105,7 +105,7 @@ class WebserverSkeleton extends AbstractSkeleton
         $hostlines = array();
         $this->fileSystemProvider->projectsLoop(function ($project) use (&$hostlines) {
             if (array_key_exists($this->getName(), $project["skeletons"])) {
-                $hostlines[] = "127.0.0.1 " . $project["name"] . "." . $this->app["config"]["webserver"]["hostmachine"] . " www." . $project["name"] . "." . $this->app["config"]["webserver"]["hostmachine"] . "\n";
+                $hostlines[] = $this->app["config"]["webserver"]["localip"] . " " . $project["name"] . "." . $this->app["config"]["webserver"]["hostmachine"] . " www." . $project["name"] . "." . $this->app["config"]["webserver"]["hostmachine"] . "\n";
             }
         });
         $this->dialogProvider->logTask("Updating the /etc/hosts file");
