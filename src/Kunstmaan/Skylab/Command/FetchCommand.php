@@ -81,6 +81,7 @@ EOT
             $this->dialogProvider->logStep("Running the full rsync commands since " . $projectname . " is not on this computer");
             $fullExcludes = $excludes;
             $fullExcludes[] = "data/shared";
+            $fullExcludes[] = "data/builds";
             $fullExcludes[] = "data/releases";
             if ($type !== self::TYPE_JAVA) {
                 $fullExcludes[] = "data/" . $projectname;
