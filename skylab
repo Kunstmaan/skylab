@@ -8,12 +8,12 @@ const BASE_DIR = __DIR__;
 
 $app = new \Cilex\Application('skylab', '1.0', array('console.class' => 'Kunstmaan\Skylab\Application', 'skylab.starttime' => $startTime));
 
+$app->register(new \Kunstmaan\Skylab\Provider\ProcessProvider());
 $app->register(new \Kunstmaan\Skylab\Provider\FallbackConfigServiceProvider(),
     array('config.paths' => array(BASE_DIR."/config/config.yml","/etc/skylab.yml")
 ));
 $app->register(new \Kunstmaan\Skylab\Provider\FileSystemProvider());
 $app->register(new \Kunstmaan\Skylab\Provider\ProjectConfigProvider());
-$app->register(new \Kunstmaan\Skylab\Provider\ProcessProvider());
 $app->register(new \Kunstmaan\Skylab\Provider\SkeletonProvider());
 $app->register(new \Kunstmaan\Skylab\Provider\PermissionsProvider());
 $app->register(new \Kunstmaan\Skylab\Provider\DialogProvider());

@@ -37,6 +37,54 @@ $ curl -sSL https://raw.github.com/Kunstmaan/skylab/master/installer | php
 $ mv skylab.phar /usr/local/bin/skylab
 ```
 
+## Configuration
+
+You can override the [default configuration](./config.yml) by creating a file /etc/skylab.yml and give it a secure chmod
+```
+sudo chmod 700 /etc/skylab.yml
+```
+
+For example if you installed skylab on a developer OSX machine:
+```
+users:
+    wwwuser:        apache
+
+webserver:
+    engine: apache
+    hostmachine: XXXXX.kunstmaan.be
+
+mysql:
+    user:     root
+    password: XXXXXXXXX
+
+postgresql:
+    user:     postgres
+    password: XXXXXXXXX
+
+debug: true
+develmode: true
+```
+
+Or on an ubuntu system:
+```
+users:
+    wwwuser: www-data
+
+webserver:
+    engine: apache
+    hostmachine: XXXXX.kunstmaan.be
+
+mysql:
+    user:     root
+    password: XXXXXXXXX
+
+postgresql:
+    user:     postgres
+    password: XXXXXXXXX
+
+debug: true
+develmode: true
+```
 ## Commands
 
 <?php

@@ -32,6 +32,51 @@ $ curl -sSL https://raw.github.com/Kunstmaan/skylab/master/installer | php
 $ mv skylab.phar /usr/local/bin/skylab
 ```
 
+## Configuration
+
+You can override the [default configuration](./config.yml) by creating a file /etc/skylab.yml
+
+For example if you installed skylab on a developer OSX machine:
+```
+users:
+    wwwuser:        apache
+
+webserver:
+    engine: apache
+    hostmachine: XXXXX.kunstmaan.be
+
+mysql:
+    user:     root
+    password: XXXXXXXXX
+
+postgresql:
+    user:     postgres
+    password: XXXXXXXXX
+
+debug: true
+develmode: true
+```
+
+Or on an ubuntu system:
+```
+users:
+    wwwuser: www-data
+
+webserver:
+    engine: apache
+    hostmachine: XXXXX.kunstmaan.be
+
+mysql:
+    user:     root
+    password: XXXXXXXXX
+
+postgresql:
+    user:     postgres
+    password: XXXXXXXXX
+
+debug: true
+develmode: true
+```
 ## Commands
 
 ### NewProjectCommand
@@ -53,8 +98,8 @@ Usage: ```php skylab.phar fetch [--hideLogo] [--no-interactive] [-l|--location[=
 The ```fetch``` command fetches a Skylab project from a server and puts it in the right locations on your computer. It
 will also drop the databases, so be very careful if you want to use this on a production server to do a migration.
 
-```php skylab.phar fetch```
-```php skylab.phar fetch testproject server```
+```php skylab.phar fetch```                         # Will ask for a project and server to fetch it from
+```php skylab.phar fetch testproject server1```     # Will fetch the testproject from server1
 
 Full details at [doc/FetchCommand.md](doc/FetchCommand.md)
 
@@ -151,4 +196,4 @@ Full details at [doc/SelfUpdateCommand.md](doc/SelfUpdateCommand.md)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/Kunstmaan/skylab/badges/quality-score.png?s=3d1f00bf9c2adbba818f274086db3ed4b2bcc4e2)](https://scrutinizer-ci.com/g/Kunstmaan/skylab/)
 
 
-*Documentation generated on 2014-11-25 12:15:26*
+*Documentation generated on 2015-01-26 12:20:13*
