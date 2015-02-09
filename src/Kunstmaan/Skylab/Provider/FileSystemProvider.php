@@ -230,7 +230,7 @@ class FileSystemProvider extends AbstractProvider
     {
         $this->dialogProvider->logConfig("Rendering " . $sourcePath . " to " . $destinationPath);
         $this->processProvider->executeSudoCommand('mkdir -p ' . dirname($destinationPath));
-        $file = $this->twig->render(file_get_contents("./templates" . $sourcePath), $variables);
+        $file = $this->twig->render(file_get_contents(BASE_DIR . "/templates" . $sourcePath), $variables);
         $this->writeProtectedFile($destinationPath, $file);
     }
 

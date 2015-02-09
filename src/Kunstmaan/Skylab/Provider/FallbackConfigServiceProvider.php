@@ -20,8 +20,11 @@ class FallbackConfigServiceProvider extends AbstractProvider
                         continue;
                     }
                     $parser = new Yaml\Parser();
-                    $result = $parser->parse(file_get_contents($path));
-                    $config = array_replace_recursive($config, $result);
+                    $result = @file_get_contents($path);
+                    if($result === FALSE) {
+                        $result = $app['process']->executeSudoCommand("cat " . $path, true);
+                    }
+                    $config = array_replace_recursive($config, $parser->parse($result));
                 }
 
                 return $config;
