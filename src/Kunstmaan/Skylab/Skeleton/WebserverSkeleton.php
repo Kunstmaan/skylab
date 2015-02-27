@@ -306,6 +306,20 @@ class WebserverSkeleton extends AbstractSkeleton
         $aliases[] = $project["url"];
         $aliases[] = $project["name"] . "." . $hostmachine;
         $aliases[] = "www." . $project["name"] . "." . $hostmachine;
+        $serverIps = $this->getServerIPs();
+        foreach ($serverIps as $serverIp) {
+            $aliases[] = $project["name"] . "." . $serverIp . ".xip.io";
+            $aliases[] = "www." . $project["name"] . "." . $serverIp . ".xip.io";
+        }
+    }
+
+    private function getServerIPs() {
+        if(stristr(PHP_OS, 'Linux')) {
+            preg_match_all('/inet addr: ?([^ ]+)/', `ifconfig`, $ips);
+        } else { //OSX
+            preg_match_all('/inet ?([^ ]+)/', `ifconfig`, $ips);
+        }
+        return $ips[1];
     }
 
     /**
