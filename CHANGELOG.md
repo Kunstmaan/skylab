@@ -1,4 +1,14 @@
 
+0.0.9 / 2015-03-02 
+==================
+
+ * ignore github api limit on each command exception for the self-update command, there we ask for a username/password when the api limit is reached
+ * fix sudo for self-update
+ * Merge branch 'master' of github.com:Kunstmaan/skylab
+ * curl cache for getting the releases from github
+ * changelog 0.0.8
+ * Fix tomcat version
+
 0.0.8 / 2015-03-02 
 ==================
 
