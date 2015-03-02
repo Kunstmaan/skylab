@@ -57,9 +57,9 @@ class ProcessProvider extends AbstractProvider
     public function executeSudoCommand($command, $silent = false, $sudoAs = null)
     {
         if (empty($sudoAs)) {
-            $command = 'sudo -p "Please enter your sudo password:" ' . $command;
+            $command = 'sudo -p "Please enter your sudo password:" bash -c ' . escapeshellarg($command);
         } else {
-            $command = 'sudo -p "Please enter your sudo password:" -u ' . $sudoAs . ' ' . $command;
+            $command = 'sudo -p "Please enter your sudo password:" -u ' . $sudoAs . ' bash  -c ' . escapeshellarg($command);
         }
 
         return $this->executeCommand($command, $silent);
