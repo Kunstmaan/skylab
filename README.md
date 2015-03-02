@@ -34,7 +34,7 @@ $ mv skylab.phar /usr/local/bin/skylab
 
 ## Configuration
 
-You can override the [default configuration](./config.yml) by creating a file /etc/skylab.yml
+You can override the [default configuration](./config/config.yml) by creating a file /etc/skylab.yml
 
 For example if you installed skylab on a developer OSX machine:
 ```
