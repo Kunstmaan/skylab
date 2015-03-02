@@ -41,10 +41,6 @@ EOT
             throw new RuntimeException('Skylab update failed: the "' . $tmpDir . '" directory used to download the temp file could not be written');
         }
 
-        if (!is_writable($localFilename)) {
-            throw new RuntimeException('Skylab update failed: the "' . $localFilename . '" file could not be written');
-        }
-
         $json = $this->remoteProvider->curl('https://api.github.com/repos/kunstmaan/skylab/releases');
         $data = json_decode($json, true);
 
@@ -67,7 +63,7 @@ EOT
                 $phar = new \Phar($tempFilename);
                 // free the variable to unlock the file
                 unset($phar);
-                rename($tempFilename, $localFilename);
+                $this->processProvider->executeSudoCommand("mv " . $tempFilename . " " . $localFilename);
             } catch (\Exception $e) {
                 unlink($tempFilename);
                 if (!$e instanceof \UnexpectedValueException && !$e instanceof \PharException) {
