@@ -24,8 +24,13 @@ class RemoteProvider extends AbstractProvider
      * @param  string $filename
      * @return string
      */
-    public function curl($url, $contentType = null, $filename = null)
+    public function curl($url, $contentType = null, $filename = null, $cacheTimeInSeconds = 0)
     {
+        $current_time = time();
+        $cacheFile = sys_get_temp_dir() . "/skylab_curl_cache_" . md5($url) . ".txt";
+        if (file_exists($cacheFile) && ($current_time - $cacheTimeInSeconds < filemtime($cacheFile))) {
+            return file_get_contents($cacheFile);
+        }
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_HEADER, false);
@@ -43,6 +48,7 @@ class RemoteProvider extends AbstractProvider
         if ($filename) {
             $this->closeFile($tmpfile);
         } else {
+            file_put_contents($cacheFile, $result);
             return $result;
         }
 

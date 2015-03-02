@@ -42,7 +42,7 @@ abstract class AbstractCommand extends Command
 
         $this->processProvider->executeCommand('sudo -p "Please enter your sudo password: " -v', true);
 
-        $json = $this->remoteProvider->curl('https://api.github.com/repos/kunstmaan/skylab/releases');
+        $json = $this->remoteProvider->curl('https://api.github.com/repos/kunstmaan/skylab/releases', null, null, 60);
         $data = json_decode($json, true);
 
         usort($data, function ($a, $b) {
