@@ -3,6 +3,7 @@ namespace Kunstmaan\Skylab\Command;
 
 use Cilex\Command\Command;
 use Kunstmaan\Skylab\Application;
+use Kunstmaan\Skylab\Exceptions\AccessDeniedException;
 use Kunstmaan\Skylab\Provider\UsesProviders;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -41,8 +42,11 @@ abstract class AbstractCommand extends Command
         }
 
         $this->processProvider->executeCommand('sudo -p "Please enter your sudo password: " -v', true);
-
-        $json = $this->remoteProvider->curl('https://api.github.com/repos/kunstmaan/skylab/releases', null, null, 60);
+        try {
+           $json = $this->remoteProvider->curl('https://api.github.com/repos/kunstmaan/skylab/releases', null, null, 60);
+        } catch (AccessDeniedException $e) {
+           return;
+        }
         $data = json_decode($json, true);
 
         usort($data, function ($a, $b) {

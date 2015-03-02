@@ -2,6 +2,7 @@
 namespace Kunstmaan\Skylab\Command;
 
 use Kunstmaan\Skylab\Application;
+use Kunstmaan\Skylab\Exceptions\AccessDeniedException;
 use Symfony\Component\Yaml\Exception\RuntimeException;
 
 class SelfUpdateCommand extends AbstractCommand
@@ -41,7 +42,17 @@ EOT
             throw new RuntimeException('Skylab update failed: the "' . $tmpDir . '" directory used to download the temp file could not be written');
         }
 
-        $json = $this->remoteProvider->curl('https://api.github.com/repos/kunstmaan/skylab/releases');
+        $username = null;
+        $password = null;
+        $url = 'https://api.github.com/repos/kunstmaan/skylab/releases';
+        try {
+           $json = $this->remoteProvider->curl($url, null, null, 60);
+        } catch (AccessDeniedException $e) {
+           $this->dialogProvider->logWarning('The url ' . $url . ' has reached the api limit, please provide a login/password.');
+           $username = $this->dialogProvider->askFor('Username:');
+           $password = $this->dialogProvider->askHiddenResponse('Password:');
+           $json = $this->remoteProvider->curl($url, null, null, 60, $username, $password);
+        }
         $data = json_decode($json, true);
 
         usort($data, function ($a, $b) {
@@ -51,7 +62,7 @@ EOT
         $latest = $data[0];
         if (version_compare(Application::VERSION, $latest["tag_name"]) < 0) {
             $this->dialogProvider->logTask('New release found: ' . $latest["tag_name"] . ', updating...');
-            $this->remoteProvider->curl($latest["assets"][0]["url"], $latest["assets"][0]["content_type"], $tempFilename);
+            $this->remoteProvider->curl($latest["assets"][0]["url"], $latest["assets"][0]["content_type"], $tempFilename, 0, $username, $password);
             if (!file_exists($tempFilename)) {
                 $this->dialogProvider->logError('The download of the new Skylab version failed for an unexpected reason');
 

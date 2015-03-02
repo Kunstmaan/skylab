@@ -71,6 +71,26 @@ class DialogProvider extends AbstractProvider
     }
 
     /**
+     * @param string $message
+     * @param  string|null              $argumentname
+     * @param  null              $default
+     * @return string
+     * @throws \RuntimeException
+     */
+    public function askHiddenResponse($message)
+    {
+        $this->clearLine();
+        $this->output->writeln("\n");
+        $var = $this->dialog->askHiddenResponse(
+          $this->output,
+          '<question>' . $message . '</question> ',
+          false
+        );
+
+        return $var;
+    }
+
+    /**
      * @param  string $question The question text
      * @param  bool   $default  The default action
      * @return bool
