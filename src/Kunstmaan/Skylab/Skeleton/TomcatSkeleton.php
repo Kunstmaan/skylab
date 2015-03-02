@@ -24,9 +24,9 @@ class TomcatSkeleton extends AbstractSkeleton
      */
     public function create(\ArrayObject $project)
     {
-        $tempFilename = sys_get_temp_dir() . '/apache-tomcat-7.0.55-temp.tar.gz';
+        $tempFilename = sys_get_temp_dir() . '/apache-tomcat-7.0.59-temp.tar.gz';
         $this->dialogProvider->logCommand("Downloading Tomcat to $tempFilename");
-        $this->remoteProvider->curl("http://apache.cu.be/tomcat/tomcat-7/v7.0.55/bin/apache-tomcat-7.0.55.tar.gz", "application/x-gzip", $tempFilename);
+        $this->remoteProvider->curl("http://apache.cu.be/tomcat/tomcat-7/v7.0.59/bin/apache-tomcat-7.0.59.tar.gz", "application/x-gzip", $tempFilename);
         $this->fileSystemProvider->createDirectory($project, 'tomcat');
         $tomcatFolder = $this->fileSystemProvider->getProjectDirectory($project["name"]) . '/tomcat';
         $this->processProvider->executeSudoCommand("tar xvf " . $tempFilename . ' -C ' . $tomcatFolder);
