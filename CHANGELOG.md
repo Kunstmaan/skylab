@@ -1,4 +1,30 @@
 
+0.0.8 / 2015-03-02 
+==================
+
+ * escape shell commands that are passed through sudo
+ * Merge pull request #40 from krispypen/feature/xipio
+ * possible to use xip.io
+ * Added documentation for configuration files
+ * ignore data/builds in syncing projects because of new ci deploy flow
+ * use trysudo for getting /etc/skylab.yml file and fix reading template files in phar
+ * possible to change the local auto hosts ip address
+ * Merge pull request #38 from bakie/new_release_message
+ * show new release message when available
+ * added fetch documentation
+ * Merge pull request #35 from kimausloos/master
+ * No sudo for composer selfupdate
+ * Update composer and apt-cache  before installing
+ * Ignore solr skeleton
+ * Add some options or the firelane databases
+ * Move the vendoring back
+ * Postgres needs a user
+ * Also configure users in dev mode
+ * Sometimes the user does not exist yet
+ * Gracefully handle Apache 2.2 to 2.4 changes
+ * Use current
+ * Always go via current
+
 0.0.7 / 2014-12-17 
 ==================
 
