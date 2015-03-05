@@ -59,20 +59,22 @@ class AnacronSkeleton extends AbstractSkeleton
 
         $this->processProvider->executeSudoCommand("crontab -r -u " . $project["name"], true);
         // generate anacronjobs file
-        $cronjobs = $this->fileSystemProvider->getDotDFiles($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/fcron.d/");
-        foreach ($cronjobs as $cronjob) {
-            $this->processProvider->executeSudoCommand("cat " . $cronjob->getRealPath() . " >> " . $cronjobscript);
-            $this->processProvider->executeSudoCommand("sed -i -e '\$a\\' " . $cronjobscript);
+        if (!$this->app["config"]["develmode"]) {
+            $cronjobs = $this->fileSystemProvider->getDotDFiles($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/fcron.d/");
+            foreach ($cronjobs as $cronjob) {
+                $this->processProvider->executeSudoCommand("cat " . $cronjob->getRealPath() . " >> " . $cronjobscript);
+                $this->processProvider->executeSudoCommand("sed -i -e '\$a\\' " . $cronjobscript);
+            }
+            $projectAnacrontab = $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/current/app/config/anacrontab";
+            if (file_exists($projectAnacrontab)) {
+                $this->processProvider->executeSudoCommand("cat " . $projectAnacrontab . " >> " . $crontab);
+                $this->processProvider->executeSudoCommand("sed -i -e '\$a\\' " . $crontab);
+            }
+            $this->processProvider->executeSudoCommand('printf "\n" >> ' . $crontab);
+            $this->processProvider->executeSudoCommand('echo "' . '0 3 * * * ' . $cronjobscript . '" >> ' . $crontab);
+            // load the anacrontab file
+            $this->processProvider->executeSudoCommand("crontab -u " . $project["name"] . " " . $crontab);
         }
-        $projectAnacrontab = $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/current/app/config/anacrontab";
-        if (file_exists($projectAnacrontab)) {
-            $this->processProvider->executeSudoCommand("cat " . $projectAnacrontab . " >> " . $crontab);
-            $this->processProvider->executeSudoCommand("sed -i -e '\$a\\' " . $crontab);
-        }
-        $this->processProvider->executeSudoCommand('printf "\n" >> ' . $crontab);
-        $this->processProvider->executeSudoCommand('echo "' . '0 3 * * * ' . $cronjobscript . '" >> ' . $crontab);
-        // load the anacrontab file
-        $this->processProvider->executeSudoCommand("crontab -u " . $project["name"] . " " . $crontab);
     }
 
     /**
