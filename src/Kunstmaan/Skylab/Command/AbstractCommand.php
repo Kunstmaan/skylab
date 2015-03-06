@@ -42,22 +42,25 @@ abstract class AbstractCommand extends Command
         }
 
         $this->processProvider->executeCommand('sudo -p "Please enter your sudo password: " -v', true);
-        try {
-           $json = $this->remoteProvider->curl('https://api.github.com/repos/kunstmaan/skylab/releases', null, null, 60);
-        } catch (AccessDeniedException $e) {
-           return;
+
+        if ('phar:' === substr(__FILE__, 0, 5) || getenv("SU")) {
+            try {
+               $json = $this->remoteProvider->curl('https://api.github.com/repos/kunstmaan/skylab/releases', null, null, 60);
+            } catch (AccessDeniedException $e) {
+               return;
+            }
+            $data = json_decode($json, true);
+
+            usort($data, function ($a, $b) {
+                return version_compare($a["tag_name"], $b["tag_name"]) * -1;
+            });
+
+            $latest = $data[0];
+
+            if ($this->getName() !== 'self-update' && version_compare(Application::VERSION, $latest["tag_name"]) < 0) {
+                $this->dialogProvider->logWarning('Warning: There is a new release available of Skylab. It is recommended to update it by running "' . $_SERVER['PHP_SELF'] . ' self-update" to get the latest version.');
+            }
         }
-        $data = json_decode($json, true);
-
-        usort($data, function ($a, $b) {
-            return version_compare($a["tag_name"], $b["tag_name"]) * -1;
-        });
-
-        $latest = $data[0];
-
-        if ($this->getName() !== 'self-update' && version_compare(Application::VERSION, $latest["tag_name"]) < 0) {
-            $this->dialogProvider->logWarning('Warning: There is a new release available of Skylab. It is recommended to update it by running "' . $_SERVER['PHP_SELF'] . ' self-update" to get the latest version.');
-	}
     }
 
     /**
