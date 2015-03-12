@@ -195,7 +195,10 @@ class ProjectConfigProvider extends AbstractProvider
         foreach ($project["skeletons"] as $skeletonname) {
             $this->addItem($skels, $skeletonname);
             $skeleton = $skeletonProvider->findSkeleton($skeletonname);
-            $config = $skeleton->writeConfig($project, $config);
+            if (!is_object($skeleton)) {
+                $this->dialogProvider->logConfig("Skipping config for " . $skeletonname . " on " . $project["name"]);
+                continue;
+            }
         }
         $this->writeToFile($config, $configPath);
     }
