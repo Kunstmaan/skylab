@@ -314,11 +314,20 @@ class WebserverSkeleton extends AbstractSkeleton
     }
 
     private function getServerIPs() {
-        if(stristr(PHP_OS, 'Linux')) {
-            preg_match_all('/inet addr: ?([^ ]+)/', `ifconfig`, $ips);
-        } else { //OSX
-            preg_match_all('/inet ?([^ ]+)/', `ifconfig`, $ips);
+        $os = strtolower(PHP_OS);
+        switch ($os) {
+            case 'linux': //Linux
+                preg_match_all('/inet addr: ?([^ ]+)/', `ifconfig`, $ips);
+                break;
+            case 'darwin': //OSX
+                preg_match_all('/inet ?([^ ]+)/', `ifconfig -au |grep "inet " |grep -v "127.0.0.1"`, $ips);
+                break;
+            default:
+                throw new Exception("Unsupported OS: " . $os);
+                break;
+
         }
+
         return $ips[1];
     }
 
