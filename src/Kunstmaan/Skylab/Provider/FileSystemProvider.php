@@ -1,6 +1,7 @@
 <?php
 namespace Kunstmaan\Skylab\Provider;
 
+use RuntimeException;
 use Cilex\Application;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -135,6 +136,9 @@ class FileSystemProvider extends AbstractProvider
      */
     public function removeProjectDirectory(\ArrayObject $project)
     {
+        if(empty($project["dir"])) {
+            throw new RuntimeException("The project has no name");
+        }
         $projectDirectory = $this->getProjectDirectory($project["name"]);
         $this->processProvider->executeSudoCommand("rm -Rf " . $projectDirectory);
     }
