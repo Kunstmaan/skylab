@@ -199,6 +199,7 @@ class ProjectConfigProvider extends AbstractProvider
                 $this->dialogProvider->logConfig("Skipping config for " . $skeletonname . " on " . $project["name"]);
                 continue;
             }
+            $config = $skeleton->writeConfig($project, $config);
         }
         $this->writeToFile($config, $configPath);
     }
