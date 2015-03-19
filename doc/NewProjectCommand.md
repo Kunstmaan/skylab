@@ -51,7 +51,7 @@ which is responsible for setting up users, permissions and ownership.
 * Accept value: no
 * Is value required: no
 * Is multiple: no
-* Description: Display this help message.
+* Description: Display this help message
 * Default: `false`
 
 **quiet:**
@@ -61,7 +61,7 @@ which is responsible for setting up users, permissions and ownership.
 * Accept value: no
 * Is value required: no
 * Is multiple: no
-* Description: Do not output any message.
+* Description: Do not output any message
 * Default: `false`
 
 **verbose:**
@@ -71,7 +71,7 @@ which is responsible for setting up users, permissions and ownership.
 * Accept value: no
 * Is value required: no
 * Is multiple: no
-* Description: Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug.
+* Description: Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
 * Default: `false`
 
 **version:**
@@ -81,7 +81,7 @@ which is responsible for setting up users, permissions and ownership.
 * Accept value: no
 * Is value required: no
 * Is multiple: no
-* Description: Display this application version.
+* Description: Display this application version
 * Default: `false`
 
 **ansi:**
@@ -91,7 +91,7 @@ which is responsible for setting up users, permissions and ownership.
 * Accept value: no
 * Is value required: no
 * Is multiple: no
-* Description: Force ANSI output.
+* Description: Force ANSI output
 * Default: `false`
 
 **no-ansi:**
@@ -101,7 +101,7 @@ which is responsible for setting up users, permissions and ownership.
 * Accept value: no
 * Is value required: no
 * Is multiple: no
-* Description: Disable ANSI output.
+* Description: Disable ANSI output
 * Default: `false`
 
 **no-interaction:**
@@ -111,7 +111,7 @@ which is responsible for setting up users, permissions and ownership.
 * Accept value: no
 * Is value required: no
 * Is multiple: no
-* Description: Do not ask any interactive question.
+* Description: Do not ask any interactive question
 * Default: `false`
 
-*Documentation generated on 2014-11-25 12:15:25*
+*Documentation generated on 2015-03-19 13:54:12*

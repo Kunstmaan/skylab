@@ -1,24 +1,14 @@
-permissions
------------
+share
+-----
 
-* Description: Set the permissions of a Skylab project
-* Usage: `permissions [--hideLogo] [--no-interactive] name`
+* Description: Get a full table of all your projects with the xip.io url
+* Usage: `share [--hideLogo] [--no-interactive]`
 * Aliases: <none>
 
-The <info>permissions</info> command will fix the permissions of a project.
+The <info>share</info> command show a table of all your locally installed projects together with the xip.io url.
 
-<info>php skylab.phar permissions testproject</info>
+<info>php skylab.phar share</info>                         # Will show the xip.io table
 
-
-### Arguments:
-
-**name:**
-
-* Name: name
-* Is required: yes
-* Is array: no
-* Description: The name of the project
-* Default: `NULL`
 
 ### Options:
 
