@@ -17,13 +17,11 @@ class ShareCommand extends AbstractCommand
         $this
             ->addDefaults()
             ->setName('share')
-            ->setDescription('Get an easy ')
+            ->setDescription('Get a full table of all your projects with the xip.io url')
             ->setHelp(<<<EOT
-The <info>fetch</info> command fetches a Skylab project from a server and puts it in the right locations on your computer. It
-will also drop the databases, so be very careful if you want to use this on a production server to do a migration.
+The <info>share</info> command show a table of all your locally installed projects together with the xip.io url.
 
-<info>php skylab.phar fetch</info>                         # Will ask for a project and server to fetch it from
-<info>php skylab.phar fetch testproject server1</info>     # Will fetch the testproject from server1
+<info>php skylab.phar share</info>                         # Will show the xip.io table
 
 EOT
             );
