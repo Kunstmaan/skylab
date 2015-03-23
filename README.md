@@ -39,7 +39,7 @@ You can override the [default configuration](./config.yml) by creating a file /e
 sudo chmod 700 /etc/skylab.yml
 ```
 
-For example if you installed skylab on a developer OSX machine:
+For example if you installed skylab on a developer OSX machine (be sure to replace the mysql password, postgresql username and password):
 ```
 users:
     wwwuser:        apache
@@ -53,14 +53,14 @@ mysql:
     password: XXXXXXXXX
 
 postgresql:
-    user:     postgres
+    user:     <username>
     password: XXXXXXXXX
 
 debug: true
 develmode: true
 ```
 
-Or on an ubuntu system:
+Or on an ubuntu system  (be sure to replace the mysql password and postgresql password):
 ```
 users:
     wwwuser: www-data
