@@ -103,10 +103,13 @@ class WebserverSkeleton extends AbstractSkeleton
     private function writeHostFile()
     {
         $hostlines = array();
-        $this->fileSystemProvider->projectsLoop(function ($project) use (&$hostlines) {
-            if (array_key_exists($this->getName(), $project["skeletons"])) {
-                $hostlines[] = $this->app["config"]["webserver"]["localip"] . " " . $project["name"] . "." . $this->app["config"]["webserver"]["hostmachine"] . " www." . $project["name"] . "." . $this->app["config"]["webserver"]["hostmachine"] . "\n";
+        $dialogProvider = $this->dialogProvider;
+        $this->fileSystemProvider->projectsLoop(function ($project) use (&$hostlines, $dialogProvider) {
+            if (!array_key_exists($this->getName(), $project["skeletons"])) {
+                $dialogProvider->logWarning("Project " . $project["name"] . " will not be accessible because skeleton '" . $this->getName() . "' was not applied");
+                return;
             }
+            $hostlines[] = $this->app["config"]["webserver"]["localip"] . " " . $project["name"] . "." . $this->app["config"]["webserver"]["hostmachine"] . " www." . $project["name"] . "." . $this->app["config"]["webserver"]["hostmachine"] . "\n";
         });
         $this->dialogProvider->logTask("Updating the /etc/hosts file");
         $hostsfile = file("/etc/hosts");
@@ -306,20 +309,10 @@ class WebserverSkeleton extends AbstractSkeleton
         $aliases[] = $project["url"];
         $aliases[] = $project["name"] . "." . $hostmachine;
         $aliases[] = "www." . $project["name"] . "." . $hostmachine;
-        $serverIps = $this->getServerIPs();
-        foreach ($serverIps as $serverIp) {
-            $aliases[] = $project["name"] . "." . $serverIp . ".xip.io";
-            $aliases[] = "www." . $project["name"] . "." . $serverIp . ".xip.io";
+        if ($this->app["config"]["develmode"]) {
+            $aliases[] = $project["name"] . ".*.xip.io";
+            $aliases[] = "www." . $project["name"] . ".*.xip.io";
         }
-    }
-
-    private function getServerIPs() {
-        if(stristr(PHP_OS, 'Linux')) {
-            preg_match_all('/inet addr: ?([^ ]+)/', `ifconfig`, $ips);
-        } else { //OSX
-            preg_match_all('/inet ?([^ ]+)/', `ifconfig`, $ips);
-        }
-        return $ips[1];
     }
 
     /**

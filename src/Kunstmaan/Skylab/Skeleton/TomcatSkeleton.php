@@ -36,6 +36,7 @@ class TomcatSkeleton extends AbstractSkeleton
             $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/32tomcat",
             array()
         );
+        $this->processProvider->executeSudoCommand("ln -sf " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . '/tomcat/* ' . $this->fileSystemProvider->getProjectDirectory($project["name"]).'/tomcat/default');
     }
 
     /**
@@ -51,7 +52,23 @@ class TomcatSkeleton extends AbstractSkeleton
      */
     public function postMaintenance()
     {
-        // TODO: Implement postMaintenance() method.
+    	$workerlist = array();
+    	$workers = array();
+    	$this->fileSystemProvider->projectsLoop(function ($project) use (&$workerlist, &$workers) {
+    		$webxmlfile = $project["dir"].'/tomcat/default/conf/server.xml';
+    		if (file_exists($webxmlfile)) {
+    			$workerlist[] = $project['name'];
+    			$xml = simplexml_load_string($this->processProvider->executeSudoCommand("cat " . $webxmlfile));
+    			$connector = $xml->xpath('/Server/Service/Connector/@port');
+    			$port = $connector[0]->port->__toString();
+    			$workers[] = 'worker.'.$project['name'].'.type=ajp13';
+    			$workers[] = 'worker.'.$project['name'].'.host=localhost';
+    			$workers[] = 'worker.'.$project['name'].'.port='.$port;
+    			$workers[] = '';
+    		}
+    	});
+    	array_unshift($workers, 'worker.list='.implode(',', $workerlist));
+    	$this->fileSystemProvider->writeProtectedFile("/etc/apache2/workers.properties", implode("\n", $workers));
     }
 
     /**

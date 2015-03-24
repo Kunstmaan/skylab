@@ -34,37 +34,38 @@ $ mv skylab.phar /usr/local/bin/skylab
 
 ## Configuration
 
-You can override the [default configuration](./config/config.yml) by creating a file /etc/skylab.yml
+You can override the [default configuration](./config.yml) by creating a file /etc/skylab.yml and give it a secure chmod
+```
+sudo chmod 700 /etc/skylab.yml
+```
 
-For example if you installed skylab on a developer OSX machine:
+For example if you installed skylab on a developer OSX machine (be sure to replace the mysql password, postgresql username and password):
 ```
 users:
     wwwuser:        apache
 
 webserver:
     engine: apache
-    hostmachine: XXXXX.kunstmaan.be
 
 mysql:
     user:     root
     password: XXXXXXXXX
 
 postgresql:
-    user:     postgres
+    user:     <username>
     password: XXXXXXXXX
 
 debug: true
 develmode: true
 ```
 
-Or on an ubuntu system:
+Or on an ubuntu system  (be sure to replace the mysql password and postgresql password):
 ```
 users:
     wwwuser: www-data
 
 webserver:
     engine: apache
-    hostmachine: XXXXX.kunstmaan.be
 
 mysql:
     user:     root
@@ -102,6 +103,16 @@ will also drop the databases, so be very careful if you want to use this on a pr
 ```php skylab.phar fetch testproject server1```     # Will fetch the testproject from server1
 
 Full details at [doc/FetchCommand.md](doc/FetchCommand.md)
+
+### ShareCommand
+
+Usage: ```php skylab.phar share [--hideLogo] [--no-interactive]```
+
+The ```share``` command show a table of all your locally installed projects together with the xip.io url.
+
+```php skylab.phar share```                         # Will show the xip.io table
+
+Full details at [doc/ShareCommand.md](doc/ShareCommand.md)
 
 ### SetPermissionsCommand
 
@@ -196,4 +207,4 @@ Full details at [doc/SelfUpdateCommand.md](doc/SelfUpdateCommand.md)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/Kunstmaan/skylab/badges/quality-score.png?s=3d1f00bf9c2adbba818f274086db3ed4b2bcc4e2)](https://scrutinizer-ci.com/g/Kunstmaan/skylab/)
 
 
-*Documentation generated on 2015-01-26 12:20:13*
+*Documentation generated on 2015-03-19 13:54:12*

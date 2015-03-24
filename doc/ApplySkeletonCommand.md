@@ -70,7 +70,7 @@ method in the skeleton to setup all the requirements for that skeleton.
 * Accept value: no
 * Is value required: no
 * Is multiple: no
-* Description: Display this help message.
+* Description: Display this help message
 * Default: `false`
 
 **quiet:**
@@ -80,7 +80,7 @@ method in the skeleton to setup all the requirements for that skeleton.
 * Accept value: no
 * Is value required: no
 * Is multiple: no
-* Description: Do not output any message.
+* Description: Do not output any message
 * Default: `false`
 
 **verbose:**
@@ -90,7 +90,7 @@ method in the skeleton to setup all the requirements for that skeleton.
 * Accept value: no
 * Is value required: no
 * Is multiple: no
-* Description: Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug.
+* Description: Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
 * Default: `false`
 
 **version:**
@@ -100,7 +100,7 @@ method in the skeleton to setup all the requirements for that skeleton.
 * Accept value: no
 * Is value required: no
 * Is multiple: no
-* Description: Display this application version.
+* Description: Display this application version
 * Default: `false`
 
 **ansi:**
@@ -110,7 +110,7 @@ method in the skeleton to setup all the requirements for that skeleton.
 * Accept value: no
 * Is value required: no
 * Is multiple: no
-* Description: Force ANSI output.
+* Description: Force ANSI output
 * Default: `false`
 
 **no-ansi:**
@@ -120,7 +120,7 @@ method in the skeleton to setup all the requirements for that skeleton.
 * Accept value: no
 * Is value required: no
 * Is multiple: no
-* Description: Disable ANSI output.
+* Description: Disable ANSI output
 * Default: `false`
 
 **no-interaction:**
@@ -130,7 +130,7 @@ method in the skeleton to setup all the requirements for that skeleton.
 * Accept value: no
 * Is value required: no
 * Is multiple: no
-* Description: Do not ask any interactive question.
+* Description: Do not ask any interactive question
 * Default: `false`
 
-*Documentation generated on 2014-11-25 12:15:26*
+*Documentation generated on 2015-03-19 13:54:12*

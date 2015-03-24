@@ -29,6 +29,8 @@ $app->command(new \Kunstmaan\Skylab\Command\BackupCommand());
 $app->command(new \Kunstmaan\Skylab\Command\RemoveProjectCommand());
 $app->command(new \Kunstmaan\Skylab\Command\ApplySkeletonCommand());
 $app->command(new \Kunstmaan\Skylab\Command\FetchCommand());
+$app->command(new \Kunstmaan\Skylab\Command\ShareCommand());
+
 if ('phar:' === substr(__FILE__, 0, 5) || getenv("SU")) {
     $app->command(new \Kunstmaan\Skylab\Command\SelfUpdateCommand());
     $app->command(new \Stecman\Component\Symfony\Console\BashCompletion\CompletionCommand());

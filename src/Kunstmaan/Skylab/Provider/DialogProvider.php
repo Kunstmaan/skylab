@@ -5,6 +5,7 @@ use Cilex\Application;
 use Kunstmaan\Skylab\Application as Skylab;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Helper\ProgressHelper;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -72,10 +73,9 @@ class DialogProvider extends AbstractProvider
 
     /**
      * @param string $message
-     * @param  string|null              $argumentname
-     * @param  null              $default
      * @return string
-     * @throws \RuntimeException
+     * @internal param null|string $argumentname
+     * @internal param null $default
      */
     public function askHiddenResponse($message)
     {
@@ -195,6 +195,16 @@ class DialogProvider extends AbstractProvider
     public function logWarning($message)
     {
         $this->output->writeln("<fg=black;bg=yellow;options=bold>\n\n" . $message . "\n</fg=black;bg=yellow;options=bold>\n\n");
+    }
+
+    /**
+     * @param $rows
+     */
+    public function renderTable($headers, $rows)
+    {
+        $table = new Table($this->output);
+        $table->setHeaders($headers)->setRows($rows);
+        $table->render($this->output);
     }
 
     /**

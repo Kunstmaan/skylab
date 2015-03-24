@@ -79,7 +79,7 @@ will also drop the databases, so be very careful if you want to use this on a pr
 * Accept value: no
 * Is value required: no
 * Is multiple: no
-* Description: Display this help message.
+* Description: Display this help message
 * Default: `false`
 
 **quiet:**
@@ -89,7 +89,7 @@ will also drop the databases, so be very careful if you want to use this on a pr
 * Accept value: no
 * Is value required: no
 * Is multiple: no
-* Description: Do not output any message.
+* Description: Do not output any message
 * Default: `false`
 
 **verbose:**
@@ -99,7 +99,7 @@ will also drop the databases, so be very careful if you want to use this on a pr
 * Accept value: no
 * Is value required: no
 * Is multiple: no
-* Description: Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug.
+* Description: Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
 * Default: `false`
 
 **version:**
@@ -109,7 +109,7 @@ will also drop the databases, so be very careful if you want to use this on a pr
 * Accept value: no
 * Is value required: no
 * Is multiple: no
-* Description: Display this application version.
+* Description: Display this application version
 * Default: `false`
 
 **ansi:**
@@ -119,7 +119,7 @@ will also drop the databases, so be very careful if you want to use this on a pr
 * Accept value: no
 * Is value required: no
 * Is multiple: no
-* Description: Force ANSI output.
+* Description: Force ANSI output
 * Default: `false`
 
 **no-ansi:**
@@ -129,7 +129,7 @@ will also drop the databases, so be very careful if you want to use this on a pr
 * Accept value: no
 * Is value required: no
 * Is multiple: no
-* Description: Disable ANSI output.
+* Description: Disable ANSI output
 * Default: `false`
 
 **no-interaction:**
@@ -139,7 +139,7 @@ will also drop the databases, so be very careful if you want to use this on a pr
 * Accept value: no
 * Is value required: no
 * Is multiple: no
-* Description: Do not ask any interactive question.
+* Description: Do not ask any interactive question
 * Default: `false`
 
-*Documentation generated on 2015-01-23 13:31:26*
+*Documentation generated on 2015-03-19 13:54:12*

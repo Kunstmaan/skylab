@@ -1,4 +1,16 @@
 
+0.0.10 / 2015-03-19 
+==================
+
+ * A new "skylab share" command for listing the xip.io urls
+ * Added some safety checks on removing a project
+ * Warning when project will not be in the hosts file
+ * Fixes for when a skeleton is false
+ * Use wildcard in xip.io aliases, no need to get the server ip address here
+ * Don't talk about new versions when using the source version
+ * Only use xip.io in develmode
+ * No crons in develmode
+
 0.0.9 / 2015-03-02 
 ==================
 
