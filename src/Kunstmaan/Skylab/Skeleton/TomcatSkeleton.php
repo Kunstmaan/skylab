@@ -58,7 +58,7 @@ class TomcatSkeleton extends AbstractSkeleton
     		$webxmlfile = $project["dir"].'/tomcat/default/conf/server.xml';
     		if (file_exists($webxmlfile)) {
     			$workerlist[] = $project['name'];
-    			$xml = simplexml_load_file($webxmlfile);
+    			$xml = simplexml_load_string($this->processProvider->executeSudoCommand("cat " . $webxmlfile));
     			$connector = $xml->xpath('/Server/Service/Connector/@port');
     			$port = $connector[0]->port->__toString();
     			$workers[] = 'worker.'.$project['name'].'.type=ajp13';
