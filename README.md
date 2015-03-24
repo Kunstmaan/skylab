@@ -46,7 +46,6 @@ users:
 
 webserver:
     engine: apache
-    hostmachine: XXXXX.kunstmaan.be
 
 mysql:
     user:     root
@@ -67,7 +66,6 @@ users:
 
 webserver:
     engine: apache
-    hostmachine: XXXXX.kunstmaan.be
 
 mysql:
     user:     root
