@@ -113,7 +113,9 @@ class ProjectConfigProvider extends AbstractProvider
             "project.name" => $config["name"],
             "project.statsurl" => "stats." . $config["url"],
             "project.port" => $this->app["config"]["nginx"]["port"],
+            "project.rootpath" => "",
             "config.postgresuser" => $this->app["config"]["users"]["postgresuser"],
+            "config.hostmachine" => $this->app["config"]["webserver"]["hostmachine"],
         ));
 
         preg_match_all("/@(\w*?\.\w*?)@/", $value, $hits);
