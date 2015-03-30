@@ -1,4 +1,16 @@
 
+0.0.11 / 2015-03-30
+==================
+
+ * Disable sentry in developer mode
+ * Add php7.0 to .travis.yml
+ * Set APP_ENV variable to dev in apache if in development mode
+ * Update config.yml
+ * load tomcat xml file with sudo
+ * create default symlink
+ * create workers.properties file
+ * Ignore missing smlkerberos skeleton
+
 0.0.10 / 2015-03-19 
 ==================
 
