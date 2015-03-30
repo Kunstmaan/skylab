@@ -116,6 +116,9 @@ class WebserverSkeleton extends AbstractSkeleton
             }
             $hostlines[] = $this->app["config"]["webserver"]["localip"] . " " . $project["name"] . "." . $this->app["config"]["webserver"]["hostmachine"] . " www." . $project["name"] . "." . $this->app["config"]["webserver"]["hostmachine"] . "\n";
         });
+        if ($this->app["config"]["develmode"]) {
+            $hostlines[] = $this->app["config"]["webserver"]["localip"] . " app.getsentry.com  #This is a workarround for disabling sentry logging in this development environment";
+        }
         $this->dialogProvider->logTask("Updating the /etc/hosts file");
         $hostsfile = file("/etc/hosts");
         $resultLines = array();
