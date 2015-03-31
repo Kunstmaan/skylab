@@ -117,7 +117,7 @@ class PostgreSQLSkeleton extends AbstractSkeleton
     public function preBackup(\ArrayObject $project)
     {
         $backupDir = $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/backup/";
-        $this->fileSystemProvider->createDirectory($project, $backupDir);
+        $this->fileSystemProvider->createDirectory($project, "backup");
         if (is_file($backupDir . '/postgres-custom.dump')) {
             $this->processProvider->executeSudoCommand('rm -f ' . $backupDir . '/postgres-custom.previous.dump');
             $this->processProvider->executeSudoCommand('mv ' . $backupDir . '/postgres-custom.dump ' . $backupDir . '/postgres-custom.previous.dump');
