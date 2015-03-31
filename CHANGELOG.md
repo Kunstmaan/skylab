@@ -1,4 +1,6 @@
 
+ * Enable sentry in developer mode
+
 0.0.11 / 2015-03-30
 ==================
 
