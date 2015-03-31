@@ -91,7 +91,7 @@ class MySQLSkeleton extends AbstractSkeleton
     public function preBackup(\ArrayObject $project)
     {
         $backupDir = $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/backup/";
-        $this->fileSystemProvider->createDirectory($project, $backupDir);
+        $this->fileSystemProvider->createDirectory($project, "backup");
         $this->processProvider->executeSudoCommand('rm -f ' . $backupDir . '/mysql.dmp');
         if (is_file($backupDir . '/mysql.dmp.gz')) {
             $this->processProvider->executeSudoCommand('rm -f ' . $backupDir . '/mysql.dmp.previous.gz');
