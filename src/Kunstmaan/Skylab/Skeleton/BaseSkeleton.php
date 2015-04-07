@@ -95,6 +95,8 @@ class BaseSkeleton extends AbstractSkeleton
             $project["permissions"]["/backup"] = $permissionDefinition;
         }
         $this->fileSystemProvider->createDirectory($project, 'data');
+        $this->fileSystemProvider->createDirectory($project, 'data/' . $project['name']);
+        $this->fileSystemProvider->createSymlink($project, 'data/' . $project['name'], 'data/current');
         {
             $permissionDefinition = new PermissionDefinition();
             $permissionDefinition->setPath("/data");

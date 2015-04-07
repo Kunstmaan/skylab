@@ -103,6 +103,16 @@ class FileSystemProvider extends AbstractProvider
         $projectDirectory = $this->getProjectDirectory($project["name"]);
         $this->processProvider->executeSudoCommand('mkdir -p ' . $projectDirectory . '/' . $path);
     }
+    
+    /**
+     * @param \ArrayObject $project The project
+     * @param string       $path    The relative path in the project folder
+     */
+    public function createSymlink(\ArrayObject $project, $fromPath, $toPath)
+    {
+    	$projectDirectory = $this->getProjectDirectory($project["name"]);
+    	$this->processProvider->executeSudoCommand('ln -sf ' . $projectDirectory . '/' . $fromPath . ' ' . $projectDirectory . '/' . $toPath);
+    }
 
     /**
      * @param \ArrayObject $project The project
