@@ -1,5 +1,10 @@
 
- * Enable sentry in developer mode
+0.0.12 / 2015-04-07
+==================
+
+ * Fix broken backup paths
+ * Enable sentry in developer mode again (Reverted)
+ * Added support for @project.rootpath@ and @config.hostmachine@ (from kDeploy)
 
 0.0.11 / 2015-03-30
 ==================
