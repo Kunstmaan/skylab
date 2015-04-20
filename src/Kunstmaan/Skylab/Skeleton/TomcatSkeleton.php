@@ -40,7 +40,7 @@ class TomcatSkeleton extends AbstractSkeleton
             $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/32tomcat",
             array()
         );
-        $this->processProvider->executeSudoCommand("ln -sf " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . 'tomcat/* ' . $this->fileSystemProvider->getProjectDirectory($project["name"]).'/tomcat/default');
+        $this->processProvider->executeSudoCommand("ln -sf " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . 'tomcat/* ' . $this->fileSystemProvider->getProjectDirectory($project["name"]).'tomcat/default');
     }
 
     /**
