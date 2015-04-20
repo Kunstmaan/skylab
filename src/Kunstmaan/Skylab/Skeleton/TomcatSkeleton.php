@@ -8,6 +8,10 @@ class TomcatSkeleton extends AbstractSkeleton
 {
 
     const NAME = "tomcat";
+    
+    const WORKERFILE_PATH = "/etc/libapache2-mod-jk/workers.properties";
+    
+    const WORKERFILE_PATH_DEPRECATED = "/etc/apache2/workers.properties";
 
     /**
      * @return string
@@ -26,7 +30,7 @@ class TomcatSkeleton extends AbstractSkeleton
     {
         $tempFilename = sys_get_temp_dir() . '/apache-tomcat-7.0.59-temp.tar.gz';
         $this->dialogProvider->logCommand("Downloading Tomcat to $tempFilename");
-        $this->remoteProvider->curl("http://apache.cu.be/tomcat/tomcat-7/v7.0.59/bin/apache-tomcat-7.0.59.tar.gz", "application/x-gzip", $tempFilename);
+        $this->remoteProvider->curl("http://apache.cu.be/tomcat/tomcat-7/v7.0.61/bin/apache-tomcat-7.0.61.tar.gz", "application/x-gzip", $tempFilename);
         $this->fileSystemProvider->createDirectory($project, 'tomcat');
         $tomcatFolder = $this->fileSystemProvider->getProjectDirectory($project["name"]) . '/tomcat';
         $this->processProvider->executeSudoCommand("tar xvf " . $tempFilename . ' -C ' . $tomcatFolder);
@@ -36,7 +40,7 @@ class TomcatSkeleton extends AbstractSkeleton
             $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/32tomcat",
             array()
         );
-        $this->processProvider->executeSudoCommand("ln -sf " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . '/tomcat/* ' . $this->fileSystemProvider->getProjectDirectory($project["name"]).'/tomcat/default');
+        $this->processProvider->executeSudoCommand("ln -sf " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . 'tomcat/* ' . $this->fileSystemProvider->getProjectDirectory($project["name"]).'tomcat/default');
     }
 
     /**
@@ -68,7 +72,11 @@ class TomcatSkeleton extends AbstractSkeleton
     		}
     	});
     	array_unshift($workers, 'worker.list='.implode(',', $workerlist));
-    	$this->fileSystemProvider->writeProtectedFile("/etc/apache2/workers.properties", implode("\n", $workers));
+    	$workerFilePath = self::WORKERFILE_PATH;
+    	if(!file_exists(self::WORKERFILE_PATH) && file_exists(self::WORKERFILE_PATH_DEPRECATED)) {
+    		$workerFilePath = self::WORKERFILE_PATH_DEPRECATED;
+    	}
+    	$this->fileSystemProvider->writeProtectedFile($workerFilePath, implode("\n", $workers));
     }
 
     /**
