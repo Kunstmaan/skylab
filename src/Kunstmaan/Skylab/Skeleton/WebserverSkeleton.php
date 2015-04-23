@@ -185,7 +185,7 @@ class WebserverSkeleton extends AbstractSkeleton
      */
     private function writeFirsthost()
     {
-        $this->fileSystemProvider->render("/apache/000firsthost.conf.twig", $this->app["config"]["apache"]["vhostdir"] . "/000firsthost.conf", array(
+        $this->fileSystemProvider->render("/apache/000firsthost.conf.twig", ($this->app["config"]["bcswitch"]["ansibleserver"]?$this->app["config"]["apache"]["sitesavailable"]:$this->app["config"]["apache"]["vhostdir"]) . "/000firsthost.conf", array(
             'admin' => $this->app["config"]["apache"]["admin"]
         ));
     }
