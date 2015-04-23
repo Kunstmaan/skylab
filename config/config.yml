@@ -11,6 +11,8 @@ users:
 apache:
     admin:        support@kunstmaan.be
     vhostdir:     /etc/apache2/conf/projects.d
+    sitesavailable: /etc/apache2/sites-available
+    sitesenabled:   /etc/apache2/sites-enabled
 
 nginx:
     sitesavailable: /etc/nginx/sites-available
@@ -66,3 +68,6 @@ skeletons:
 
 debug: true
 develmode: true
+
+bcswitch:
+    ansibleserver: false

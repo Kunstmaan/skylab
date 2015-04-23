@@ -106,6 +106,15 @@ class PHPSkeleton extends AbstractSkeleton
                 "slowlog_timeout" => $this->app["config"]["php"]["slowlog_timeout"]
             )
         );
+
+        if ($this->app["config"]["bcswitch"]["ansibleserver"]){
+            $this->fileSystemProvider->render(
+                "/php/apache.d/19php.conf.twig",
+                $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/19php",
+                array()
+            );
+        }
+
         $this->processProvider->executeSudoCommand("mkdir -p /etc/php5/fpm/pool.d/");
         $this->processProvider->executeSudoCommand("ln -sf " . $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/php5-fpm.conf /etc/php5/fpm/pool.d/" . $project["name"] . ".conf");
 

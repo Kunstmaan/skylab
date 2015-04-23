@@ -37,7 +37,12 @@ class WebserverSkeleton extends AbstractSkeleton
             $this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["nginx"]["sitesavailable"] . "/*");
             $this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["nginx"]["sitesenabled"] . "/*");
         } else {
-            $this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["apache"]["vhostdir"] . "/*");
+            if ($this->app["config"]["bcswitch"]["ansibleserver"]){
+                $this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["apache"]["sitesavailable"] . "/*");
+                $this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["apache"]["sitesenabled"] . "/*");
+            } else {
+                $this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["apache"]["vhostdir"] . "/*");
+            }
         }
     }
 
@@ -75,7 +80,11 @@ class WebserverSkeleton extends AbstractSkeleton
             if ($this->app["config"]["develmode"]) {
                 $configcontent = str_replace("-Indexes", "+Indexes", $configcontent);
             }
-            $this->fileSystemProvider->writeProtectedFile($this->app["config"]["apache"]["vhostdir"] . "/" . $project["name"] . ".conf", $configcontent);
+            if ($this->app["config"]["bcswitch"]["ansibleserver"]) {
+                $this->fileSystemProvider->writeProtectedFile($this->app["config"]["apache"]["sitesavailable"] . "/" . $project["name"] . ".conf", $configcontent);
+            } else {
+                $this->fileSystemProvider->writeProtectedFile($this->app["config"]["apache"]["vhostdir"] . "/" . $project["name"] . ".conf", $configcontent);
+            }
         }
     }
 
@@ -100,7 +109,16 @@ class WebserverSkeleton extends AbstractSkeleton
                 $this->processProvider->executeSudoCommand("ln -sf " . $this->app["config"]["nginx"]["sitesavailable"] . "/" . $config->getFilename() . " " . $this->app["config"]["nginx"]["sitesenabled"] . "/" . $config->getFilename());
             }
         } else {
-            $this->writeNamevirtualhost();
+            if ($this->app["config"]["bcswitch"]["ansibleserver"]) {
+                $finder = new Finder();
+                $finder->files()->in($this->app["config"]["apache"]["sitesavailable"])->name("*.conf");
+                /** @var SplFileInfo $config */
+                foreach ($finder as $config) {
+                    $this->processProvider->executeSudoCommand("ln -sf " . $this->app["config"]["apache"]["sitesavailable"] . "/" . $config->getFilename() . " " . $this->app["config"]["apache"]["sitesenabled"] . "/" . $config->getFilename());
+                }
+            } else {
+                $this->writeNamevirtualhost();
+            }
             $this->writeFirsthost();
         }
     }
