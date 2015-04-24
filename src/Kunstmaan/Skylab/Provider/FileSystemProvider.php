@@ -148,7 +148,15 @@ class FileSystemProvider extends AbstractProvider
      */
     public function getApacheConfigTemplateDir($clean=false)
     {
-        return ($clean?"/apache/apache.d/":BASE_DIR . "/templates/apache/apache.d/");
+	return $this->getConfigTemplateDir("apache", $clean);
+    }
+
+    /**
+     * @return string
+     */
+    public function getConfigTemplateDir($skeletonName, $clean=false)
+    {
+	return ($clean ? "/".$skeletonName."/apache.d/" : BASE_DIR . "/templates/".$skeletonName."/apache.d/");
     }
 
     /**
@@ -260,5 +268,59 @@ class FileSystemProvider extends AbstractProvider
         return $this->twig->render($content, $variables);
     }
 
+    /**
+     * @param $cleanedLocation
+     * @param $target
+     * @param SplFileInfo $config
+     */
+    public function renderSingleConfig($cleanedLocation, $target, $config)
+    {
+	$this->fileSystemProvider->renderDist(
+	    $cleanedLocation . $config->getFilename(),
+	    $target . str_replace(".conf.twig", ".dist", $config->getFilename())
+	);
+    }
 
+    /**
+     * @param $cleanedLocation
+     * @param $target
+     * @param SplFileInfo $config
+     */
+    public function renderSingleDistConfig($cleanedLocation, $target, $config)
+    {
+	$this->fileSystemProvider->renderDist(
+	    $cleanedLocation . $config->getFilename(),
+	    $target . str_replace(".conf.twig", ".dist", $config->getFilename())
+	);
+    }
+
+    /**
+     * @param $location
+     * @param $cleanedLocation
+     * @param $target
+     */
+    public function renderConfig($location, $cleanedLocation, $target)
+    {
+	// render templates
+	$finder = new Finder();
+	$finder->files()->in($location)->name("*.conf.twig");
+	foreach ($finder as $config) {
+	    $this->renderSingleConfig($cleanedLocation, $target, $config);
+	}
+    }
+
+    /**
+     * @param $location
+     * @param $cleanedLocation
+     * @param $target
+     */
+    public function renderDistConfig($location, $cleanedLocation, $target)
+    {
+	// render templates
+	$finder = new Finder();
+	$finder->files()->in($location)->name("*.conf.twig");
+	foreach ($finder as $config) {
+	    $this->renderSingleDistConfig($cleanedLocation, $target, $config);
+	}
+    }
 }

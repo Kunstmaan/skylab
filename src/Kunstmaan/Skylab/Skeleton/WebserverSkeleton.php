@@ -22,10 +22,10 @@ class WebserverSkeleton extends AbstractSkeleton
         $this->handleAliases($project, $aliases);
         // nginx
         $this->prepareNginxDirectories($project);
-        $this->renderConfig($this->fileSystemProvider->getNginxConfigTemplateDir(),$this->fileSystemProvider->getNginxConfigTemplateDir(true),$this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/");
+	$this->fileSystemProvider->renderConfig($this->fileSystemProvider->getNginxConfigTemplateDir(),$this->fileSystemProvider->getNginxConfigTemplateDir(true),$this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/");
         // apache
         $this->prepareApacheDirectories($project);
-        $this->renderDistConfig($this->fileSystemProvider->getApacheConfigTemplateDir(),$this->fileSystemProvider->getApacheConfigTemplateDir(true),$this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/");
+	$this->fileSystemProvider->renderDistConfig($this->fileSystemProvider->getApacheConfigTemplateDir(),$this->fileSystemProvider->getApacheConfigTemplateDir(true),$this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/");
     }
 
     /**
@@ -236,36 +236,6 @@ class WebserverSkeleton extends AbstractSkeleton
     }
 
     /**
-     * @param $location
-     * @param $cleanedLocation
-     * @param $target
-     */
-    private function renderConfig($location, $cleanedLocation, $target)
-    {
-        // render templates
-        $finder = new Finder();
-        $finder->files()->in($location)->name("*.conf.twig");
-        foreach ($finder as $config) {
-            $this->renderSingleConfig($cleanedLocation, $target, $config);
-        }
-    }
-
-    /**
-     * @param $location
-     * @param $cleanedLocation
-     * @param $target
-     */
-    private function renderDistConfig($location, $cleanedLocation, $target)
-    {
-        // render templates
-        $finder = new Finder();
-        $finder->files()->in($location)->name("*.conf.twig");
-        foreach ($finder as $config) {
-            $this->renderSingleDistConfig($cleanedLocation, $target, $config);
-        }
-    }
-
-    /**
      * @param \ArrayObject $project
      * @param $aliases
      */
@@ -366,30 +336,5 @@ class WebserverSkeleton extends AbstractSkeleton
         $this->fileSystemProvider->writeProtectedFile($this->app["config"]["nginx"]["sitesavailable"] . "/" . $project["name"] . ".conf", $configcontent);
     }
 
-    /**
-     * @param $cleanedLocation
-     * @param $target
-     * @param SplFileInfo $config
-     */
-    private function renderSingleConfig($cleanedLocation, $target, $config)
-    {
-        $this->fileSystemProvider->renderDist(
-            $cleanedLocation . $config->getFilename(),
-            $target . str_replace(".conf.twig", ".dist", $config->getFilename())
-        );
-    }
-
-    /**
-     * @param $cleanedLocation
-     * @param $target
-     * @param SplFileInfo $config
-     */
-    private function renderSingleDistConfig($cleanedLocation, $target, $config)
-    {
-        $this->fileSystemProvider->renderDist(
-            $cleanedLocation . $config->getFilename(),
-            $target . str_replace(".conf.twig", ".dist", $config->getFilename())
-        );
-    }
 
 }

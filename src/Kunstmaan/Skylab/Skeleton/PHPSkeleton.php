@@ -2,6 +2,8 @@
 namespace Kunstmaan\Skylab\Skeleton;
 
 use Kunstmaan\Skylab\Entity\PermissionDefinition;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 /**
  * ApacheSkeleton
@@ -48,6 +50,7 @@ class PHPSkeleton extends AbstractSkeleton
             $permissionDefinition->addAcl("-R -m u:@config.wwwuser@:r-X");
             $project["permissions"]["/tmp"] = $permissionDefinition;
         }
+
         $this->fileSystemProvider->render(
             "/php/nginx.d/19php.conf.twig",
             $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/19php",
@@ -58,11 +61,9 @@ class PHPSkeleton extends AbstractSkeleton
             $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/10location",
             array()
         );
-        $this->fileSystemProvider->render(
-            "/php/apache.d/19php.conf.twig",
-            $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/19php",
-            array()
-        );
+
+	$this->fileSystemProvider->renderDistConfig($this->fileSystemProvider->getConfigTemplateDir("php"),$this->fileSystemProvider->getConfigTemplateDir("php", true),$this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/");
+
         $this->fileSystemProvider->render(
             "/php/fcron.d/01php5.twig",
             $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/fcron.d/01php5",
@@ -104,12 +105,6 @@ class PHPSkeleton extends AbstractSkeleton
                 "projectgroup" => $project["name"],
                 "develmode" => $this->app["config"]["develmode"]
             )
-        );
-
-        $this->fileSystemProvider->render(
-            "/php/apache.d/19php.conf.twig",
-            $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/19php",
-            array()
         );
 
         $this->processProvider->executeSudoCommand("mkdir -p /etc/php5/fpm/pool.d/");
