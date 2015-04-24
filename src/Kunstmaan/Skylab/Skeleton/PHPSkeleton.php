@@ -102,8 +102,7 @@ class PHPSkeleton extends AbstractSkeleton
                 "projectname" => $project["name"],
                 "projectuser" => $project["name"],
                 "projectgroup" => $project["name"],
-                "develmode" => $this->app["config"]["develmode"],
-                "slowlog_timeout" => $this->app["config"]["php"]["slowlog_timeout"]
+                "develmode" => $this->app["config"]["develmode"]
             )
         );
 
