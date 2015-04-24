@@ -318,6 +318,7 @@ class WebserverSkeleton extends AbstractSkeleton
     {
         $configcontent = '';
         foreach ($configs as $config) {
+            echo $config->getExtension();
             /** @var SplFileInfo $config */
             if ($config->getExtension() == "dist" ){
                 $realPath = file_get_contents($config->getRealPath());
