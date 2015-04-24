@@ -234,8 +234,31 @@ class FileSystemProvider extends AbstractProvider
     {
         $this->dialogProvider->logConfig("Rendering " . $sourcePath . " to " . $destinationPath);
         $this->processProvider->executeSudoCommand('mkdir -p ' . dirname($destinationPath));
-        $file = $this->twig->render(file_get_contents(BASE_DIR . "/templates" . $sourcePath), $variables);
-        $this->writeProtectedFile($destinationPath, $file);
+        $content = $this->renderString(file_get_contents(BASE_DIR . "/templates" . $sourcePath), $variables);
+        $this->writeProtectedFile($destinationPath, $content);
     }
+
+    /**
+     * @param string   $sourcePath
+     * @param string   $destinationPath
+     * @param string[] $variables
+     */
+    public function renderDist($sourcePath, $destinationPath)
+    {
+        $this->dialogProvider->logConfig("Dist rendering " . $sourcePath . " to " . $destinationPath);
+        $this->processProvider->executeSudoCommand('mkdir -p ' . dirname($destinationPath));
+        $this->writeProtectedFile($destinationPath, $sourcePath);
+    }
+
+    /**
+     * @param $content
+     * @param $variables
+     * @return string
+     */
+    public function renderString($content, $variables)
+    {
+        return $this->twig->render($content, $variables);
+    }
+
 
 }
