@@ -107,13 +107,11 @@ class PHPSkeleton extends AbstractSkeleton
             )
         );
 
-        if ($this->app["config"]["bcswitch"]["ansibleserver"]){
-            $this->fileSystemProvider->render(
-                "/php/apache.d/19php.conf.twig",
-                $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/19php",
-                array()
-            );
-        }
+        $this->fileSystemProvider->render(
+            "/php/apache.d/19php.conf.twig",
+            $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/19php",
+            array()
+        );
 
         $this->processProvider->executeSudoCommand("mkdir -p /etc/php5/fpm/pool.d/");
         $this->processProvider->executeSudoCommand("ln -sf " . $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/php5-fpm.conf /etc/php5/fpm/pool.d/" . $project["name"] . ".conf");

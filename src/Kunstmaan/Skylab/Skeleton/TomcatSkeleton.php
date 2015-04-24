@@ -52,23 +52,23 @@ class TomcatSkeleton extends AbstractSkeleton
      */
     public function postMaintenance()
     {
-    	$workerlist = array();
-    	$workers = array();
-    	$this->fileSystemProvider->projectsLoop(function ($project) use (&$workerlist, &$workers) {
-    		$webxmlfile = $project["dir"].'/tomcat/default/conf/server.xml';
-    		if (file_exists($webxmlfile)) {
-    			$workerlist[] = $project['name'];
-    			$xml = simplexml_load_string($this->processProvider->executeSudoCommand("cat " . $webxmlfile));
-    			$connector = $xml->xpath('/Server/Service/Connector/@port');
-    			$port = $connector[0]->port->__toString();
-    			$workers[] = 'worker.'.$project['name'].'.type=ajp13';
-    			$workers[] = 'worker.'.$project['name'].'.host=localhost';
-    			$workers[] = 'worker.'.$project['name'].'.port='.$port;
-    			$workers[] = '';
-    		}
-    	});
-    	array_unshift($workers, 'worker.list='.implode(',', $workerlist));
-    	$this->fileSystemProvider->writeProtectedFile("/etc/apache2/workers.properties", implode("\n", $workers));
+        $workerlist = array();
+        $workers = array();
+        $this->fileSystemProvider->projectsLoop(function ($project) use (&$workerlist, &$workers) {
+            $webxmlfile = $project["dir"].'/tomcat/default/conf/server.xml';
+            if (file_exists($webxmlfile)) {
+                $workerlist[] = $project['name'];
+                $xml = simplexml_load_string($this->processProvider->executeSudoCommand("cat " . $webxmlfile));
+                $connector = $xml->xpath('/Server/Service/Connector/@port');
+                $port = $connector[0]->port->__toString();
+                $workers[] = 'worker.'.$project['name'].'.type=ajp13';
+                $workers[] = 'worker.'.$project['name'].'.host=localhost';
+                $workers[] = 'worker.'.$project['name'].'.port='.$port;
+                $workers[] = '';
+            }
+        });
+        array_unshift($workers, 'worker.list='.implode(',', $workerlist));
+        $this->fileSystemProvider->writeProtectedFile($this->app["config"]["tomcat"]["workerspath"], implode("\n", $workers));
     }
 
     /**

@@ -20,12 +20,12 @@ nginx:
     port:           80
 
 webserver:
-    engine: nginx
+    engine: apache
     hostmachine:    dev.kunstmaan.be
     localip: 127.0.0.1
 
-php:
-    slowlog_timeout: 10s
+tomcat:
+    workerspath: "/etc/libapache2-mod-jk/workers.properties"
 
 awstats:
     password: password
@@ -68,6 +68,3 @@ skeletons:
 
 debug: true
 develmode: true
-
-bcswitch:
-    ansibleserver: false

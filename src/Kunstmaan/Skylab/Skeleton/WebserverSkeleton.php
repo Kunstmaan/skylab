@@ -37,12 +37,8 @@ class WebserverSkeleton extends AbstractSkeleton
             $this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["nginx"]["sitesavailable"] . "/*");
             $this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["nginx"]["sitesenabled"] . "/*");
         } else {
-            if ($this->app["config"]["bcswitch"]["ansibleserver"]){
-                $this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["apache"]["sitesavailable"] . "/*");
-                $this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["apache"]["sitesenabled"] . "/*");
-            } else {
-                $this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["apache"]["vhostdir"] . "/*");
-            }
+            $this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["apache"]["sitesavailable"] . "/*");
+            $this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["apache"]["sitesenabled"] . "/*");
         }
     }
 
@@ -80,11 +76,7 @@ class WebserverSkeleton extends AbstractSkeleton
             if ($this->app["config"]["develmode"]) {
                 $configcontent = str_replace("-Indexes", "+Indexes", $configcontent);
             }
-            if ($this->app["config"]["bcswitch"]["ansibleserver"]) {
-                $this->fileSystemProvider->writeProtectedFile($this->app["config"]["apache"]["sitesavailable"] . "/" . $project["name"] . ".conf", $configcontent);
-            } else {
-                $this->fileSystemProvider->writeProtectedFile($this->app["config"]["apache"]["vhostdir"] . "/" . $project["name"] . ".conf", $configcontent);
-            }
+            $this->fileSystemProvider->writeProtectedFile($this->app["config"]["apache"]["sitesavailable"] . "/" . $project["name"] . ".conf", $configcontent);
         }
     }
 
@@ -109,15 +101,11 @@ class WebserverSkeleton extends AbstractSkeleton
                 $this->processProvider->executeSudoCommand("ln -sf " . $this->app["config"]["nginx"]["sitesavailable"] . "/" . $config->getFilename() . " " . $this->app["config"]["nginx"]["sitesenabled"] . "/" . $config->getFilename());
             }
         } else {
-            if ($this->app["config"]["bcswitch"]["ansibleserver"]) {
-                $finder = new Finder();
-                $finder->files()->in($this->app["config"]["apache"]["sitesavailable"])->name("*.conf");
-                /** @var SplFileInfo $config */
-                foreach ($finder as $config) {
-                    $this->processProvider->executeSudoCommand("ln -sf " . $this->app["config"]["apache"]["sitesavailable"] . "/" . $config->getFilename() . " " . $this->app["config"]["apache"]["sitesenabled"] . "/" . $config->getFilename());
-                }
-            } else {
-                $this->writeNamevirtualhost();
+            $finder = new Finder();
+            $finder->files()->in($this->app["config"]["apache"]["sitesavailable"])->name("*.conf");
+            /** @var SplFileInfo $config */
+            foreach ($finder as $config) {
+                $this->processProvider->executeSudoCommand("ln -sf " . $this->app["config"]["apache"]["sitesavailable"] . "/" . $config->getFilename() . " " . $this->app["config"]["apache"]["sitesenabled"] . "/" . $config->getFilename());
             }
             $this->writeFirsthost();
         }
@@ -172,25 +160,15 @@ class WebserverSkeleton extends AbstractSkeleton
         return self::NAME;
     }
 
-    private function writeNamevirtualhost()
-    {
-        $this->dialogProvider->logTask("Writing namevirtualhosts");
-        $namevirtualhosts = "NameVirtualHost *:80\n";
-        $namevirtualhosts .= "NameVirtualHost *:443\n";
-        $this->fileSystemProvider->writeProtectedFile($this->app["config"]["apache"]["vhostdir"] . "/namevirtualhosts", $namevirtualhosts);
-    }
-
     /**
      *
      */
     private function writeFirsthost()
     {
-        $this->fileSystemProvider->render("/apache/000firsthost.conf.twig", ($this->app["config"]["bcswitch"]["ansibleserver"]?$this->app["config"]["apache"]["sitesavailable"]:$this->app["config"]["apache"]["vhostdir"]) . "/000firsthost.conf", array(
+        $this->fileSystemProvider->render("/apache/000firsthost.conf.twig", $this->app["config"]["apache"]["sitesavailable"] . "/000firsthost.conf", array(
             'admin' => $this->app["config"]["apache"]["admin"]
         ));
     }
-
-
 
     /**
      * @param \ArrayObject $project
