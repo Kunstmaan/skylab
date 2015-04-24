@@ -24,9 +24,9 @@ class TomcatSkeleton extends AbstractSkeleton
      */
     public function create(\ArrayObject $project)
     {
-        $tempFilename = sys_get_temp_dir() . '/apache-tomcat-7.0.59-temp.tar.gz';
+        $tempFilename = sys_get_temp_dir() . '/apache-tomcat-7.0.61-temp.tar.gz';
         $this->dialogProvider->logCommand("Downloading Tomcat to $tempFilename");
-        $this->remoteProvider->curl("http://apache.cu.be/tomcat/tomcat-7/v7.0.59/bin/apache-tomcat-7.0.59.tar.gz", "application/x-gzip", $tempFilename);
+        $this->remoteProvider->curl("http://apache.cu.be/tomcat/tomcat-7/v7.0.59/bin/apache-tomcat-7.0.61.tar.gz", "application/x-gzip", $tempFilename);
         $this->fileSystemProvider->createDirectory($project, 'tomcat');
         $tomcatFolder = $this->fileSystemProvider->getProjectDirectory($project["name"]) . '/tomcat';
         $this->processProvider->executeSudoCommand("tar xvf " . $tempFilename . ' -C ' . $tomcatFolder);
@@ -36,7 +36,7 @@ class TomcatSkeleton extends AbstractSkeleton
             $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/32tomcat",
             array()
         );
-        $this->processProvider->executeSudoCommand("ln -sf " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . '/tomcat/* ' . $this->fileSystemProvider->getProjectDirectory($project["name"]).'/tomcat/default');
+        $this->processProvider->executeSudoCommand("ln -sf " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . 'tomcat/* ' . $this->fileSystemProvider->getProjectDirectory($project["name"]).'tomcat/default');
     }
 
     /**
