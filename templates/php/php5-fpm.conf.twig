@@ -35,7 +35,7 @@ group = {{ projectuser }}
 ;                            (IPv6 and IPv4-mapped) on a specific port;
 ;   '/path/to/unix/socket' - to listen on a unix socket.
 ; Note: This value is mandatory.
-listen = /tmp/.{{ projectname }}-fpm.sock
+listen = /var/run/php5-fpm-{{ projectname }}.sock
 
 ; Set listen(2) backlog.
 ; Default Value: 65535 (-1 on FreeBSD and OpenBSD)
@@ -48,7 +48,7 @@ listen = /tmp/.{{ projectname }}-fpm.sock
 ;                 mode is set to 0660
 listen.owner = {{ projectuser }}
 listen.group = {{ projectuser }}
-listen.mode = 0666
+listen.mode = 0777
 ; When POSIX Access Control Lists are supported you can set them using
 ; these options, value is a comma separated list of user/group names.
 ; When set, listen.owner and listen.group are ignored
@@ -312,13 +312,13 @@ access.format = "%R - %u %t \"%m %r%Q%q\" %s %f %{mili}d %{kilo}M %C%%"
 ; The log file for slow requests
 ; Default Value: not set
 ; Note: slowlog is mandatory if request_slowlog_timeout is set
-slowlog = {{ projectdir }}/apachelogs/fpm.slow.log
+;slowlog = {{ projectdir }}apachelogs/fpm.slow.log
 
 ; The timeout for serving a single request after which a PHP backtrace will be
 ; dumped to the 'slowlog' file. A value of '0s' means 'off'.
 ; Available units: s(econds)(default), m(inutes), h(ours), or d(ays)
 ; Default Value: 0
-request_slowlog_timeout = {{ slowlog_timeout }}
+;request_slowlog_timeout = 0s
 
 ; The timeout for serving a single request after which the worker process will
 ; be killed. This option should be used when the 'max_execution_time' ini option

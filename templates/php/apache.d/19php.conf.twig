@@ -1,6 +1,6 @@
 <IfModule proxy_fcgi_module>
     <FilesMatch \.php$>
-        SetHandler "proxy:unix:/tmp/.@project.name@-fpm.sock|fcgi://localhost"
+        SetHandler "proxy:unix:/var/run/php5-fpm-@project.name@.sock|fcgi://localhost"
     </FilesMatch>
 </IfModule>
 
