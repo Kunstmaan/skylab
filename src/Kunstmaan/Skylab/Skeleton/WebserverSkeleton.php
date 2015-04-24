@@ -22,10 +22,10 @@ class WebserverSkeleton extends AbstractSkeleton
         $this->handleAliases($project, $aliases);
         // nginx
         $this->prepareNginxDirectories($project);
-	$this->fileSystemProvider->renderConfig($this->fileSystemProvider->getNginxConfigTemplateDir(),$this->fileSystemProvider->getNginxConfigTemplateDir(true),$this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/");
+        $this->fileSystemProvider->renderConfig($this->fileSystemProvider->getNginxConfigTemplateDir(),$this->fileSystemProvider->getNginxConfigTemplateDir(true),$this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/");
         // apache
         $this->prepareApacheDirectories($project);
-	$this->fileSystemProvider->renderDistConfig($this->fileSystemProvider->getApacheConfigTemplateDir(),$this->fileSystemProvider->getApacheConfigTemplateDir(true),$this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/");
+        $this->fileSystemProvider->renderDistConfig($this->fileSystemProvider->getApacheConfigTemplateDir(),$this->fileSystemProvider->getApacheConfigTemplateDir(true),$this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/");
     }
 
     /**
