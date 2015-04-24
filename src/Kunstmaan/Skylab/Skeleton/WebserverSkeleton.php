@@ -320,7 +320,8 @@ class WebserverSkeleton extends AbstractSkeleton
         foreach ($configs as $config) {
             /** @var SplFileInfo $config */
             if ($config->getExtension() == "dist" ){
-                $realPath = file_get_contents($config->getRealPath());
+                $realPathArray = explode("\n", file_get_contents($config->getRealPath()));
+                $realPath = $realPathArray[0];
                 $content = $this->fileSystemProvider->renderString(file_get_contents(BASE_DIR . "/templates" . $realPath), array());
             } else {
                 $realPath = $config->getRealPath();
