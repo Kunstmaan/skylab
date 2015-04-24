@@ -318,17 +318,17 @@ class WebserverSkeleton extends AbstractSkeleton
     {
         $configcontent = '';
         foreach ($configs as $config) {
-            echo $config->getExtension();
             /** @var SplFileInfo $config */
             if ($config->getExtension() == "dist" ){
                 $realPath = file_get_contents($config->getRealPath());
-                $content = $this->fileSystemProvider->renderString($realPath, array());
+                $content = $this->fileSystemProvider->renderString(file_get_contents(BASE_DIR . "/templates" . $realPath), array());
             } else {
-                $content = file_get_contents($config->getRealPath());
+                $realPath = $config->getRealPath();
+                $content = file_get_contents($realPath);
             }
-            $configcontent .= "\n#BEGIN " . $config->getRealPath() . "\n\n";
+            $configcontent .= "\n#BEGIN " . $realPath . "\n\n";
             $configcontent .= $this->projectConfigProvider->searchReplacer($content, $project) . "\n";
-            $configcontent .= "\n#END " . $config->getRealPath() . "\n\n";
+            $configcontent .= "\n#END " . $realPath . "\n\n";
         }
         return $configcontent;
     }
