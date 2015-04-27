@@ -94,6 +94,7 @@ describeCommand(new \Kunstmaan\Skylab\Command\NewProjectCommand());
 describeCommand(new \Kunstmaan\Skylab\Command\FetchCommand());
 describeCommand(new \Kunstmaan\Skylab\Command\ShareCommand());
 describeCommand(new \Kunstmaan\Skylab\Command\SetPermissionsCommand());
+describeCommand(new \Kunstmaan\Skylab\Command\CronCommand());
 describeCommand(new \Kunstmaan\Skylab\Command\MaintenanceCommand());
 describeCommand(new \Kunstmaan\Skylab\Command\BackupCommand());
 describeCommand(new \Kunstmaan\Skylab\Command\RemoveProjectCommand());
