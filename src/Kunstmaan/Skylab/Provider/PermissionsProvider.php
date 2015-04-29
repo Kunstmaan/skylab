@@ -138,11 +138,11 @@ class PermissionsProvider extends AbstractProvider
             foreach ($project["permissions"] as $pd) {
                 foreach ($pd->getAcl() as $acl) {
                     $path = $this->fileSystemProvider->getProjectDirectory($project["name"]) . $pd->getPath();
-                    if (!file_exists($path)) {
+                    if (file_exists($path)) {
+                        $this->processProvider->executeSudoCommand('setfacl ' . $this->projectConfigProvider->searchReplacer($acl, $project) . ' ' . $path, true);
+                    } else {
                         $this->dialogProvider->logNotice($path . " does not exist, do not chmod");
-                        continue;
                     }
-                    $this->processProvider->executeSudoCommand('setfacl ' . $this->projectConfigProvider->searchReplacer($acl, $project) . ' ' . $path, true);
                 }
             }
         }
