@@ -123,16 +123,14 @@ class PermissionsProvider extends AbstractProvider
         if ($this->app["config"]["develmode"] || !$this->processProvider->commandExists("setfacl")) {
             if (!file_exists($this->fileSystemProvider->getProjectDirectory($project["name"]))) {
                 $this->dialogProvider->logNotice($this->fileSystemProvider->getProjectDirectory($project["name"]) . " does not exist, do not chmod");
-
-                return;
+            } else {
+                $this->processProvider->executeSudoCommand('chmod -R 777 ' . $this->fileSystemProvider->getProjectDirectory($project["name"]));
             }
-            $this->processProvider->executeSudoCommand('chmod -R 777 ' . $this->fileSystemProvider->getProjectDirectory($project["name"]));
             if (!file_exists($this->fileSystemProvider->getProjectDirectory($project["name"]) . '/.ssh/')) {
                 $this->dialogProvider->logNotice($this->fileSystemProvider->getProjectDirectory($project["name"]) . '/.ssh/' . " does not exist, do not chmod");
-
-                return;
+            } else {
+                $this->processProvider->executeSudoCommand('chmod -R 700 ' . $this->fileSystemProvider->getProjectDirectory($project["name"]) . '/.ssh/');
             }
-            $this->processProvider->executeSudoCommand('chmod -R 700 ' . $this->fileSystemProvider->getProjectDirectory($project["name"]) . '/.ssh/');
         } else {
             /** @var PermissionDefinition $pd */
             foreach ($project["permissions"] as $pd) {
