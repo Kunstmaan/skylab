@@ -5,6 +5,12 @@
     </FilesMatch>
 </IfModule>
 
+# PHP5-FPM: This is de old way of running PHP iva FPM.
+<IfModule mod_fastcgi.c>
+    FastCgiExternalServer @config.projectsdir@@project.name@/php5-fpm/php5.external -socket /tmp/.@project.name@-fpm.sock -idle-timeout 7200
+    Alias /php5-fpm/ @config.projectsdir@@project.name@/php5-fpm/
+</IfModule>
+
 # MOD_PHP: This is de default way of running PHP. This is the way it is installed on OSX
 <IfModule mod_php5.c>
     AddType application/x-httpd-php .php .phtml .php3
