@@ -95,9 +95,10 @@ class PHPSkeleton extends AbstractSkeleton
      */
     public function maintenance(\ArrayObject $project)
     {
+        $this->processProvider->executeSudoCommand("mkdir -p /etc/php5/fpm/pool.d/");
         $this->fileSystemProvider->render(
             "/php/php5-fpm.conf.twig",
-            $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/php5-fpm.conf",
+            "/etc/php5/fpm/pool.d/" . $project["name"] . ".conf",
             array(
                 "projectdir" => $this->fileSystemProvider->getProjectDirectory($project["name"]),
                 "projectname" => $project["name"],
@@ -106,15 +107,11 @@ class PHPSkeleton extends AbstractSkeleton
                 "develmode" => $this->app["config"]["develmode"]
             )
         );
-
-        $this->processProvider->executeSudoCommand("mkdir -p /etc/php5/fpm/pool.d/");
-        $this->processProvider->executeSudoCommand("ln -sf " . $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/php5-fpm.conf /etc/php5/fpm/pool.d/" . $project["name"] . ".conf");
-
     }
 
     /**
      * @param \ArrayObject $project
-     *
+     *<
      * @return mixed
      */
     public function preBackup(\ArrayObject $project)
