@@ -24,6 +24,7 @@ $app->register(new \Cilex\Provider\TwigServiceProvider(), array(
 
 $app->command(new \Kunstmaan\Skylab\Command\NewProjectCommand());
 $app->command(new \Kunstmaan\Skylab\Command\SetPermissionsCommand());
+$app->command(new \Kunstmaan\Skylab\Command\CronCommand());
 $app->command(new \Kunstmaan\Skylab\Command\MaintenanceCommand());
 $app->command(new \Kunstmaan\Skylab\Command\BackupCommand());
 $app->command(new \Kunstmaan\Skylab\Command\RemoveProjectCommand());
