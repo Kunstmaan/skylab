@@ -103,7 +103,7 @@ class PostgreSQLSkeleton extends AbstractSkeleton
                 $finder = new Finder();
                 $finder->files()->in($backupDir)->name("postgres-custom.dump");
                 if (count(iterator_to_array($finder)) > 0) {
-                    $this->processProvider->executeSudoCommand("PGPASSWORD='".$project["dbpass"]."' PGOPTIONS='-c maintenance_work_mem=64MB' pg_restore --disable-triggers -n public -j 8 -Fc ".$backupDir."/postgres-custom.dump -d ". $project["dbname"], false, $project["dbuser"]);
+                    $this->processProvider->executeSudoCommand("PGPASSWORD='".$project["dbpass"]."' PGOPTIONS='-c maintenance_work_mem=256MB' pg_restore --disable-triggers -n public -j 8 -Fc ".$backupDir."/postgres-custom.dump -d ". $project["dbname"], false, $project["dbuser"]);
                 }
             }
         }
@@ -122,7 +122,7 @@ class PostgreSQLSkeleton extends AbstractSkeleton
             $this->processProvider->executeSudoCommand('rm -f ' . $backupDir . '/postgres-custom.previous.dump');
             $this->processProvider->executeSudoCommand('mv ' . $backupDir . '/postgres-custom.dump ' . $backupDir . '/postgres-custom.previous.dump');
         }
-        $this->processProvider->executeSudoCommand("PGOPTIONS='-c maintenance_work_mem=64MB' pg_dump -Fc -f ".$backupDir."/postgres-custom.dump ".$project["dbname"], false, $project["dbuser"]);
+        $this->processProvider->executeSudoCommand("PGPASSWORD='".$project["dbpass"]."' PGOPTIONS='-c maintenance_work_mem=256MB' pg_dump -Fc -f ".$backupDir."/postgres-custom.dump ".$project["dbname"], false, $project["dbuser"]);
     }
 
     /**
