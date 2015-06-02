@@ -3,8 +3,10 @@ namespace Kunstmaan\Skylab\Provider;
 
 use Cilex\Application;
 use Kunstmaan\Skylab\Application as Skylab;
-use Symfony\Component\Console\Helper\DialogHelper;
-use Symfony\Component\Console\Helper\ProgressHelper;
+use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -15,12 +17,12 @@ class DialogProvider extends AbstractProvider
 {
 
     /**
-     * @var DialogHelper
+     * @var QuestionHelper
      */
     private $dialog;
 
     /**
-     * @var ProgressHelper
+     * @var ProgressBar
      */
     private $progress;
 
@@ -35,10 +37,7 @@ class DialogProvider extends AbstractProvider
         $this->app = $app;
         /** @var Skylab $consoleApp */
         $consoleApp = $this->app['console'];
-        $this->dialog = $consoleApp->getHelperSet()->get('dialog');
-        $this->progress = $consoleApp->getHelperSet()->get('progress');
-        $this->progress->setEmptyBarCharacter(' ');
-        $this->progress->setBarCharacter('-');
+        $this->dialog = $consoleApp->getHelperSet()->get('question');
     }
 
     /**
@@ -55,17 +54,20 @@ class DialogProvider extends AbstractProvider
         if ($argumentname) {
             $var = $this->input->getArgument($argumentname);
             if (!$var) {
-                $var = $this->dialog->ask($this->output, '<question>' . $message . '</question> ');
+                $question = new Question('<question>' . $message . '</question> ');
+                $var = $this->dialog->ask($this->input, $this->output, $question);
             }
         } elseif ($default) {
             if ($this->noInteraction) {
-                $this->dialogProvider->logNotice("--no-iteraction selected, using " . $default);
+                $this->dialogProvider->logNotice("--no-interaction selected, using " . $default);
                 $var = $default;
             } else {
-                $var = $this->dialog->ask($this->output, '<question>' . $message . ':  [' . $default . ']</question> ', $default);
+                $question = new Question('<question>' . $message . ':  [' . $default . ']</question> ', $default);
+                $var = $this->dialog->ask($this->input, $this->output, $question);
             }
         } else {
-            $var = $this->dialog->ask($this->output, '<question>' . $message . '</question> ');
+            $question = new Question('<question>' . $message . '</question> ');
+            $var = $this->dialog->ask($this->input, $this->output, $question);
         }
 
         return $var;
@@ -81,11 +83,10 @@ class DialogProvider extends AbstractProvider
     {
         $this->clearLine();
         $this->output->writeln("\n");
-        $var = $this->dialog->askHiddenResponse(
-          $this->output,
-          '<question>' . $message . '</question> ',
-          false
-        );
+        $question = new Question('<question>' . $message . '</question> ');
+        $question->setHidden(true);
+        $question->setHiddenFallback(false);
+        $var = $this->dialog->ask($this->input, $this->output, $question);
 
         return $var;
     }
@@ -97,7 +98,8 @@ class DialogProvider extends AbstractProvider
      */
     public function askConfirmation($question, $default = true)
     {
-        return $this->dialog->askConfirmation($this->output, $question, $default);
+        $question = new ConfirmationQuestion($question, $default);
+        return $this->dialog->ask($this->input, $this->output, $question);
     }
 
     /**
@@ -117,7 +119,8 @@ class DialogProvider extends AbstractProvider
         $this->clearLine();
         $this->output->writeln('<fg=blue;options=bold>   > ' . $message . " </fg=blue;options=bold>");
         if ($this->output->getVerbosity() <= OutputInterface::VERBOSITY_NORMAL) {
-            $this->progress->start($this->output);
+            $this->initializeProgressBar();
+            $this->progress->start();
         }
     }
 
@@ -129,6 +132,9 @@ class DialogProvider extends AbstractProvider
         if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
             $this->output->writeln('<info>   $</info> <comment>' . $message . '</comment> ');
         } else {
+            if($this->progress == null) {
+                $this->initializeProgressBar();
+            }
             $this->progress->advance();
         }
     }
@@ -145,12 +151,15 @@ class DialogProvider extends AbstractProvider
                 $message .
                 ($extra ?
                     ' (' .
-                        implode(', ',
-                            array_map(function ($v, $k) { return $k . '=' . $v; }, $extra, array_keys($extra))
-                        ) .
+                    implode(', ',
+                        array_map(function ($v, $k) { return $k . '=' . $v; }, $extra, array_keys($extra))
+                    ) .
                     ')' : '') .
-            '</comment> ');
+                '</comment> ');
         } else {
+            if($this->progress == null) {
+                $this->initializeProgressBar();
+            }
             $this->progress->advance();
         }
 
@@ -165,6 +174,9 @@ class DialogProvider extends AbstractProvider
         if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
             $this->output->writeln('<info>   %</info> <comment>' . $message . '</comment> ');
         } else {
+            if($this->progress == null) {
+                $this->initializeProgressBar();
+            }
             $this->progress->advance();
         }
     }
@@ -177,6 +189,9 @@ class DialogProvider extends AbstractProvider
         if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
             $this->output->writeln('<info>   !</info> <comment>' . $message . '</comment> ');
         } else {
+            if($this->progress == null) {
+                $this->initializeProgressBar();
+            }
             $this->progress->advance();
         }
     }
@@ -239,5 +254,11 @@ class DialogProvider extends AbstractProvider
         $this->output->write("\x0D");
         $this->output->write($message);
         $this->output->write("\x0D");
+    }
+
+    private function initializeProgressBar() {
+        $this->progress = new ProgressBar($this->output);
+        $this->progress->setEmptyBarCharacter(' ');
+        $this->progress->setBarCharacter('-');
     }
 }
