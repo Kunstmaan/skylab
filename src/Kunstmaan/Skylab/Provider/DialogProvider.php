@@ -119,7 +119,9 @@ class DialogProvider extends AbstractProvider
         $this->clearLine();
         $this->output->writeln('<fg=blue;options=bold>   > ' . $message . " </fg=blue;options=bold>");
         if ($this->output->getVerbosity() <= OutputInterface::VERBOSITY_NORMAL) {
-            $this->initializeProgressBar();
+            $this->progress = new ProgressBar($this->output);
+            $this->progress->setEmptyBarCharacter(' ');
+            $this->progress->setBarCharacter('-');
             $this->progress->start();
         }
     }
@@ -132,10 +134,9 @@ class DialogProvider extends AbstractProvider
         if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
             $this->output->writeln('<info>   $</info> <comment>' . $message . '</comment> ');
         } else {
-            if($this->progress == null) {
-                $this->initializeProgressBar();
+            if($this->progress != null) {
+                $this->progress->advance();
             }
-            $this->progress->advance();
         }
     }
 
@@ -157,12 +158,10 @@ class DialogProvider extends AbstractProvider
                     ')' : '') .
                 '</comment> ');
         } else {
-            if($this->progress == null) {
-                $this->initializeProgressBar();
+            if ($this->progress != null) {
+                $this->progress->advance();
             }
-            $this->progress->advance();
         }
-
         return $message;
     }
 
@@ -174,10 +173,9 @@ class DialogProvider extends AbstractProvider
         if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
             $this->output->writeln('<info>   %</info> <comment>' . $message . '</comment> ');
         } else {
-            if($this->progress == null) {
-                $this->initializeProgressBar();
+            if($this->progress != null) {
+                $this->progress->advance();
             }
-            $this->progress->advance();
         }
     }
 
@@ -189,10 +187,9 @@ class DialogProvider extends AbstractProvider
         if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
             $this->output->writeln('<info>   !</info> <comment>' . $message . '</comment> ');
         } else {
-            if($this->progress == null) {
-                $this->initializeProgressBar();
+            if($this->progress != null) {
+                $this->progress->advance();
             }
-            $this->progress->advance();
         }
     }
 
@@ -254,11 +251,5 @@ class DialogProvider extends AbstractProvider
         $this->output->write("\x0D");
         $this->output->write($message);
         $this->output->write("\x0D");
-    }
-
-    private function initializeProgressBar() {
-        $this->progress = new ProgressBar($this->output);
-        $this->progress->setEmptyBarCharacter(' ');
-        $this->progress->setBarCharacter('-');
     }
 }
