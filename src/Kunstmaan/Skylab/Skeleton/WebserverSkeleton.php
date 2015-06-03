@@ -84,13 +84,13 @@ class WebserverSkeleton extends AbstractSkeleton
                 $this->processProvider->executeSudoCommand("ln -sf " . $this->app["config"]["nginx"]["sitesavailable"] . "/" . $config->getFilename() . " " . $this->app["config"]["nginx"]["sitesenabled"] . "/" . $config->getFilename());
             }
         } else {
+            $this->writeFirsthost();
             $finder = new Finder();
             $finder->files()->in($this->app["config"]["apache"]["sitesavailable"])->name("*.conf");
             /** @var SplFileInfo $config */
             foreach ($finder as $config) {
                 $this->processProvider->executeSudoCommand("ln -sf " . $this->app["config"]["apache"]["sitesavailable"] . "/" . $config->getFilename() . " " . $this->app["config"]["apache"]["sitesenabled"] . "/" . $config->getFilename());
             }
-            $this->writeFirsthost();
         }
     }
 
