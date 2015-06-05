@@ -99,10 +99,6 @@ class WebserverSkeleton extends AbstractSkeleton
         $hostlines = array();
         $dialogProvider = $this->dialogProvider;
         $this->fileSystemProvider->projectsLoop(function ($project) use (&$hostlines, $dialogProvider) {
-            if (!array_key_exists($this->getName(), $project["skeletons"])) {
-                $dialogProvider->logWarning("Project " . $project["name"] . " will not be accessible because skeleton '" . $this->getName() . "' was not applied");
-                return;
-            }
             $hostlines[] = $this->app["config"]["webserver"]["localip"] . " " . $project["name"] . "." . $this->app["config"]["webserver"]["hostmachine"] . " www." . $project["name"] . "." . $this->app["config"]["webserver"]["hostmachine"] . "\n";
         });
         $this->dialogProvider->logTask("Updating the /etc/hosts file");
