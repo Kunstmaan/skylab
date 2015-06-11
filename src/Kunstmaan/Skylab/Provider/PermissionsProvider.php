@@ -111,7 +111,7 @@ class PermissionsProvider extends AbstractProvider
             if (PHP_OS == "Darwin") {
                 $owner = str_replace(".", ":", $owner);
             }
-            $this->processProvider->executeSudoCommand('chown -f ' . $owner . ' ' . $thePath, true);
+            $this->processProvider->executeSudoCommand('chown -f ' . $owner . ' ' . $thePath);
         }
     }
 
