@@ -1,4 +1,11 @@
 
+0.0.13 / 2015-06-10
+==================
+
+ * Merge pull request #67 from wimvds/fix-drupal-backups
+ * Merge pull request #64 from Kunstmaan/feature/fixcron
+ * Fix deprecations
+
 0.0.12 / 2015-04-07
 ==================
 
