@@ -26,7 +26,11 @@ class MySQLSkeleton extends AbstractSkeleton
      */
     public function create(\ArrayObject $project)
     {
-        $project["mysqluser"] = $this->dialogProvider->askFor("Enter a MySQL username", null, $project["name"]);
+        // Check if project name has more than 16 characters as it is invalid as mySql username
+        // Side note: Mysql database names have a max lenght of 64 characters
+        $user = strlen($project["name"]) > 16 ? null : $project["name"];
+
+        $project["mysqluser"] = $this->dialogProvider->askFor("Enter a MySQL username (max 16 characters)", null, $user);
         $pwgen = new \PWGen();
         $project["mysqlpass"] = $this->dialogProvider->askFor("Enter a MySQL password", null, $pwgen->generate());
         $project["mysqldbname"] = $this->dialogProvider->askFor("Enter a MySQL databasename", null, $project["name"]);
