@@ -1,5 +1,17 @@
 
- * Enable sentry in developer mode
+0.0.13 / 2015-06-10
+==================
+
+ * Merge pull request #67 from wimvds/fix-drupal-backups
+ * Merge pull request #64 from Kunstmaan/feature/fixcron
+ * Fix deprecations
+
+0.0.12 / 2015-04-07
+==================
+
+ * Fix broken backup paths
+ * Enable sentry in developer mode again (Reverted)
+ * Added support for @project.rootpath@ and @config.hostmachine@ (from kDeploy)
 
 0.0.11 / 2015-03-30
 ==================

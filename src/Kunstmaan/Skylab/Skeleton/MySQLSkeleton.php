@@ -100,7 +100,7 @@ class MySQLSkeleton extends AbstractSkeleton
         $this->processProvider->executeSudoCommand("echo 'SET autocommit=0;' > " . $backupDir . "/mysql.dmp");
         $this->processProvider->executeSudoCommand("echo 'SET unique_checks=0;' >> " . $backupDir . "/mysql.dmp");
         $this->processProvider->executeSudoCommand("echo 'SET foreign_key_checks=0;' >> " . $backupDir . "/mysql.dmp");
-        $this->processProvider->executeSudoCommand("mysqldump --ignore-table=" . $project["mysqldbname"] . ".sessions --skip-opt --add-drop-table --add-locks --create-options --disable-keys --single-transaction --skip-extended-insert --quick --set-charset -u " . $project["mysqluser"] . " -p" . $project["mysqlpass"] . " " . $project["mysqldbname"] . " >> " . $backupDir . "/mysql.dmp");
+        $this->processProvider->executeSudoCommand("mysqldump --skip-opt --add-drop-table --add-locks --create-options --disable-keys --single-transaction --skip-extended-insert --quick --set-charset -u " . $project["mysqluser"] . " -p" . $project["mysqlpass"] . " " . $project["mysqldbname"] . " >> " . $backupDir . "/mysql.dmp");
         $this->processProvider->executeSudoCommand("echo 'COMMIT;' >> " . $backupDir . "/mysql.dmp");
         $this->processProvider->executeSudoCommand("echo 'SET autocommit=1;' >> " . $backupDir . "/mysql.dmp");
         $this->processProvider->executeSudoCommand("echo 'SET unique_checks=1;' >> " . $backupDir . "/mysql.dmp");
