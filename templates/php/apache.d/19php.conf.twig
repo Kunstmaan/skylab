@@ -1,22 +1,19 @@
 # PHP5-FPM: This is the new, and optimal way of deploying a php project. Some server config is needed to make this work.
+<IfModule proxy_fcgi_module>
+    <FilesMatch \.php$>
+        SetHandler "proxy:unix:/var/run/php5-fpm-@project.name@.sock|fcgi://localhost"
+    </FilesMatch>
+</IfModule>
+
+# PHP5-FPM: This is de old way of running PHP iva FPM.
 <IfModule mod_fastcgi.c>
     FastCgiExternalServer @config.projectsdir@@project.name@/php5-fpm/php5.external -socket /tmp/.@project.name@-fpm.sock -idle-timeout 7200
     Alias /php5-fpm/ @config.projectsdir@@project.name@/php5-fpm/
-    <IfVersion >= 2.4>
-        <Directory @config.projectsdir@@project.name@/php5-fpm/ >
-        Require all granted
-        </Directory>
-    </IfVersion>
 </IfModule>
-
 
 # MOD_PHP: This is de default way of running PHP. This is the way it is installed on OSX
 <IfModule mod_php5.c>
     AddType application/x-httpd-php .php .phtml .php3
     AddType application/x-httpd-php-source .phps
-    php_flag 			engine 						on
-    php_value	newrelic.appname 			"@project.name@"
-    php_flag	newrelic.enabled 			on
-    #php_value	newrelic.framework 			"symfony"
-    php_value	newrelic.capture_params 	true
+    php_flag    engine  on
 </IfModule>
