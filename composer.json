@@ -9,7 +9,7 @@
         }
     ],
     "repositories": [{
-            "url": "https://github.com/thomasmeeus/pingdom.git",
+            "url": "https://github.com/Kunstmaan/pingdom.git",
             "type": "vcs"
         }
     ],
