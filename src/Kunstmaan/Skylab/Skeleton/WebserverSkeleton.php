@@ -22,10 +22,10 @@ class WebserverSkeleton extends AbstractSkeleton
         $this->handleAliases($project, $aliases);
         // nginx
         $this->prepareNginxDirectories($project);
-        $this->renderConfig($this->fileSystemProvider->getNginxConfigTemplateDir(),$this->fileSystemProvider->getNginxConfigTemplateDir(true),$this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/");
+        $this->fileSystemProvider->renderConfig($this->fileSystemProvider->getNginxConfigTemplateDir(),$this->fileSystemProvider->getNginxConfigTemplateDir(true),$this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/");
         // apache
         $this->prepareApacheDirectories($project);
-        $this->renderConfig($this->fileSystemProvider->getApacheConfigTemplateDir(),$this->fileSystemProvider->getApacheConfigTemplateDir(true),$this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/");
+        $this->fileSystemProvider->renderDistConfig($this->fileSystemProvider->getApacheConfigTemplateDir(),$this->fileSystemProvider->getApacheConfigTemplateDir(true),$this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/");
     }
 
     /**
@@ -37,7 +37,8 @@ class WebserverSkeleton extends AbstractSkeleton
             $this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["nginx"]["sitesavailable"] . "/*");
             $this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["nginx"]["sitesenabled"] . "/*");
         } else {
-            $this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["apache"]["vhostdir"] . "/*");
+            $this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["apache"]["sitesavailable"] . "/*");
+            $this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["apache"]["sitesenabled"] . "/*");
         }
     }
 
@@ -52,16 +53,7 @@ class WebserverSkeleton extends AbstractSkeleton
         $this->generateBasicAliases($project, $aliases);
 
         if ($this->app["config"]["webserver"]["engine"] == 'nginx') {
-            $this->prepareNginxDirectories($project);
-            $serverName = $this->generateAliasLine($aliases, $this->app["config"]["webserver"]["engine"]);
-            $this->processProvider->executeSudoCommand("rm -f " . $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/05servername*");
-            $finder = new Finder();
-            $finder->files()->in($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/")->name("01-base*");
-            if ($finder->count() == 0){
-                $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/05servername", $serverName);
-            }
-            $configcontent = $this->processConfigFiles($project, $this->fileSystemProvider->getProjectNginxConfigs($project));
-            $this->fileSystemProvider->writeProtectedFile($this->app["config"]["nginx"]["sitesavailable"]. "/" . $project["name"] . ".conf", $configcontent);
+            $this->maintenanceNginx($project, $aliases);
         } else {
             $serverAlias = $this->generateAliasLine($aliases, $this->app["config"]["webserver"]["engine"]);
             $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/05aliases", $serverAlias);
@@ -71,19 +63,11 @@ class WebserverSkeleton extends AbstractSkeleton
                 $this->processProvider->executeSudoCommand("rm -f " . $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/06devmode");
             }
             $configcontent = $this->processConfigFiles($project, $this->fileSystemProvider->getProjectApacheConfigs($project));
-            $configcontent = $this->fixApache24Compat($configcontent);
             if ($this->app["config"]["develmode"]) {
                 $configcontent = str_replace("-Indexes", "+Indexes", $configcontent);
             }
-            $this->fileSystemProvider->writeProtectedFile($this->app["config"]["apache"]["vhostdir"] . "/" . $project["name"] . ".conf", $configcontent);
+            $this->fileSystemProvider->writeProtectedFile($this->app["config"]["apache"]["sitesavailable"] . "/" . $project["name"] . ".conf", $configcontent);
         }
-    }
-
-    private function fixApache24Compat($configcontent){
-        if (strpos($configcontent, "Require all granted") === false) {
-            return preg_replace('/(<Directory.*\ >)(.*)(<\/Directory>)/s', "\${1}\nOptions -Indexes +MultiViews +Includes +FollowSymLinks\nAllowOverride All\n<IfVersion < 2.4>\nOrder allow,deny\nAllow from all\n</IfVersion>\n<IfVersion >= 2.4>\nRequire all granted\n</IfVersion>\n\${3}", $configcontent);
-        }
-        return $configcontent;
     }
 
     /**
@@ -100,8 +84,13 @@ class WebserverSkeleton extends AbstractSkeleton
                 $this->processProvider->executeSudoCommand("ln -sf " . $this->app["config"]["nginx"]["sitesavailable"] . "/" . $config->getFilename() . " " . $this->app["config"]["nginx"]["sitesenabled"] . "/" . $config->getFilename());
             }
         } else {
-            $this->writeNamevirtualhost();
             $this->writeFirsthost();
+            $finder = new Finder();
+            $finder->files()->in($this->app["config"]["apache"]["sitesavailable"])->name("*.conf");
+            /** @var SplFileInfo $config */
+            foreach ($finder as $config) {
+                $this->processProvider->executeSudoCommand("ln -sf " . $this->app["config"]["apache"]["sitesavailable"] . "/" . $config->getFilename() . " " . $this->app["config"]["apache"]["sitesenabled"] . "/" . $config->getFilename());
+            }
         }
     }
 
@@ -110,10 +99,6 @@ class WebserverSkeleton extends AbstractSkeleton
         $hostlines = array();
         $dialogProvider = $this->dialogProvider;
         $this->fileSystemProvider->projectsLoop(function ($project) use (&$hostlines, $dialogProvider) {
-            if (!array_key_exists($this->getName(), $project["skeletons"])) {
-                $dialogProvider->logWarning("Project " . $project["name"] . " will not be accessible because skeleton '" . $this->getName() . "' was not applied");
-                return;
-            }
             $hostlines[] = $this->app["config"]["webserver"]["localip"] . " " . $project["name"] . "." . $this->app["config"]["webserver"]["hostmachine"] . " www." . $project["name"] . "." . $this->app["config"]["webserver"]["hostmachine"] . "\n";
         });
         $this->dialogProvider->logTask("Updating the /etc/hosts file");
@@ -154,25 +139,15 @@ class WebserverSkeleton extends AbstractSkeleton
         return self::NAME;
     }
 
-    private function writeNamevirtualhost()
-    {
-        $this->dialogProvider->logTask("Writing namevirtualhosts");
-        $namevirtualhosts = "NameVirtualHost *:80\n";
-        $namevirtualhosts .= "NameVirtualHost *:443\n";
-        $this->fileSystemProvider->writeProtectedFile($this->app["config"]["apache"]["vhostdir"] . "/namevirtualhosts", $namevirtualhosts);
-    }
-
     /**
      *
      */
     private function writeFirsthost()
     {
-        $this->fileSystemProvider->render("/apache/000firsthost.conf.twig", $this->app["config"]["apache"]["vhostdir"] . "/000firsthost.conf", array(
+        $this->fileSystemProvider->render("/apache/000firsthost.conf.twig", $this->app["config"]["apache"]["sitesavailable"] . "/000firsthost.conf", array(
             'admin' => $this->app["config"]["apache"]["admin"]
         ));
     }
-
-
 
     /**
      * @param \ArrayObject $project
@@ -257,25 +232,6 @@ class WebserverSkeleton extends AbstractSkeleton
     }
 
     /**
-     * @param $location
-     * @param $cleanedLocation
-     * @param $target
-     */
-    private function renderConfig($location, $cleanedLocation, $target)
-    {
-        // render templates
-        $finder = new Finder();
-        $finder->files()->in($location)->name("*.conf.twig");
-        foreach ($finder as $config) {
-            $this->fileSystemProvider->render(
-                $cleanedLocation . $config->getFilename(),
-                $target . str_replace(".conf.twig", "", $config->getFilename()),
-                array()
-            );
-        }
-    }
-
-    /**
      * @param \ArrayObject $project
      * @param $aliases
      */
@@ -328,9 +284,18 @@ class WebserverSkeleton extends AbstractSkeleton
     {
         $configcontent = '';
         foreach ($configs as $config) {
-            $configcontent .= "\n#BEGIN " . $config->getRealPath() . "\n\n";
-            $configcontent .= $this->projectConfigProvider->searchReplacer(file_get_contents($config->getRealPath()), $project) . "\n";
-            $configcontent .= "\n#END " . $config->getRealPath() . "\n\n";
+            /** @var SplFileInfo $config */
+            if ($config->getExtension() == "dist" ){
+                $realPathArray = explode("\n", file_get_contents($config->getRealPath()));
+                $realPath = $realPathArray[0];
+                $content = $this->fileSystemProvider->renderString(file_get_contents(BASE_DIR . "/templates" . $realPath), array());
+            } else {
+                $realPath = $config->getRealPath();
+                $content = file_get_contents($realPath);
+            }
+            $configcontent .= "\n#BEGIN " . $realPath . "\n\n";
+            $configcontent .= $this->projectConfigProvider->searchReplacer($content, $project) . "\n";
+            $configcontent .= "\n#END " . $realPath . "\n\n";
         }
         return $configcontent;
     }
@@ -348,5 +313,24 @@ class WebserverSkeleton extends AbstractSkeleton
         $serverName .= ($type == 'nginx'?";\n":"\n");
         return $serverName;
     }
+
+    /**
+     * @param \ArrayObject $project
+     * @param $aliases
+     */
+    public function maintenanceNginx(\ArrayObject $project, $aliases)
+    {
+        $this->prepareNginxDirectories($project);
+        $serverName = $this->generateAliasLine($aliases, $this->app["config"]["webserver"]["engine"]);
+        $this->processProvider->executeSudoCommand("rm -f " . $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/05servername*");
+        $finder = new Finder();
+        $finder->files()->in($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/")->name("01-base*");
+        if ($finder->count() == 0) {
+            $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/05servername", $serverName);
+        }
+        $configcontent = $this->processConfigFiles($project, $this->fileSystemProvider->getProjectNginxConfigs($project));
+        $this->fileSystemProvider->writeProtectedFile($this->app["config"]["nginx"]["sitesavailable"] . "/" . $project["name"] . ".conf", $configcontent);
+    }
+
 
 }

@@ -11,6 +11,8 @@ users:
 apache:
     admin:        support@kunstmaan.be
     vhostdir:     /etc/apache2/conf/projects.d
+    sitesavailable: /etc/apache2/sites-available
+    sitesenabled:   /etc/apache2/sites-enabled
 
 nginx:
     sitesavailable: /etc/nginx/sites-available
@@ -18,12 +20,12 @@ nginx:
     port:           80
 
 webserver:
-    engine: nginx
+    engine: apache
     hostmachine:    dev.kunstmaan.be
     localip: 127.0.0.1
 
-php:
-    slowlog_timeout: 10s
+tomcat:
+    workerspath: "/etc/libapache2-mod-jk/workers.properties"
 
 awstats:
     password: password

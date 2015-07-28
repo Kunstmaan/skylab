@@ -148,7 +148,15 @@ class FileSystemProvider extends AbstractProvider
      */
     public function getApacheConfigTemplateDir($clean=false)
     {
-        return ($clean?"/apache/apache.d/":BASE_DIR . "/templates/apache/apache.d/");
+	return $this->getConfigTemplateDir("apache", $clean);
+    }
+
+    /**
+     * @return string
+     */
+    public function getConfigTemplateDir($skeletonName, $clean=false)
+    {
+	return ($clean ? "/".$skeletonName."/apache.d/" : BASE_DIR . "/templates/".$skeletonName."/apache.d/");
     }
 
     /**
@@ -234,8 +242,85 @@ class FileSystemProvider extends AbstractProvider
     {
         $this->dialogProvider->logConfig("Rendering " . $sourcePath . " to " . $destinationPath);
         $this->processProvider->executeSudoCommand('mkdir -p ' . dirname($destinationPath));
-        $file = $this->twig->render(file_get_contents(BASE_DIR . "/templates" . $sourcePath), $variables);
-        $this->writeProtectedFile($destinationPath, $file);
+        $content = $this->renderString(file_get_contents(BASE_DIR . "/templates" . $sourcePath), $variables);
+        $this->writeProtectedFile($destinationPath, $content);
     }
 
+    /**
+     * @param string   $sourcePath
+     * @param string   $destinationPath
+     * @param string[] $variables
+     */
+    public function renderDist($sourcePath, $destinationPath)
+    {
+        $this->dialogProvider->logConfig("Dist rendering " . $sourcePath . " to " . $destinationPath);
+        $this->processProvider->executeSudoCommand('mkdir -p ' . dirname($destinationPath));
+        $this->writeProtectedFile($destinationPath, $sourcePath);
+    }
+
+    /**
+     * @param $content
+     * @param $variables
+     * @return string
+     */
+    public function renderString($content, $variables)
+    {
+        return $this->twig->render($content, $variables);
+    }
+
+    /**
+     * @param $cleanedLocation
+     * @param $target
+     * @param SplFileInfo $config
+     */
+    public function renderSingleConfig($cleanedLocation, $target, $config)
+    {
+	$this->fileSystemProvider->renderDist(
+	    $cleanedLocation . $config->getFilename(),
+	    $target . str_replace(".conf.twig", ".dist", $config->getFilename())
+	);
+    }
+
+    /**
+     * @param $cleanedLocation
+     * @param $target
+     * @param SplFileInfo $config
+     */
+    public function renderSingleDistConfig($cleanedLocation, $target, $config)
+    {
+	$this->fileSystemProvider->renderDist(
+	    $cleanedLocation . $config->getFilename(),
+	    $target . str_replace(".conf.twig", ".dist", $config->getFilename())
+	);
+    }
+
+    /**
+     * @param $location
+     * @param $cleanedLocation
+     * @param $target
+     */
+    public function renderConfig($location, $cleanedLocation, $target)
+    {
+	// render templates
+	$finder = new Finder();
+	$finder->files()->in($location)->name("*.conf.twig");
+	foreach ($finder as $config) {
+	    $this->renderSingleConfig($cleanedLocation, $target, $config);
+	}
+    }
+
+    /**
+     * @param $location
+     * @param $cleanedLocation
+     * @param $target
+     */
+    public function renderDistConfig($location, $cleanedLocation, $target)
+    {
+	// render templates
+	$finder = new Finder();
+	$finder->files()->in($location)->name("*.conf.twig");
+	foreach ($finder as $config) {
+	    $this->renderSingleDistConfig($cleanedLocation, $target, $config);
+	}
+    }
 }

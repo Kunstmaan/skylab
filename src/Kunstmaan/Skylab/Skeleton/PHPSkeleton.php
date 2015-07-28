@@ -2,6 +2,8 @@
 namespace Kunstmaan\Skylab\Skeleton;
 
 use Kunstmaan\Skylab\Entity\PermissionDefinition;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 /**
  * ApacheSkeleton
@@ -48,6 +50,7 @@ class PHPSkeleton extends AbstractSkeleton
             $permissionDefinition->addAcl("-R -m u:@config.wwwuser@:r-X");
             $project["permissions"]["/tmp"] = $permissionDefinition;
         }
+
         $this->fileSystemProvider->render(
             "/php/nginx.d/19php.conf.twig",
             $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/19php",
@@ -58,11 +61,9 @@ class PHPSkeleton extends AbstractSkeleton
             $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/10location",
             array()
         );
-        $this->fileSystemProvider->render(
-            "/php/apache.d/19php.conf.twig",
-            $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/19php",
-            array()
-        );
+
+	$this->fileSystemProvider->renderDistConfig($this->fileSystemProvider->getConfigTemplateDir("php"),$this->fileSystemProvider->getConfigTemplateDir("php", true),$this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/");
+
         $this->fileSystemProvider->render(
             "/php/fcron.d/01php5.twig",
             $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/fcron.d/01php5",
@@ -94,26 +95,23 @@ class PHPSkeleton extends AbstractSkeleton
      */
     public function maintenance(\ArrayObject $project)
     {
+        $this->processProvider->executeSudoCommand("mkdir -p /etc/php5/fpm/pool.d/");
         $this->fileSystemProvider->render(
             "/php/php5-fpm.conf.twig",
-            $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/php5-fpm.conf",
+            "/etc/php5/fpm/pool.d/" . $project["name"] . ".conf",
             array(
                 "projectdir" => $this->fileSystemProvider->getProjectDirectory($project["name"]),
                 "projectname" => $project["name"],
                 "projectuser" => $project["name"],
                 "projectgroup" => $project["name"],
-                "develmode" => $this->app["config"]["develmode"],
-                "slowlog_timeout" => $this->app["config"]["php"]["slowlog_timeout"]
+                "develmode" => $this->app["config"]["develmode"]
             )
         );
-        $this->processProvider->executeSudoCommand("mkdir -p /etc/php5/fpm/pool.d/");
-        $this->processProvider->executeSudoCommand("ln -sf " . $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/php5-fpm.conf /etc/php5/fpm/pool.d/" . $project["name"] . ".conf");
-
     }
 
     /**
      * @param \ArrayObject $project
-     *
+     *<
      * @return mixed
      */
     public function preBackup(\ArrayObject $project)

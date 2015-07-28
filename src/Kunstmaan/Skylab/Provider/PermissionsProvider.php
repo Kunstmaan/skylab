@@ -111,7 +111,7 @@ class PermissionsProvider extends AbstractProvider
             if (PHP_OS == "Darwin") {
                 $owner = str_replace(".", ":", $owner);
             }
-            $this->processProvider->executeSudoCommand('chown -f ' . $owner . ' ' . $thePath, true);
+            $this->processProvider->executeSudoCommand('chown -f ' . $owner . ' ' . $thePath);
         }
     }
 
@@ -123,26 +123,24 @@ class PermissionsProvider extends AbstractProvider
         if ($this->app["config"]["develmode"] || !$this->processProvider->commandExists("setfacl")) {
             if (!file_exists($this->fileSystemProvider->getProjectDirectory($project["name"]))) {
                 $this->dialogProvider->logNotice($this->fileSystemProvider->getProjectDirectory($project["name"]) . " does not exist, do not chmod");
-
-                return;
+            } else {
+                $this->processProvider->executeSudoCommand('chmod -R 777 ' . $this->fileSystemProvider->getProjectDirectory($project["name"]));
             }
-            $this->processProvider->executeSudoCommand('chmod -R 777 ' . $this->fileSystemProvider->getProjectDirectory($project["name"]));
             if (!file_exists($this->fileSystemProvider->getProjectDirectory($project["name"]) . '/.ssh/')) {
                 $this->dialogProvider->logNotice($this->fileSystemProvider->getProjectDirectory($project["name"]) . '/.ssh/' . " does not exist, do not chmod");
-
-                return;
+            } else {
+                $this->processProvider->executeSudoCommand('chmod -R 700 ' . $this->fileSystemProvider->getProjectDirectory($project["name"]) . '/.ssh/');
             }
-            $this->processProvider->executeSudoCommand('chmod -R 700 ' . $this->fileSystemProvider->getProjectDirectory($project["name"]) . '/.ssh/');
         } else {
             /** @var PermissionDefinition $pd */
             foreach ($project["permissions"] as $pd) {
                 foreach ($pd->getAcl() as $acl) {
                     $path = $this->fileSystemProvider->getProjectDirectory($project["name"]) . $pd->getPath();
-                    if (!file_exists($path)) {
+                    if (file_exists($path)) {
+                        $this->processProvider->executeSudoCommand('setfacl ' . $this->projectConfigProvider->searchReplacer($acl, $project) . ' ' . $path, true);
+                    } else {
                         $this->dialogProvider->logNotice($path . " does not exist, do not chmod");
-                        continue;
                     }
-                    $this->processProvider->executeSudoCommand('setfacl ' . $this->projectConfigProvider->searchReplacer($acl, $project) . ' ' . $path, true);
                 }
             }
         }

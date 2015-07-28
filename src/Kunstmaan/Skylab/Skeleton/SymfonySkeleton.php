@@ -2,6 +2,7 @@
 namespace Kunstmaan\Skylab\Skeleton;
 
 use Kunstmaan\Skylab\Entity\PermissionDefinition;
+use Symfony\Component\Finder\Finder;
 
 /**
  * ApacheSkeleton
@@ -44,16 +45,9 @@ class SymfonySkeleton extends AbstractSkeleton
         $project = $this->addReadWriteFolder("/data/current/app/cache", $project);
         $project = $this->addReadWriteFolder("/data/current/app/logs", $project);
         $project = $this->addReadWriteFolder("/data/current/web/media", $project);
-        $this->fileSystemProvider->render(
-            "/symfony/apache.d/01start.conf.twig",
-            $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/01start",
-            array()
-        );
-        $this->fileSystemProvider->render(
-            "/symfony/apache.d/10permissions.conf.twig",
-            $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/10permissions",
-            array()
-        );
+
+	$this->fileSystemProvider->renderDistConfig($this->fileSystemProvider->getConfigTemplateDir("symfony"),$this->fileSystemProvider->getConfigTemplateDir("symfony",true),$this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/");
+
         $this->fileSystemProvider->render(
             "/symfony/nginx.d/01start.conf.twig",
             $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/01start",
