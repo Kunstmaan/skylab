@@ -93,6 +93,7 @@ class WebserverSkeleton extends AbstractSkeleton
                 $this->processProvider->executeSudoCommand("ln -sf " . $this->app["config"]["nginx"]["sitesavailable"] . "/" . $config->getFilename() . " " . $this->app["config"]["nginx"]["sitesenabled"] . "/" . $config->getFilename());
             }
         } else {
+        	$this->writeNamevirtualhost();
             $this->writeFirsthost();
             $finder = new Finder();
             if(file_exists($this->app["config"]["apache"]["sitesavailable"])) {
@@ -148,6 +149,16 @@ class WebserverSkeleton extends AbstractSkeleton
     {
         return self::NAME;
     }
+    
+    private function writeNamevirtualhost()
+    {
+    	if(file_exists($this->app["config"]["apache"]["vhostdir"])){
+    		$this->dialogProvider->logTask("Writing namevirtualhosts");
+    		$namevirtualhosts = "NameVirtualHost *:80\n";
+    		$namevirtualhosts .= "NameVirtualHost *:443\n";
+    		$this->fileSystemProvider->writeProtectedFile($this->app["config"]["apache"]["vhostdir"] . "/namevirtualhosts", $namevirtualhosts);
+    	}
+    }
 
     /**
      *
@@ -155,9 +166,9 @@ class WebserverSkeleton extends AbstractSkeleton
     private function writeFirsthost()
     {
     	if(file_exists($this->app["config"]["apache"]["vhostdir"])) {
-    		$this->fileSystemProvider->render("/apache/000firsthost.conf.twig", $this->app["config"]["apache"]["vhostdir"] . "/000firsthost.conf", array(
-               'admin' => $this->app["config"]["apache"]["admin"]
-           ));
+    		$namevirtualhosts = "NameVirtualHost *:80\n";
+            $namevirtualhosts .= "NameVirtualHost *:443\n";
+            $this->fileSystemProvider->writeProtectedFile($this->app["config"]["apache"]["vhostdir"] . "/000firsthost.conf", $namevirtualhosts);
     	} else {
     		$this->fileSystemProvider->render("/apache/000firsthost.conf.twig", $this->app["config"]["apache"]["sitesavailable"] . "/000firsthost.conf", array(
                'admin' => $this->app["config"]["apache"]["admin"]

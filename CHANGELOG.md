@@ -1,4 +1,87 @@
 
+0.1.1 / 2015-07-28
+==================
+
+ * fallback to old location for workerfile
+ * use vhost dir if possible (for dev pc's)
+ * fix conf symlink after fetch
+ * new changelog
+ * Merge pull request #74 from Kunstmaan/newserver
+ * Merge branch 'master' into newserver
+ * Merge branch 'master' of github.com:Kunstmaan/skylab
+ * Move to the kunstmaan fork
+ * Fix SSL issues
+ * Merge pull request #73 from jockri/add-commands
+ * add DnsCheckCommand and NameserverCheckCommand
+ * Update PermissionsProvider.php
+ * Merge branch 'master' of github.com:Kunstmaan/skylab
+ * Fix sudo
+ * Remove annoying message
+ * Fix special FTP case
+ * Also put firsthost for https
+ * add firsthost
+ * Fix logging
+ * Merge pull request #66 from arneruy/feature/deprecations
+ * Default docroot is now data/current
+ * Replace deprecated classes
+ * Replace deprecated classes
+ * Merge branch 'master' of github.com:Kunstmaan/skylab
+ * Add ionice
+ * Fix backups
+ * Fix
+ * Fix
+ * Pool configs
+ * Add the old fastcgi method for bc compat
+ * Tabs
+ * Remove code duplication
+ * Update TomcatSkeleton.php
+ * Fix tomcat skeleton creation
+ * Newlines
+ * fix
+ * debug
+ * Remove aliases dist file
+ * Build the dist system
+ * Remove some stuff that should not be needed
+ * More performance!
+ * Add the passowrd
+ * Undefined index
+ * Tomcat workerspath and remove the bcswitch
+ * Remove chroot
+ * Small tweaks to fpm
+ * Permissions
+ * default host location
+ * Changes for the new Ansible server
+ * changelog 0.0.12
+ * Merge pull request #54 from wimvds/fix-sentry
+ * fix broken backup paths
+ * Revert "Disable sentry in developer mode"
+ * enable sentry in developer mode
+ * Added support for @project.rootpath@ and @config.hostmachine@ (from kDeploy)
+ * changelog for 0.0.11
+ * Disable sentry in developer mode
+ * Update .travis.yml
+ * Set APP_ENV variable to dev in apache if in development mode
+ * Update config.yml
+ * load xml with sudo
+ * Merge pull request #51 from krispypen/feature/createtomcatdefaultsymlink
+ * Merge pull request #50 from krispypen/feature/tomcatapacheworkersfile
+ * No need to set custom hostname, the default dev.kunstmaan.be is good
+ * Fix documentation
+ * Ignore missing smlkerberos skeleton
+ * changelog for 0.0.10
+ * update docs
+ * fixed the share command docs
+ * Merge pull request #48 from Kunstmaan/feature/share-command
+ * don't remove a project when the name is not set, otherwise it was removing all projects
+ * Update ProjectConfigProvider.php
+ * Added the share command to list the xip.io url's
+ * only use xip in develmode
+ * Merge pull request #47 from kimausloos/master
+ * Warning when project will not be in the hosts file
+ * Merge pull request #46 from kimausloos/master
+ * Fix for when a skeleton is false
+ * Create sshuttle
+
 0.1.0 / 2015-07-28
 ==================
 
