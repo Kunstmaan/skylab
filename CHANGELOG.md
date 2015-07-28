@@ -1,4 +1,14 @@
 
+0.1.2 / 2015-07-28
+==================
+
+ * Merge branch 'master' of github.com:Kunstmaan/skylab
+ * namevirtualhost
+ * changelog
+ * fallback to old location for workerfile
+ * use vhost dir if possible (for dev pc's)
+ * fix conf symlink after fetch
+
 0.1.1 / 2015-07-28
 ==================
 
