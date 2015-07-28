@@ -37,8 +37,12 @@ class WebserverSkeleton extends AbstractSkeleton
             $this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["nginx"]["sitesavailable"] . "/*");
             $this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["nginx"]["sitesenabled"] . "/*");
         } else {
-            $this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["apache"]["sitesavailable"] . "/*");
-            $this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["apache"]["sitesenabled"] . "/*");
+        	if(file_exists($this->app["config"]["apache"]["vhostdir"])) {
+        		$this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["apache"]["vhostdir"] . "/*");
+        	} else {
+        		$this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["apache"]["sitesavailable"] . "/*");
+        		$this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["apache"]["sitesenabled"] . "/*");
+        	}
         }
     }
 
@@ -66,7 +70,12 @@ class WebserverSkeleton extends AbstractSkeleton
             if ($this->app["config"]["develmode"]) {
                 $configcontent = str_replace("-Indexes", "+Indexes", $configcontent);
             }
-            $this->fileSystemProvider->writeProtectedFile($this->app["config"]["apache"]["sitesavailable"] . "/" . $project["name"] . ".conf", $configcontent);
+            if(file_exists($this->app["config"]["apache"]["vhostdir"])) {
+            	$this->fileSystemProvider->writeProtectedFile($this->app["config"]["apache"]["vhostdir"] . "/" . $project["name"] . ".conf", $configcontent);
+            } else {
+            	$this->fileSystemProvider->writeProtectedFile($this->app["config"]["apache"]["sitesavailable"] . "/" . $project["name"] . ".conf", $configcontent);
+            }
+            
         }
     }
 
@@ -86,10 +95,12 @@ class WebserverSkeleton extends AbstractSkeleton
         } else {
             $this->writeFirsthost();
             $finder = new Finder();
-            $finder->files()->in($this->app["config"]["apache"]["sitesavailable"])->name("*.conf");
-            /** @var SplFileInfo $config */
-            foreach ($finder as $config) {
-                $this->processProvider->executeSudoCommand("ln -sf " . $this->app["config"]["apache"]["sitesavailable"] . "/" . $config->getFilename() . " " . $this->app["config"]["apache"]["sitesenabled"] . "/" . $config->getFilename());
+            if(file_exists($this->app["config"]["apache"]["sitesavailable"])) {
+            	$finder->files()->in($this->app["config"]["apache"]["sitesavailable"])->name("*.conf");
+            	/** @var SplFileInfo $config */
+            	foreach ($finder as $config) {
+            		$this->processProvider->executeSudoCommand("ln -sf " . $this->app["config"]["apache"]["sitesavailable"] . "/" . $config->getFilename() . " " . $this->app["config"]["apache"]["sitesenabled"] . "/" . $config->getFilename());
+            	}
             }
         }
     }
@@ -97,8 +108,7 @@ class WebserverSkeleton extends AbstractSkeleton
     private function writeHostFile()
     {
         $hostlines = array();
-        $dialogProvider = $this->dialogProvider;
-        $this->fileSystemProvider->projectsLoop(function ($project) use (&$hostlines, $dialogProvider) {
+        $this->fileSystemProvider->projectsLoop(function ($project) use (&$hostlines) {
             $hostlines[] = $this->app["config"]["webserver"]["localip"] . " " . $project["name"] . "." . $this->app["config"]["webserver"]["hostmachine"] . " www." . $project["name"] . "." . $this->app["config"]["webserver"]["hostmachine"] . "\n";
         });
         $this->dialogProvider->logTask("Updating the /etc/hosts file");
@@ -144,9 +154,17 @@ class WebserverSkeleton extends AbstractSkeleton
      */
     private function writeFirsthost()
     {
-        $this->fileSystemProvider->render("/apache/000firsthost.conf.twig", $this->app["config"]["apache"]["sitesavailable"] . "/000firsthost.conf", array(
-            'admin' => $this->app["config"]["apache"]["admin"]
-        ));
+    	if(file_exists($this->app["config"]["apache"]["vhostdir"])) {
+    		$this->fileSystemProvider->render("/apache/000firsthost.conf.twig", $this->app["config"]["apache"]["vhostdir"] . "/000firsthost.conf", array(
+               'admin' => $this->app["config"]["apache"]["admin"]
+           ));
+    	} else {
+    		$this->fileSystemProvider->render("/apache/000firsthost.conf.twig", $this->app["config"]["apache"]["sitesavailable"] . "/000firsthost.conf", array(
+               'admin' => $this->app["config"]["apache"]["admin"]
+           ));
+    	}
+    	
+        
     }
 
     /**
