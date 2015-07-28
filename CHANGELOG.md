@@ -1,4 +1,8 @@
 
+0.1.0 / 2015-07-28
+==================
+
+ * fix conf symlink after fetch
  * Enable sentry in developer mode
 
 0.0.11 / 2015-03-30
