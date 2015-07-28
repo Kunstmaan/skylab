@@ -68,7 +68,11 @@ class TomcatSkeleton extends AbstractSkeleton
             }
         });
         array_unshift($workers, 'worker.list='.implode(',', $workerlist));
-        $this->fileSystemProvider->writeProtectedFile($this->app["config"]["tomcat"]["workerspath"], implode("\n", $workers));
+        if(file_exists($this->app["config"]["tomcat"]["workerspath"])) {
+        	$this->fileSystemProvider->writeProtectedFile($this->app["config"]["tomcat"]["workerspath"], implode("\n", $workers));
+        } else {
+        	$this->fileSystemProvider->writeProtectedFile("/etc/apache2/workers.properties", implode("\n", $workers));
+        }
     }
 
     /**
