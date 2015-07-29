@@ -1,5 +1,4 @@
 .idea
-composer.lock
 vendor
 skylab.phar
 Cheffile.lock
