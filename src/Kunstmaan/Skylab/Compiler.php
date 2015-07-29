@@ -59,6 +59,7 @@ class Compiler
         $finder->files()
             ->ignoreVCS(true)
             ->name('*.php')
+            ->name('*.pem')
             ->exclude('Tests')
             ->in(__DIR__ . '/../../../vendor/');
 
