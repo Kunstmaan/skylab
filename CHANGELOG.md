@@ -1,4 +1,10 @@
 
+0.1.4 / 2015-07-29
+==================
+
+ * Better apache php configuration
+ * Better if structure
+
 0.1.3 / 2015-07-28
 ==================
 
