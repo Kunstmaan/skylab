@@ -2,8 +2,9 @@ permissions
 -----------
 
 * Description: Set the permissions of a Skylab project
-* Usage: `permissions [--hideLogo] [--no-interactive] name`
-* Aliases: <none>
+* Usage:
+
+  * `permissions [--hideLogo] [--no-interactive] [--] <name>`
 
 The <info>permissions</info> command will fix the permissions of a project.
 
@@ -112,4 +113,4 @@ The <info>permissions</info> command will fix the permissions of a project.
 * Description: Do not ask any interactive question
 * Default: `false`
 
-*Documentation generated on 2015-03-19 13:54:12*
+*Documentation generated on 2015-08-09 17:44:20*

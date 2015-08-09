@@ -2,8 +2,9 @@ new
 ---
 
 * Description: Create a new Skylab project
-* Usage: `new [--hideLogo] [--no-interactive] [name]`
-* Aliases: <none>
+* Usage:
+
+  * `new [--hideLogo] [--no-interactive] [--] [<name>]`
 
 The <info>new</info> command creates a new project. It will setup the directory structure and apply the "base" skeleton
 which is responsible for setting up users, permissions and ownership.
@@ -114,4 +115,4 @@ which is responsible for setting up users, permissions and ownership.
 * Description: Do not ask any interactive question
 * Default: `false`
 
-*Documentation generated on 2015-03-19 13:54:12*
+*Documentation generated on 2015-08-09 17:44:20*

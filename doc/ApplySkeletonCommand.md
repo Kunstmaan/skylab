@@ -2,8 +2,9 @@ apply
 -----
 
 * Description: Apply a skeleton to a Skylab project
-* Usage: `apply [--hideLogo] [--no-interactive] [-l|--list] [project] [skeleton]`
-* Aliases: <none>
+* Usage:
+
+  * `apply [--hideLogo] [--no-interactive] [-l|--list] [--] [<project>] [<skeleton>]`
 
 The <info>apply</info> command applies a skeleton, and all it's dependencies to a project. It will run the "create"
 method in the skeleton to setup all the requirements for that skeleton.
@@ -133,4 +134,4 @@ method in the skeleton to setup all the requirements for that skeleton.
 * Description: Do not ask any interactive question
 * Default: `false`
 
-*Documentation generated on 2015-03-19 13:54:12*
+*Documentation generated on 2015-08-09 17:44:20*

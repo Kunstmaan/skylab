@@ -2,8 +2,9 @@ self-update
 -----------
 
 * Description: Updates skylab.phar to the latest version.
-* Usage: `self-update [--hideLogo] [--no-interactive]`
-* Aliases: <none>
+* Usage:
+
+  * `self-update [--hideLogo] [--no-interactive]`
 
 The <info>self-update</info> command will check if there is an updated skylab.phar released and updates if it is.
 
@@ -102,4 +103,4 @@ The <info>self-update</info> command will check if there is an updated skylab.ph
 * Description: Do not ask any interactive question
 * Default: `false`
 
-*Documentation generated on 2015-03-19 13:54:12*
+*Documentation generated on 2015-08-09 17:44:21*

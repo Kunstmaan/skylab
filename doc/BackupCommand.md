@@ -2,8 +2,9 @@ backup
 ------
 
 * Description: Run backup on all or one Skylab projects
-* Usage: `backup [--hideLogo] [--no-interactive] [--quick] [project]`
-* Aliases: <none>
+* Usage:
+
+  * `backup [--hideLogo] [--no-interactive] [--quick] [--] [<project>]`
 
 The <info>backup</info> command will dump all your databases and create a tarball of one or all projects.
 
@@ -124,4 +125,4 @@ The <info>backup</info> command will dump all your databases and create a tarbal
 * Description: Do not ask any interactive question
 * Default: `false`
 
-*Documentation generated on 2015-03-19 13:54:12*
+*Documentation generated on 2015-08-09 17:44:20*

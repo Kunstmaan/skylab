@@ -2,8 +2,9 @@ remove
 ------
 
 * Description: Removes a Skylab project
-* Usage: `remove [--hideLogo] [--no-interactive] [--force] [name]`
-* Aliases: <none>
+* Usage:
+
+  * `remove [--hideLogo] [--no-interactive] [--force] [--] [<name>]`
 
 The <info>remove</info> command will remove the project after creating a backup first.
 
@@ -123,4 +124,4 @@ The <info>remove</info> command will remove the project after creating a backup 
 * Description: Do not ask any interactive question
 * Default: `false`
 
-*Documentation generated on 2015-03-19 13:54:12*
+*Documentation generated on 2015-08-09 17:44:20*

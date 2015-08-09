@@ -2,8 +2,9 @@ maintenance
 -----------
 
 * Description: Run maintenance on all Skylab projects
-* Usage: `maintenance [--hideLogo] [--no-interactive] [--quick]`
-* Aliases: <none>
+* Usage:
+
+  * `maintenance [--hideLogo] [--no-interactive] [--quick]`
 
 The <info>maintenance</info> command will run the maintenance commands of all skeletons on a project. Most notably, it
 will create the apache config files and make sure the the databases are available.
@@ -113,4 +114,4 @@ will create the apache config files and make sure the the databases are availabl
 * Description: Do not ask any interactive question
 * Default: `false`
 
-*Documentation generated on 2015-03-19 13:54:12*
+*Documentation generated on 2015-08-09 17:44:20*

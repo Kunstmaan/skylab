@@ -2,8 +2,9 @@ fetch
 -----
 
 * Description: Fetches a project from a production server
-* Usage: `fetch [--hideLogo] [--no-interactive] [-l|--location[="..."]] [--no-database] [project] [host]`
-* Aliases: <none>
+* Usage:
+
+  * `fetch [--hideLogo] [--no-interactive] [-l|--location [LOCATION]] [--no-database] [--] [<project>] [<host>]`
 
 The <info>fetch</info> command fetches a Skylab project from a server and puts it in the right locations on your computer. It
 will also drop the databases, so be very careful if you want to use this on a production server to do a migration.
@@ -142,4 +143,4 @@ will also drop the databases, so be very careful if you want to use this on a pr
 * Description: Do not ask any interactive question
 * Default: `false`
 
-*Documentation generated on 2015-03-19 13:54:12*
+*Documentation generated on 2015-08-09 17:44:20*

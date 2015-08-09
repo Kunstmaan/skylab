@@ -39,33 +39,35 @@ You can override the [default configuration](./config.yml) by creating a file /e
 sudo chmod 700 /etc/skylab.yml
 ```
 
-For example if you installed skylab on a developer OSX machine (be sure to replace the mysql password, postgresql username and password):
+For example if you installed skylab on a developer OSX machine:
 ```
 users:
     wwwuser:        apache
 
 webserver:
     engine: apache
+    hostmachine: XXXXX.kunstmaan.be
 
 mysql:
     user:     root
     password: XXXXXXXXX
 
 postgresql:
-    user:     <username>
+    user:     postgres
     password: XXXXXXXXX
 
 debug: true
 develmode: true
 ```
 
-Or on an ubuntu system  (be sure to replace the mysql password and postgresql password):
+Or on an ubuntu system:
 ```
 users:
     wwwuser: www-data
 
 webserver:
     engine: apache
+    hostmachine: XXXXX.kunstmaan.be
 
 mysql:
     user:     root
@@ -82,7 +84,7 @@ develmode: true
 
 ### NewProjectCommand
 
-Usage: ```php skylab.phar new [--hideLogo] [--no-interactive] [name]```
+Usage: ```php skylab.phar new [--hideLogo] [--no-interactive] [--] [<name>]```
 
 The ```new``` command creates a new project. It will setup the directory structure and apply the "base" skeleton
 which is responsible for setting up users, permissions and ownership.
@@ -94,7 +96,7 @@ Full details at [doc/NewProjectCommand.md](doc/NewProjectCommand.md)
 
 ### FetchCommand
 
-Usage: ```php skylab.phar fetch [--hideLogo] [--no-interactive] [-l|--location[="..."]] [--no-database] [project] [host]```
+Usage: ```php skylab.phar fetch [--hideLogo] [--no-interactive] [-l|--location [LOCATION]] [--no-database] [--] [<project>] [<host>]```
 
 The ```fetch``` command fetches a Skylab project from a server and puts it in the right locations on your computer. It
 will also drop the databases, so be very careful if you want to use this on a production server to do a migration.
@@ -116,7 +118,7 @@ Full details at [doc/ShareCommand.md](doc/ShareCommand.md)
 
 ### SetPermissionsCommand
 
-Usage: ```php skylab.phar permissions [--hideLogo] [--no-interactive] name```
+Usage: ```php skylab.phar permissions [--hideLogo] [--no-interactive] [--] <name>```
 
 The ```permissions``` command will fix the permissions of a project.
 
@@ -137,7 +139,7 @@ Full details at [doc/MaintenanceCommand.md](doc/MaintenanceCommand.md)
 
 ### BackupCommand
 
-Usage: ```php skylab.phar backup [--hideLogo] [--no-interactive] [--quick] [project]```
+Usage: ```php skylab.phar backup [--hideLogo] [--no-interactive] [--quick] [--] [<project>]```
 
 The ```backup``` command will dump all your databases and create a tarball of one or all projects.
 
@@ -149,7 +151,7 @@ Full details at [doc/BackupCommand.md](doc/BackupCommand.md)
 
 ### RemoveProjectCommand
 
-Usage: ```php skylab.phar remove [--hideLogo] [--no-interactive] [--force] [name]```
+Usage: ```php skylab.phar remove [--hideLogo] [--no-interactive] [--force] [--] [<name>]```
 
 The ```remove``` command will remove the project after creating a backup first.
 
@@ -160,7 +162,7 @@ Full details at [doc/RemoveProjectCommand.md](doc/RemoveProjectCommand.md)
 
 ### ApplySkeletonCommand
 
-Usage: ```php skylab.phar apply [--hideLogo] [--no-interactive] [-l|--list] [project] [skeleton]```
+Usage: ```php skylab.phar apply [--hideLogo] [--no-interactive] [-l|--list] [--] [<project>] [<skeleton>]```
 
 The ```apply``` command applies a skeleton, and all it's dependencies to a project. It will run the "create"
 method in the skeleton to setup all the requirements for that skeleton.
@@ -207,4 +209,4 @@ Full details at [doc/SelfUpdateCommand.md](doc/SelfUpdateCommand.md)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/Kunstmaan/skylab/badges/quality-score.png?s=3d1f00bf9c2adbba818f274086db3ed4b2bcc4e2)](https://scrutinizer-ci.com/g/Kunstmaan/skylab/)
 
 
-*Documentation generated on 2015-03-19 13:54:12*
+*Documentation generated on 2015-08-09 17:44:15*

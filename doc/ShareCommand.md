@@ -2,8 +2,9 @@ share
 -----
 
 * Description: Get a full table of all your projects with the xip.io url
-* Usage: `share [--hideLogo] [--no-interactive]`
-* Aliases: <none>
+* Usage:
+
+  * `share [--hideLogo] [--no-interactive]`
 
 The <info>share</info> command show a table of all your locally installed projects together with the xip.io url.
 
@@ -102,4 +103,4 @@ The <info>share</info> command show a table of all your locally installed projec
 * Description: Do not ask any interactive question
 * Default: `false`
 
-*Documentation generated on 2015-03-19 13:54:12*
+*Documentation generated on 2015-08-09 17:44:20*
