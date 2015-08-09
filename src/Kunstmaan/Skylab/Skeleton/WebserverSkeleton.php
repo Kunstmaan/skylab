@@ -283,6 +283,14 @@ class WebserverSkeleton extends AbstractSkeleton
      */
     private function processConfigFiles(\ArrayObject $project, $configs)
     {
+        $ignoreList = array();
+        foreach ($configs as $config) {
+            /** @var SplFileInfo $config */
+            if ($config->getExtension() == "local") {
+                $ignoreList[] = $config->getBasename('.' . $config->getExtension());
+            }
+        }
+
         $configcontent = '';
         foreach ($configs as $config) {
             /** @var SplFileInfo $config */
@@ -294,23 +302,27 @@ class WebserverSkeleton extends AbstractSkeleton
                 $realPath = $config->getRealPath();
                 $content = file_get_contents($realPath);
             }
-            $configcontent .= "\n#BEGIN " . $realPath . "\n\n";
-            $configcontent .= $this->projectConfigProvider->searchReplacer($content, $project) . "\n";
-            $configcontent .= "\n#END " . $realPath . "\n\n";
+            if ($config->getExtension() != "local" && in_array($config->getBasename('.'. $config->getExtension()),$ignoreList)){
+                $configcontent .= "\n#SKIPPED " . $realPath . " because there was a .local file\n\n";
+            } else {
+                $configcontent .= "\n#BEGIN " . $realPath . "\n\n";
+                $configcontent .= $this->projectConfigProvider->searchReplacer($content, $project) . "\n";
+                $configcontent .= "\n#END " . $realPath . "\n\n";
+            }
             $this->checkObviousErrors($project, $config, $configcontent);
         }
         return $configcontent;
     }
 
     /**
-     * @param string $project
+     * @param \ArrayObject $project
      * @param SplFileInfo $config
      * @param string $content
      */
-    function checkObviousErrors($project, SplFileInfo $config, $content){
+    function checkObviousErrors(\ArrayObject $project, SplFileInfo $config, $content){
         // project was not migrated because the 19php.conf file does not contain "proxy:unix:/var/run/php5-fpm"
-        if (strpos($config->getFilename(), "19php") !== FALSE && strpos($content, "proxy:unix:/var/run/php5-fpm" === FALSE)){
-            throw new SkylabException("The $project project was not migrated yet, this will NOT work");
+        if (strpos($config->getFilename(), "19php") !== FALSE && strpos($content, "proxy:unix:/var/run/php5-fpm") === FALSE){
+            throw new SkylabException("The ".$project["name"]." project was not migrated yet, this will NOT work");
         }
     }
 

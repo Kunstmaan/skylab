@@ -45,6 +45,9 @@ class ProjectConfigProvider extends AbstractProvider
     private function loadConfig($projectname, \ArrayObject $config)
     {
         $configPath = $this->fileSystemProvider->getProjectConfigDirectory($projectname) . "/config.xml";
+        if (file_exists($configPath.".local")){
+            $configPath = $configPath.".local";
+        }
         $xml = simplexml_load_file($configPath);
         foreach ($xml->{'var'} as $var) {
             $tag = (string) $var["name"];
