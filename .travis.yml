@@ -1,5 +1,9 @@
 language: php
 
+notifications:
+  slack:
+    secure: YPOKgHTBB/kJJCd6fsUhZxHE4TLAXWvzCGlAUT1LyTdMrIKgW2we31b24iYyNuYbb3LSTTCc1ipByh5kzjM9o+uzHvS3GbSkh8Kdn+e4b62Z+6g1TiLfFZcJi/vorPyHuUVFGhTryTBTxMwDNbQBNMxMkMxofYLfOszsBx1dOkw=
+
 cache:
   directories:
     - $HOME/.composer/cache
@@ -11,7 +15,6 @@ php:
   - 7.0
 
 matrix:
-  fast_finish: true
   allow_failures:
     - php: 7.0
 
