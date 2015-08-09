@@ -1,4 +1,22 @@
 
+1.0.0 / 2015-08-09
+==================
+
+  * Add mod_jk to the pre build steps
+  * Add slack notifications for build errors
+  * Fail hard on exception
+  * Logging errrors should also send a message to sentry
+  * Tweak travis
+  * Remove sshuttle config file
+  * Add a fixcron command
+  * differentiate between local and remote project paths
+  * Prefer *.local files in apache.d and config.xml.local
+  * Capture unmigrated projects
+  * Add as much debugging info as possible
+  * Capture exceptions and send them to Sentry
+  * add composer.lock to git
+  * fix compiler should also include .pem files from vendors
+
 0.1.4 / 2015-07-29
 ==================
 
@@ -23,7 +41,7 @@
  * create workers.properties file
  * Ignore missing smlkerberos skeleton
 
-0.0.10 / 2015-03-19 
+0.0.10 / 2015-03-19
 ==================
 
  * A new "skylab share" command for listing the xip.io urls
@@ -35,7 +53,7 @@
  * Only use xip.io in develmode
  * No crons in develmode
 
-0.0.9 / 2015-03-02 
+0.0.9 / 2015-03-02
 ==================
 
  * ignore github api limit on each command exception for the self-update command, there we ask for a username/password when the api limit is reached
@@ -45,7 +63,7 @@
  * changelog 0.0.8
  * Fix tomcat version
 
-0.0.8 / 2015-03-02 
+0.0.8 / 2015-03-02
 ==================
 
  * escape shell commands that are passed through sudo
@@ -71,7 +89,7 @@
  * Use current
  * Always go via current
 
-0.0.7 / 2014-12-17 
+0.0.7 / 2014-12-17
 ==================
 
  * Fix error with nginx ipv6 options
