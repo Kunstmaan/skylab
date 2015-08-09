@@ -25,6 +25,17 @@ class SkeletonProvider extends AbstractProvider
     }
 
     /**
+     * @param \ArrayObject $project The project
+     * @param AbstractSkeleton $skeleton The skeleton
+     * @return bool
+     */
+    public function hasSkeleton(\ArrayObject $project, AbstractSkeleton $skeleton)
+    {
+        return isset($project["skeletons"]) && array_key_exists($skeleton->getName(), $project["skeletons"]);
+    }
+
+
+    /**
      * @param \ArrayObject     $project  The project
      * @param AbstractSkeleton $skeleton The skeleton
      */
@@ -33,7 +44,7 @@ class SkeletonProvider extends AbstractProvider
         $dependencies = new DependencySolver();
         $this->resolveDependencies($skeleton, $dependencies);
         foreach ($dependencies->getLoadOrder() as $theSkeletonName) {
-            if (!isset($project["skeletons"]) || !array_key_exists($theSkeletonName, $project["skeletons"])) {
+            if (!$this->hasSkeleton($project, $skeleton)) {
                 $theSkeleton = $this->findSkeleton($theSkeletonName);
                 $this->dialogProvider->logTask("Running skeleton create for " . $theSkeleton->getName());
                 $theSkeleton->create($project);
