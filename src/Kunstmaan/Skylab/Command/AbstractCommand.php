@@ -22,7 +22,6 @@ abstract class AbstractCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $ravenClient = new \Raven_Client('https://da7e699379b84d8588b837bd518a2a84:83e238c55e4e42a882b8eaf9ef7f16f3@app.getsentry.com/49959');
         // handle everything that is not an actual exception
         set_error_handler(function($errno, $errstr, $errfile, $errline, array $errcontext) {
             // error was suppressed with the @-operator
@@ -40,29 +39,8 @@ abstract class AbstractCommand extends Command
             $this->doExecute();
             $this->doPostExecute();
         } catch (\Exception $ex){
-            $this->handleException($ravenClient, $ex, $app);
+            $this->dialogProvider->logException($ex);
         }
-    }
-
-    /**
-     * @param \Raven_Client $ravenClient
-     * @param \Exception $ex
-     * @param \Cilex\Application $app
-     * @param array $context
-     */
-    protected function handleException($ravenClient, $ex, $app, $context=array())
-    {
-        $extra = array(
-            'php_version' => phpversion(),
-            'skylab_version' => Application::VERSION
-        );
-        $extra = array_merge($extra,$app["config"]);
-        $extra = array_merge($extra,$context);
-        $event_id = $ravenClient->getIdent($ravenClient->captureException($ex, array(
-            'extra' => $extra,
-        )));
-
-        $this->dialogProvider->logError($ex->getMessage() . " in " . $ex->getFile() . " on " . $ex->getLine() . "\n  This exception has been reported with id $event_id. Please log a github issue at https://github.com/Kunstmaan/skylab/issues and mention this id.");
     }
 
     /**

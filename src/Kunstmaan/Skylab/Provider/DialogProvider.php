@@ -3,6 +3,7 @@ namespace Kunstmaan\Skylab\Provider;
 
 use Cilex\Application;
 use Kunstmaan\Skylab\Application as Skylab;
+use Kunstmaan\Skylab\Exceptions\SkylabException;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
@@ -198,7 +199,28 @@ class DialogProvider extends AbstractProvider
      */
     public function logError($message)
     {
-        $this->output->writeln("\n\n<error>  " . $message . "</error>\n\n");
+        throw new SkylabException($message);
+    }
+
+    /**
+     * @param string $message
+     */
+    public function logException(\Exception $ex)
+    {
+        $ravenClient = new \Raven_Client('https://da7e699379b84d8588b837bd518a2a84:83e238c55e4e42a882b8eaf9ef7f16f3@app.getsentry.com/49959');
+        $extra = array(
+            'php_version' => phpversion(),
+            'skylab_version' => Application::VERSION
+        );
+        $extra = array_merge($extra,$this->app["config"]);
+        $event_id = $ravenClient->getIdent($ravenClient->captureException($ex, array(
+            'extra' => $extra,
+        )));
+
+
+        $this->output->writeln("\n\n<error>  " . $ex->getMessage() . "\n  This exception has been reported with id $event_id. Please log a github issue at https://github.com/Kunstmaan/skylab/issues and mention this id.</error>\n\n");
+
+        debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 10);
     }
 
     /**
