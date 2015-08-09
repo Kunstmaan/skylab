@@ -221,6 +221,8 @@ class DialogProvider extends AbstractProvider
         $this->output->writeln("\n\n<error>  " . $ex->getMessage() . "\n  This exception has been reported with id $event_id. Please log a github issue at https://github.com/Kunstmaan/skylab/issues and mention this id.</error>\n\n");
 
         debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 10);
+
+        exit(1);
     }
 
     /**
