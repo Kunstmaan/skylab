@@ -21,10 +21,22 @@ abstract class AbstractCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->setup($this->getContainer(), $input, $output, true);
-        $this->doPreExecute();
-        $this->doExecute();
-        $this->doPostExecute();
+        $ravenClient = new \Raven_Client('https://da7e699379b84d8588b837bd518a2a84:83e238c55e4e42a882b8eaf9ef7f16f3@app.getsentry.com/49959');
+        /** @var \Cilex\Application $app */
+        $app = $this->getContainer();
+        try {
+            $this->setup($app, $input, $output, true);
+            $this->doPreExecute();
+            $this->doExecute();
+            $this->doPostExecute();
+        } catch (\Exception $ex){
+            $event_id = $ravenClient->getIdent($ravenClient->captureException($ex, array(
+                'extra' => array(
+                    'php_version' => phpversion(),
+                    'skylab_version' => $app['console.version']
+                ),
+            )));
+        }
     }
 
     /**
