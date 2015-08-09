@@ -1,6 +1,7 @@
 <?php
 namespace Kunstmaan\Skylab\Skeleton;
 
+use Kunstmaan\Skylab\Exceptions\SkylabException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -296,8 +297,21 @@ class WebserverSkeleton extends AbstractSkeleton
             $configcontent .= "\n#BEGIN " . $realPath . "\n\n";
             $configcontent .= $this->projectConfigProvider->searchReplacer($content, $project) . "\n";
             $configcontent .= "\n#END " . $realPath . "\n\n";
+            $this->checkObviousErrors($project, $config, $configcontent);
         }
         return $configcontent;
+    }
+
+    /**
+     * @param string $project
+     * @param SplFileInfo $config
+     * @param string $content
+     */
+    function checkObviousErrors($project, SplFileInfo $config, $content){
+        // project was not migrated because the 19php.conf file does not contain "proxy:unix:/var/run/php5-fpm"
+        if (strpos($config->getFilename(), "19php") !== FALSE && strpos($content, "proxy:unix:/var/run/php5-fpm" === FALSE)){
+            throw new SkylabException("The $project project was not migrated yet, this will NOT work");
+        }
     }
 
     /**

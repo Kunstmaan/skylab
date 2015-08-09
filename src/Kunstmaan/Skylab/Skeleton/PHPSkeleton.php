@@ -62,7 +62,7 @@ class PHPSkeleton extends AbstractSkeleton
             array()
         );
 
-	$this->fileSystemProvider->renderDistConfig($this->fileSystemProvider->getConfigTemplateDir("php"),$this->fileSystemProvider->getConfigTemplateDir("php", true),$this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/");
+        $this->fileSystemProvider->renderDistConfig($this->fileSystemProvider->getConfigTemplateDir("php"),$this->fileSystemProvider->getConfigTemplateDir("php", true),$this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/");
 
         $this->fileSystemProvider->render(
             "/php/fcron.d/01php5.twig",
