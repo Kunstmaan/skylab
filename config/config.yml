@@ -2,6 +2,10 @@ projects:
     path:       "/home/projects/"
     backuppath: "/home/backupped-projects/"
 
+remote_projects:
+    path:       "/home/projects/"
+    backuppath: "/home/backupped-projects/"
+
 users:
     superuser:      root
     supergroup:     root

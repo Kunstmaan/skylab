@@ -89,7 +89,7 @@ EOT
             $this->fetchFolder(
                 $this->app["config"]["projects"]["path"] . '/',
                 $hostname,
-                "/home/projects/" . $projectname,
+                $this->app["config"]["remote_projects"]["path"]. "/" . $projectname,
                 $fullExcludes,
                 true
             );
