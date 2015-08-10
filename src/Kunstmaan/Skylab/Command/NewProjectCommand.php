@@ -40,7 +40,7 @@ EOT
         $this->dialogProvider->logStep("Creating project $projectname");
         // Check if the project exists, do use in creating a new one with the same name.
         if ($this->fileSystemProvider->projectExists($projectname)) {
-            throw new RuntimeException("A project with name $projectname already exists!");
+            $this->dialogProvider->logError("A project with name $projectname already exists!", false);
         } else {
             $this->dialogProvider->logTask("Creating project directory for $projectname");
             $this->fileSystemProvider->createProjectDirectory($projectname);

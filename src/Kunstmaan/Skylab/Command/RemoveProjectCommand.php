@@ -40,7 +40,7 @@ EOT
 
         // Check if the project exists, do use in creating a new one with the same name.
         if (!$this->fileSystemProvider->projectExists($projectname)) {
-            throw new RuntimeException("A project with name $projectname does not exist!");
+            $this->dialogProvider->logError("A project with name $projectname does not exists!", false);
         }
 
         if (!$this->input->getOption('force') && !$this->dialogProvider->askConfirmation('Are you sure you want to remove ' . $projectname . '?')) {

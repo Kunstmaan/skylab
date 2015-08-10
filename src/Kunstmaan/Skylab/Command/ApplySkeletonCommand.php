@@ -47,7 +47,7 @@ EOT
         $projectname = $this->dialogProvider->askFor("Please enter the name of the project", 'project');
         // Check if the project exists, do use in creating a new one with the same name.
         if (!$this->fileSystemProvider->projectExists($projectname)) {
-            throw new RuntimeException("A project with name $projectname should already exists!");
+            $this->dialogProvider->logError("A project with name $projectname should already exists!", false);
         }
         $skeletonname = $this->dialogProvider->askFor("Please enter the name of the skeleton", 'skeleton');
         $theSkeleton = $this->skeletonProvider->findSkeleton($skeletonname);

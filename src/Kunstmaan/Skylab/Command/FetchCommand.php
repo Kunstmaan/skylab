@@ -57,7 +57,7 @@ EOT
         $this->dialogProvider->logTask("Checking the server");
         $exists = $this->isRemoteProjectAvailable($projectname, $hostname);
         if (!$exists) {
-            throw new \RuntimeException("The project " . $projectname . " does not exist on " . $hostname);
+            $this->dialogProvider->logError("The project " . $projectname . " does not exist on " . $hostname, false);
         }
         $this->dialogProvider->logTask("Detecting the project type");
         $type = $this->detectProjectType($projectname, $hostname);

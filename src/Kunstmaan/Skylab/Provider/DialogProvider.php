@@ -205,6 +205,7 @@ class DialogProvider extends AbstractProvider
             throw new SkylabException($message);
         } else {
             $this->output->writeln("\n\n<error>  " . $message . "</error>\n\n");
+            exit(1);
         }
     }
 
