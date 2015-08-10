@@ -33,13 +33,19 @@ abstract class AbstractCommand extends Command
         }, E_ALL);
         /** @var \Cilex\Application $app */
         $app = $this->getContainer();
+
         try {
             $this->setup($app, $input, $output, true);
             $this->doPreExecute();
             $this->doExecute();
             $this->doPostExecute();
         } catch (\Exception $ex){
-            $this->dialogProvider->logException($ex);
+            $extra = array();
+            $tags = array();
+            $extra["full_command"] = implode(" ", $_SERVER['argv']);
+            $arguments = $input->getArguments();
+            $tags["command"] = $arguments["command"];
+            $this->dialogProvider->logException($ex, $tags, $extra);
         }
     }
 

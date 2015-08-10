@@ -203,20 +203,20 @@ class DialogProvider extends AbstractProvider
     }
 
     /**
-     * @param string $message
+     * @param \Exception $ex
+     * @param array $extra
      */
-    public function logException(\Exception $ex)
+    public function logException(\Exception $ex, $tags=array(), $extra = array())
     {
         $ravenClient = new \Raven_Client('https://da7e699379b84d8588b837bd518a2a84:83e238c55e4e42a882b8eaf9ef7f16f3@app.getsentry.com/49959');
-        $extra = array(
-            'php_version' => phpversion(),
-            'skylab_version' => Application::VERSION
-        );
+        $tags['php_version'] = phpversion();
+        $tags['skylab_version'] = \Kunstmaan\Skylab\Application::VERSION;
+        $tags['user'] = posix_getpwuid(posix_geteuid())['name'];
         $extra = array_merge($extra,$this->app["config"]);
         $event_id = $ravenClient->getIdent($ravenClient->captureException($ex, array(
             'extra' => $extra,
+            'tags' => $tags
         )));
-
 
         $this->output->writeln("\n\n<error>  " . $ex->getMessage() . "\n  This exception has been reported with id $event_id. Please log a github issue at https://github.com/Kunstmaan/skylab/issues and mention this id.</error>\n\n");
 
