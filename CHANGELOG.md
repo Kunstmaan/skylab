@@ -1,4 +1,13 @@
 
+1.0.2 / 2015-08-10
+==================
+
+  * Add the SSL skeleton
+  * Code cleanup
+  * Don't fail on typo's
+  * Don't log typo's
+  * Add more Sentry infomation to make triaging errors more easy
+
 1.0.1 / 2015-08-10
 ==================
 
