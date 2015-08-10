@@ -322,7 +322,7 @@ class WebserverSkeleton extends AbstractSkeleton
     function checkObviousErrors(\ArrayObject $project, SplFileInfo $config, $content){
         // project was not migrated because the 19php.conf file does not contain "proxy:unix:/var/run/php5-fpm"
         if (strpos($config->getFilename(), "19php") !== FALSE && strpos($content, "proxy:unix:/var/run/php5-fpm") === FALSE){
-            throw new SkylabException("The ".$project["name"]." project was not migrated yet, this will NOT work");
+            $this->dialogProvider->logWarning("The ".$project["name"]." project was not migrated yet, this will NOT work");
         }
     }
 
