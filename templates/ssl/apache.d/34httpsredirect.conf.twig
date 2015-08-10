@@ -1,0 +1,8 @@
+<IfModule mod_ssl.c>
+    <IfModule mod_rewrite.c>
+        RewriteEngine On
+        RewriteCond %{HTTPS} !=on
+        RewriteCond %{HTTP:X-SSL-TERMINATED} !^true$ [NC]
+        RewriteRule ^(.*)$ https://%{HTTP_HOST}$1 [R=301,L]
+    </IfModule>
+</IfModule>

@@ -1,0 +1,5 @@
+ProxyPreserveHost On
+ProxyPass / http://127.0.0.1:80/
+ProxyPassReverse / http://127.0.0.1:80/
+Header add X-SSL-TERMINATED "true"
+RequestHeader set X-SSL-TERMINATED "true"

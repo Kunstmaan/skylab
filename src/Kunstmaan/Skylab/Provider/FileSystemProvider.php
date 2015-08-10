@@ -96,7 +96,7 @@ class FileSystemProvider extends AbstractProvider
 
     /**
      * @param \ArrayObject $project The project
-     * @param string       $path    The relative path in the project folder
+     * @param string $path The relative path in the project folder
      */
     public function createDirectory(\ArrayObject $project, $path)
     {
@@ -106,7 +106,7 @@ class FileSystemProvider extends AbstractProvider
 
     /**
      * @param \ArrayObject $project The project
-     * @param string       $path    The relative path in the project folder
+     * @param string $path The relative path in the project folder
      *
      * @return string
      */
@@ -136,7 +136,7 @@ class FileSystemProvider extends AbstractProvider
      */
     public function removeProjectDirectory(\ArrayObject $project)
     {
-        if(empty($project["dir"])) {
+        if (empty($project["dir"])) {
             throw new RuntimeException("The project has no name");
         }
         $projectDirectory = $this->getProjectDirectory($project["name"]);
@@ -146,25 +146,33 @@ class FileSystemProvider extends AbstractProvider
     /**
      * @return string
      */
-    public function getApacheConfigTemplateDir($clean=false)
+    public function getApacheConfigTemplateDir($clean = false)
     {
-	return $this->getConfigTemplateDir("apache", $clean);
+        return $this->getConfigTemplateDir("apache", $clean);
     }
 
     /**
      * @return string
      */
-    public function getConfigTemplateDir($skeletonName, $clean=false)
+    public function getConfigTemplateDir($skeletonName, $clean = false)
     {
-	return ($clean ? "/".$skeletonName."/apache.d/" : BASE_DIR . "/templates/".$skeletonName."/apache.d/");
+        return ($clean ? "/" . $skeletonName . "/apache.d/" : BASE_DIR . "/templates/" . $skeletonName . "/apache.d/");
     }
 
     /**
      * @return string
      */
-    public function getNginxConfigTemplateDir($clean=false)
+    public function getCustomConfigTemplateDir($skeletonName, $clean = false)
     {
-        return ($clean?"/nginx/nginx.d/":BASE_DIR . "/templates/nginx/nginx.d/");
+        return ($clean ? "/" . $skeletonName . "/custom.d/" : BASE_DIR . "/templates/" . $skeletonName . "/custom.d/");
+    }
+
+    /**
+     * @return string
+     */
+    public function getNginxConfigTemplateDir($clean = false)
+    {
+        return ($clean ? "/nginx/nginx.d/" : BASE_DIR . "/templates/nginx/nginx.d/");
     }
 
     /**
@@ -222,6 +230,7 @@ class FileSystemProvider extends AbstractProvider
 
         return iterator_to_array($finder);
     }
+
     /**
      * @param $path
      * @param $content
@@ -234,11 +243,11 @@ class FileSystemProvider extends AbstractProvider
     }
 
     /**
-     * @param string   $sourcePath
-     * @param string   $destinationPath
+     * @param string $sourcePath
+     * @param string $destinationPath
      * @param string[] $variables
      */
-    public function render($sourcePath, $destinationPath, $variables)
+    public function render($sourcePath, $destinationPath, $variables = array())
     {
         $this->dialogProvider->logConfig("Rendering " . $sourcePath . " to " . $destinationPath);
         $this->processProvider->executeSudoCommand('mkdir -p ' . dirname($destinationPath));
@@ -247,8 +256,8 @@ class FileSystemProvider extends AbstractProvider
     }
 
     /**
-     * @param string   $sourcePath
-     * @param string   $destinationPath
+     * @param string $sourcePath
+     * @param string $destinationPath
      * @param string[] $variables
      */
     public function renderDist($sourcePath, $destinationPath)
@@ -275,10 +284,10 @@ class FileSystemProvider extends AbstractProvider
      */
     public function renderSingleConfig($cleanedLocation, $target, $config)
     {
-	$this->fileSystemProvider->renderDist(
-	    $cleanedLocation . $config->getFilename(),
-	    $target . str_replace(".conf.twig", ".dist", $config->getFilename())
-	);
+        $this->fileSystemProvider->render(
+            $cleanedLocation . $config->getFilename(),
+            $target . str_replace(".conf.twig", ".conf", $config->getFilename())
+        );
     }
 
     /**
@@ -288,10 +297,10 @@ class FileSystemProvider extends AbstractProvider
      */
     public function renderSingleDistConfig($cleanedLocation, $target, $config)
     {
-	$this->fileSystemProvider->renderDist(
-	    $cleanedLocation . $config->getFilename(),
-	    $target . str_replace(".conf.twig", ".dist", $config->getFilename())
-	);
+        $this->fileSystemProvider->renderDist(
+            $cleanedLocation . $config->getFilename(),
+            $target . str_replace(".conf.twig", ".dist", $config->getFilename())
+        );
     }
 
     /**
@@ -301,12 +310,12 @@ class FileSystemProvider extends AbstractProvider
      */
     public function renderConfig($location, $cleanedLocation, $target)
     {
-	// render templates
-	$finder = new Finder();
-	$finder->files()->in($location)->name("*.conf.twig");
-	foreach ($finder as $config) {
-	    $this->renderSingleConfig($cleanedLocation, $target, $config);
-	}
+        // render templates
+        $finder = new Finder();
+        $finder->files()->in($location)->name("*.conf.twig");
+        foreach ($finder as $config) {
+            $this->renderSingleConfig($cleanedLocation, $target, $config);
+        }
     }
 
     /**
@@ -316,11 +325,11 @@ class FileSystemProvider extends AbstractProvider
      */
     public function renderDistConfig($location, $cleanedLocation, $target)
     {
-	// render templates
-	$finder = new Finder();
-	$finder->files()->in($location)->name("*.conf.twig");
-	foreach ($finder as $config) {
-	    $this->renderSingleDistConfig($cleanedLocation, $target, $config);
-	}
+        // render templates
+        $finder = new Finder();
+        $finder->files()->in($location)->name("*.conf.twig");
+        foreach ($finder as $config) {
+            $this->renderSingleDistConfig($cleanedLocation, $target, $config);
+        }
     }
 }

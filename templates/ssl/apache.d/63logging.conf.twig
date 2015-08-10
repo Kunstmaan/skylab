@@ -1,0 +1,5 @@
+ErrorLog @project.dir@/apachelogs/error.log
+
+SetEnvIf X-Forwarded-For "^.*\..*\..*\..*" forwarded
+CustomLog @project.dir@/apachelogs/access.log combined env=!forwarded
+CustomLog @project.dir@/apachelogs/access.log combined env=forwarded

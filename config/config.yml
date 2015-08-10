@@ -69,6 +69,7 @@ skeletons:
     dailycron:   false
     solr:        false
     smlkerberos: false
+    ssl:         Kunstmaan\Skylab\Skeleton\SslSkeleton
 
 debug: true
 develmode: true
