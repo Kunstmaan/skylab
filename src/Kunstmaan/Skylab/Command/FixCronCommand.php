@@ -1,10 +1,8 @@
 <?php
 namespace Kunstmaan\Skylab\Command;
 
-use Kunstmaan\Skylab\Skeleton\AbstractSkeleton;
 use Kunstmaan\Skylab\Skeleton\AnacronSkeleton;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 
 /**
  * FixCronCommand

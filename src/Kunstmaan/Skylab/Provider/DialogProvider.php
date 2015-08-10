@@ -75,10 +75,8 @@ class DialogProvider extends AbstractProvider
     }
 
     /**
-     * @param string $message
+     * @param $message
      * @return string
-     * @internal param null|string $argumentname
-     * @internal param null $default
      */
     public function askHiddenResponse($message)
     {

@@ -2,9 +2,6 @@
 
 namespace Kunstmaan\Skylab\Command;
 
-use Symfony\Component\Console\Helper\TableSeparator;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 
 class ShareCommand extends AbstractCommand
 {

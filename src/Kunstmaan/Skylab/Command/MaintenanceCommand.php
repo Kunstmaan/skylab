@@ -2,6 +2,7 @@
 namespace Kunstmaan\Skylab\Command;
 
 use Kunstmaan\Skylab\Skeleton\AbstractSkeleton;
+use Kunstmaan\Skylab\Skeleton\BaseSkeleton;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
@@ -58,7 +59,9 @@ EOT
         if (!$this->input->getOption('quick')) {
             $this->fileSystemProvider->projectsLoop(function ($project) {
                 $this->dialogProvider->logStep("Running fixperms on " . $project["name"]);
-                $this->skeletonProvider->findSkeleton('base')->setPermissions(new \ArrayObject($project));
+                /** @var BaseSkeleton $abstractSkeleton */
+                $abstractSkeleton = $this->skeletonProvider->findSkeleton('base');
+                $abstractSkeleton->setPermissions(new \ArrayObject($project));
             });
         }
     }

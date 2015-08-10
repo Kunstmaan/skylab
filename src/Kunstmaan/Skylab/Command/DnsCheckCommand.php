@@ -2,7 +2,6 @@
 
 namespace Kunstmaan\Skylab\Command;
 
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 
 class DnsCheckCommand extends AbstractCommand

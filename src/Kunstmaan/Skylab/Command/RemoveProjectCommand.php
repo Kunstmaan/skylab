@@ -2,7 +2,6 @@
 namespace Kunstmaan\Skylab\Command;
 
 use Kunstmaan\Skylab\Skeleton\AbstractSkeleton;
-use RuntimeException;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
