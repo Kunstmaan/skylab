@@ -38,7 +38,7 @@ EOT
         $projectname = $this->input->getArgument('name');
 
         if (!$this->fileSystemProvider->projectExists($projectname)) {
-            throw new RuntimeException("The $projectname project does not exist.");
+            $this->dialogProvider->logError("The $projectname project does not exist.", false);
         }
 
         $this->dialogProvider->logStep("Setting permissions on project $projectname");

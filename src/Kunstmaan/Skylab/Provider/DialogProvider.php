@@ -195,11 +195,17 @@ class DialogProvider extends AbstractProvider
     }
 
     /**
-     * @param string $message
+     * @param $message
+     * @param bool|true $report
+     * @throws SkylabException
      */
-    public function logError($message)
+    public function logError($message, $report=true)
     {
-        throw new SkylabException($message);
+        if ($report) {
+            throw new SkylabException($message);
+        } else {
+            $this->output->writeln("\n\n<error>  " . $message . "</error>\n\n");
+        }
     }
 
     /**
