@@ -57,7 +57,6 @@ class SslSkeleton extends AbstractSkeleton
      */
     public function maintenance(\ArrayObject $project)
     {
-        $this->processProvider->executeSudoCommand("ln -sf " . $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/05aliases " . $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/65aliases");
     }
 
     /**

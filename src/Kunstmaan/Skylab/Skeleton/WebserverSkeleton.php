@@ -58,6 +58,9 @@ class WebserverSkeleton extends AbstractSkeleton
         } else {
             $serverAlias = $this->generateAliasLine($aliases, $this->app["config"]["webserver"]["engine"]);
             $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/05aliases", $serverAlias);
+            if ($this->skeletonProvider->hasSkeleton($project, $this->skeletonProvider->findSkeleton("ssl"))){
+                $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/65aliases", $serverAlias);
+            }
             if ($this->app["config"]["develmode"]) {
                 $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/06devmode", "SetEnv APP_ENV dev");
             } else {
