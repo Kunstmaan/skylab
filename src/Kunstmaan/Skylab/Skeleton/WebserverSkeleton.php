@@ -273,10 +273,10 @@ class WebserverSkeleton extends AbstractSkeleton
         $aliases = (isset($project["aliases"])) ? $project["aliases"] : array();
         $aliases[] = $project["url"];
         $aliases[] = $project["name"] . "." . $hostmachine;
-        $aliases[] = "www." . $project["name"] . "." . $hostmachine;
+        $aliases[] = "*." . $project["name"] . "." . $hostmachine;
         if ($this->app["config"]["develmode"]) {
             $aliases[] = $project["name"] . ".*.xip.io";
-            $aliases[] = "www." . $project["name"] . ".*.xip.io";
+            $aliases[] = "*." . $project["name"] . ".*.xip.io";
         }
     }
 
