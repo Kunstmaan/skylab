@@ -1,4 +1,12 @@
 
+1.0.4 / 2015-08-12
+==================
+
+  * Fix missing quote
+  * Make sure contab errors get mailed to cron@kunstmaan.be
+  * Merge pull request #79 from Kunstmaan/features/wildcarddevalias
+  * Use wildcard instead of www, to enable multi-domain urls
+
 1.0.3 / 2015-08-11
 ==================
 
