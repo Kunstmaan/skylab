@@ -72,7 +72,9 @@ class AnacronSkeleton extends AbstractSkeleton
                 $this->processProvider->executeSudoCommand("sed -i -e '\$a\\' " . $crontab);
             }
             $this->processProvider->executeSudoCommand('printf "\n" >> ' . $crontab);
-            $this->processProvider->executeSudoCommand('echo "' . '0 3 * * * ' . $cronjobscript . '" >> ' . $crontab);
+            if (sizeof($cronjobs) > 0){
+                $this->processProvider->executeSudoCommand('echo "' . '0 3 * * * ' . $cronjobscript . '" >> ' . $crontab);
+            }
             // load the anacrontab file
             $this->processProvider->executeSudoCommand("crontab -u " . $project["name"] . " " . $crontab);
         }
