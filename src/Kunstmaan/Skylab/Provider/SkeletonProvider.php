@@ -44,8 +44,8 @@ class SkeletonProvider extends AbstractProvider
         $dependencies = new DependencySolver();
         $this->resolveDependencies($skeleton, $dependencies);
         foreach ($dependencies->getLoadOrder() as $theSkeletonName) {
-            if (!$this->hasSkeleton($project, $skeleton)) {
-                $theSkeleton = $this->findSkeleton($theSkeletonName);
+            $theSkeleton = $this->findSkeleton($theSkeletonName);
+            if (!$this->hasSkeleton($project, $theSkeleton)) {
                 $this->dialogProvider->logTask("Running skeleton create for " . $theSkeleton->getName());
                 $theSkeleton->create($project);
                 $project["skeletons"][$theSkeleton->getName()] = $theSkeleton->getName();

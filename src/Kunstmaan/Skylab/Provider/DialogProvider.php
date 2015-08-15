@@ -131,7 +131,35 @@ class DialogProvider extends AbstractProvider
     public function logCommand($message)
     {
         if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
-            $this->output->writeln('<info>   $</info> <comment>' . $message . '</comment> ');
+            $this->output->write('<info>   $</info> <comment>' . $message . '</comment> ');
+        }
+    }
+
+    /**
+     * @param string $message
+     */
+    public function logCommandTime($startTime)
+    {
+        if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+            $this->output->writeln(' <fg=yellow;options=bold>' . round(microtime(true) - $startTime, 2) . 's</fg=yellow;options=bold>');
+        } else {
+            if($this->progress != null) {
+                $this->progress->advance();
+            }
+        }
+    }
+
+    /**
+     * @param string $message
+     */
+    public function logOutput($message, $error=false, $silent=false)
+    {
+        if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE || !$silent) {
+            if ($error){
+                $this->output->write("<error>" . $message . '</error>');
+            } else {
+                $this->output->write($message);
+            }
         } else {
             if($this->progress != null) {
                 $this->progress->advance();
@@ -218,16 +246,17 @@ class DialogProvider extends AbstractProvider
         $tags['skylab_version'] = \Kunstmaan\Skylab\Application::VERSION;
         $tags['user'] = posix_getpwuid(posix_geteuid())['name'];
         $extra = array_merge($extra,$this->app["config"]);
-        $event_id = $ravenClient->getIdent($ravenClient->captureException($ex, array(
-            'extra' => $extra,
-            'tags' => $tags
-        )));
+        if (\Kunstmaan\Skylab\Application::VERSION !== "@package_version@") {
+            $event_id = $ravenClient->getIdent($ravenClient->captureException($ex, array(
+                'extra' => $extra,
+                'tags' => $tags
+            )));
+            $this->output->writeln("\n\n<error>  " . $ex->getMessage() . "\n  This exception has been reported with id $event_id. Please log a github issue at https://github.com/Kunstmaan/skylab/issues and mention this id.</error>\n\n");
+        }
 
-        $this->output->writeln("\n\n<error>  " . $ex->getMessage() . "\n  This exception has been reported with id $event_id. Please log a github issue at https://github.com/Kunstmaan/skylab/issues and mention this id.</error>\n\n");
+        echo $ex->getTraceAsString();
 
-        debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 10);
-
-        exit(1);
+        throw $ex;
     }
 
     /**

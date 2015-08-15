@@ -1,5 +1,4 @@
 ErrorLog @project.dir@/apachelogs/error.log
 
-SetEnvIf X-Forwarded-For "^.*\..*\..*\..*" forwarded
-CustomLog @project.dir@/apachelogs/access.log combined env=!forwarded
-CustomLog @project.dir@/apachelogs/access.log combined env=forwarded
+LogFormat "%v:%p %h %l %u %t \"%r\" %>s \"%{Referer}i\" \"%{User-Agent}i\" SSL-TERMINATED:%{X-SSL-TERMINATED}i" skylab_combined
+CustomLog @project.dir@/apachelogs/access.log skylab_combined

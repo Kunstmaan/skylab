@@ -6,6 +6,8 @@ require_once __DIR__.'/vendor/autoload.php';
 
 const BASE_DIR = __DIR__;
 
+\Symfony\Component\Debug\Debug::enable();
+
 $app = new \Cilex\Application('skylab', '0.0.0', array('console.class' => 'Kunstmaan\Skylab\Application', 'skylab.starttime' => $startTime));
 
 $app->register(new \Kunstmaan\Skylab\Provider\ProcessProvider());
@@ -33,6 +35,10 @@ $app->command(new \Kunstmaan\Skylab\Command\ShareCommand());
 $app->command(new \Kunstmaan\Skylab\Command\NameserverCheckCommand());
 $app->command(new \Kunstmaan\Skylab\Command\DnsCheckCommand());
 $app->command(new \Kunstmaan\Skylab\Command\FixCronCommand());
+
+if (isset($app["config"]["slack_api_key"])) {
+    $app->command(new \Kunstmaan\Skylab\Command\ExecuteCommand());
+}
 
 if ('phar:' === substr(__FILE__, 0, 5) || getenv("SU")) {
     $app->command(new \Kunstmaan\Skylab\Command\SelfUpdateCommand());

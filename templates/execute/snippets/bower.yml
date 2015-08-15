@@ -1,0 +1,2 @@
+steps:
+  - if ( [ -f "bower.json" ] ); then bower install --config.interactive=false; fi

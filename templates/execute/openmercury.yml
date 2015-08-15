@@ -1,0 +1,38 @@
+
+env:
+  JAVA_HOME: /usr/lib/jvm/java-1.6.0-openjdk
+  TOMCAT_VERSION: 7
+  TOMCAT_PATH: /opt/ci-deploy-scripts/java-tomcat/tomcat
+  CATALINA_CLASSPATH: /lib/catalina-ant.jar
+
+before_build:
+  - steps:
+    - echo "catalina.home=%TOMCAT_PATH%%TOMCAT_VERSION%" >> build.properties
+
+build:
+  - steps:
+    - CLASSPATH=$CLASSPATH:%TOMCAT_PATH%%TOMCAT_VERSION%%CATALINA_CLASSPATH% ant clean
+    - CLASSPATH=$CLASSPATH:%TOMCAT_PATH%%TOMCAT_VERSION%%CATALINA_CLASSPATH% ant compile
+    - cp -R .skylab build/.skylab || echo "no .skylab folder"
+
+after_build_success:
+  - steps:
+    - cd build && GZIP="--rsyncable" tar -zcf %home%/builds/%job_name%-%buildtag%.tar.gz --exclude="./.bundle" --exclude="./.sass-cache" --exclude="./node_modules" --exclude="./web/uploads" --exclude="./uploads" --exclude="./.git/objects/*" --exclude="./.git/refs/tags/*" --exclude="./app/logs" --exclude="./app/cache" --exclude="./build" --exclude="./web/app_dev.php" --exclude="./web/app_test.php" .
+
+before_deploy:
+  - resource: snippets/transmit.yml
+
+deploy:
+  - resource: snippets/extract-tar.yml
+  - resource: snippets/setup-config.yml
+
+after_deploy_success:
+  - steps:
+      - ssh %deploy_server% -p %deploy_port% "sudo ln -sfT /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/ /home/projects/%deploy_project%/data/current"
+      - ssh %deploy_server% -p %deploy_port% "sudo rm -Rf /home/projects/%deploy_project%/tomcat/default/webapps%deploy_app_path%"
+      - ssh %deploy_server% -p %deploy_port% "sudo ln -sfT /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/ /home/projects/%deploy_project%/tomcat/default/webapps%deploy_app_path%"
+      - ssh %deploy_server% -p %deploy_port% "sudo -u %deploy_project% killall -9 java || exit 0"
+      - ssh %deploy_server% -p %deploy_port% "cd /home/projects/%deploy_project%/tomcat/default/bin && sudo -u %deploy_project% ./startup.sh"
+  - resource: snippets/maintenance.yml
+  - resource: snippets/setup-cron.yml
+  - resource: snippets/cleanup.yml

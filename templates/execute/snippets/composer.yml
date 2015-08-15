@@ -1,0 +1,4 @@
+steps:
+  - if [ -f "composer.json" ]; then curl -sS https://getcomposer.org/installer | php; fi
+  - ssh-keyscan github.com >> %home%/.ssh/known_hosts
+  - if [ -f "composer.json" ]; then SYMFONY_ENV=%deploy_symfony_env% php composer.phar install --no-dev --prefer-dist --optimize-autoloader --no-progress; fi

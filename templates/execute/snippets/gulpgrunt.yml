@@ -1,0 +1,3 @@
+steps:
+  - if [ -f "Gulpfile.js" ] || [ -f "gulpfile.js" ]; then gulp build-deploy || gulp build; fi
+  - if [ -f "Gruntfile.js" ] || [ -f "gruntfile.js" ] || [ -f "Gruntfile.coffee" ] || [ -f "gruntfile.coffee" ]; then grunt build; fi
