@@ -1,4 +1,12 @@
 
+1.0.6 / 2015-08-22
+==================
+
+  * update deps
+  * Fix
+  * Add newline at the end
+  * Fix escaping
+
 1.0.5 / 2015-08-22
 ==================
 
