@@ -2,14 +2,14 @@
 before_build:
   - steps:
     - mkdir -p app/cache
-    - if [ "yes" == "%fetch_mysql%" ] && [ "yes" == "%run_mysql%" ]; then ssh-keyscan -p %dbsource_port% %dbsource_server% >> %home%/.ssh/known_hosts; fi
-    - if [ "yes" == "%fetch_mysql%" ] && [ "yes" == "%run_mysql%" ]; then scp -P %dbsource_port% "%dbsource_server%:/home/projects/%dbsource_project%/backup/mysql.dmp.gz" app/cache/mysql.dmp.gz; fi
-    - if [ "yes" == "%run_mysql%" ]; then echo "DROP DATABASE IF EXISTS %database_name%" | mysql -u "root" -p%mysql_root_password% | true; fi
-    - if [ "yes" == "%run_mysql%" ]; then echo "CREATE DATABASE %database_name% DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci" | mysql -u "root" -p%mysql_root_password%; fi
-    - if [ "yes" == "%run_mysql%" ]; then echo "GRANT ALL PRIVILEGES ON %database_name%.* TO %database_user%@localhost IDENTIFIED BY '%database_password%'" | mysql -u "root" -p%mysql_root_password%; fi
-    - if [ "yes" == "%run_mysql%" ]; then echo "GRANT ALL PRIVILEGES ON %database_name%.* TO %database_user%@'%%' IDENTIFIED BY '%database_password%'" | mysql -u "root" -p%mysql_root_password%; fi
-    - if [ "yes" == "%run_mysql%" ]; then echo "FLUSH PRIVILEGES" | mysql -u "root" -p%mysql_root_password%; fi
-    - if [ "yes" == "%fetch_mysql%" ] && [ "yes" == "%run_mysql%" ]; then zcat "app/cache/mysql.dmp.gz" | mysql "%database_name%" -u "root" -p%mysql_root_password%; fi
+    - if [ "yes" = "%fetch_mysql%" ] && [ "yes" = "%run_mysql%" ]; then ssh-keyscan -p %dbsource_port% %dbsource_server% >> %home%/.ssh/known_hosts; fi
+    - if [ "yes" = "%fetch_mysql%" ] && [ "yes" = "%run_mysql%" ]; then scp -P %dbsource_port% "%dbsource_server%:/home/projects/%dbsource_project%/backup/mysql.dmp.gz" app/cache/mysql.dmp.gz; fi
+    - if [ "yes" = "%run_mysql%" ]; then echo "DROP DATABASE IF EXISTS %database_name%" | mysql -u "root" -p%mysql_root_password% | true; fi
+    - if [ "yes" = "%run_mysql%" ]; then echo "CREATE DATABASE %database_name% DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci" | mysql -u "root" -p%mysql_root_password%; fi
+    - if [ "yes" = "%run_mysql%" ]; then echo "GRANT ALL PRIVILEGES ON %database_name%.* TO %database_user%@localhost IDENTIFIED BY '%database_password%'" | mysql -u "root" -p%mysql_root_password%; fi
+    - if [ "yes" = "%run_mysql%" ]; then echo "GRANT ALL PRIVILEGES ON %database_name%.* TO %database_user%@'%%' IDENTIFIED BY '%database_password%'" | mysql -u "root" -p%mysql_root_password%; fi
+    - if [ "yes" = "%run_mysql%" ]; then echo "FLUSH PRIVILEGES" | mysql -u "root" -p%mysql_root_password%; fi
+    - if [ "yes" = "%fetch_mysql%" ] && [ "yes" = "%run_mysql%" ]; then zcat "app/cache/mysql.dmp.gz" | mysql "%database_name%" -u "root" -p%mysql_root_password%; fi
 
 build:
   - resource: snippets/composer.yml
