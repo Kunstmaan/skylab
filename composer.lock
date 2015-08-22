@@ -130,18 +130,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Kunstmaan/slack.git",
-                "reference": "00abe6ed7e46e9b2226282a9400fd3074e23ddb1"
+                "reference": "d50af3e73feaf426d1d775a189dbf0cf71a92d18"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Kunstmaan/slack/zipball/00abe6ed7e46e9b2226282a9400fd3074e23ddb1",
-                "reference": "00abe6ed7e46e9b2226282a9400fd3074e23ddb1",
+                "url": "https://api.github.com/repos/Kunstmaan/slack/zipball/d50af3e73feaf426d1d775a189dbf0cf71a92d18",
+                "reference": "d50af3e73feaf426d1d775a189dbf0cf71a92d18",
                 "shasum": ""
             },
             "require": {
                 "doctrine/collections": "~1.2",
                 "ext-curl": "*",
-                "guzzlehttp/guzzle": ">=4.2",
+                "guzzlehttp/guzzle": "~5.3.0",
                 "jms/serializer": "~0.16",
                 "php": ">=5.4",
                 "symfony/event-dispatcher": "~2.2",
@@ -180,7 +180,7 @@
             "support": {
                 "source": "https://github.com/Kunstmaan/slack/tree/master"
             },
-            "time": "2015-08-19 19:51:40"
+            "time": "2015-08-21 10:03:49"
         },
         {
             "name": "doctrine/annotations",
@@ -1063,12 +1063,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Kunstmaan/pingdom.git",
-                "reference": "54599b791c2f6eacc0823a9ca82be2de00f72e9f"
+                "reference": "750bf80503ba68abf6ae7640a83095879c8c44c9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Kunstmaan/pingdom/zipball/54599b791c2f6eacc0823a9ca82be2de00f72e9f",
-                "reference": "54599b791c2f6eacc0823a9ca82be2de00f72e9f",
+                "url": "https://api.github.com/repos/Kunstmaan/pingdom/zipball/750bf80503ba68abf6ae7640a83095879c8c44c9",
+                "reference": "750bf80503ba68abf6ae7640a83095879c8c44c9",
                 "shasum": ""
             },
             "require": {
@@ -1101,7 +1101,7 @@
             "support": {
                 "source": "https://github.com/Kunstmaan/pingdom/tree/master"
             },
-            "time": "2015-08-20 11:35:31"
+            "time": "2015-08-22 15:39:10"
         },
         {
             "name": "stecman/symfony-console-completion",
