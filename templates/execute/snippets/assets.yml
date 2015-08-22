@@ -1,5 +1,4 @@
 steps:
   - if [ -f "app/console" ]; then app/console assets:install web --env=%deploy_symfony_env%; fi
-  - if grep -q kriswallsmith/spork composer.lock; then echo "Spork already present"; else composer require kriswallsmith/spork:0.2.0; fi
-  - if [ -f "app/console" ] && grep -q "symfony/assetic-bundle" composer.lock ; then app/console assetic:dump --forks 8 --env=%deploy_symfony_env%; fi
+  - if [ -f "app/console" ] && grep -q "symfony/assetic-bundle" composer.lock; then if grep -q kriswallsmith/spork composer.lock; then app/console assetic:dump --forks 8 --env=%deploy_symfony_env%; else app/console assetic:dump --env=%deploy_symfony_env%; fi; fi
   - sed -i "s/\\(assets_version:[ ]*\\)\\([a-zA-Z0-9_~]*\\)\\(.*\\)$/\\1%buildtag%\\3/g" app/config/config.yml
