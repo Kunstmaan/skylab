@@ -63,7 +63,7 @@ class AnacronSkeleton extends AbstractSkeleton
             $cronjobs = $this->fileSystemProvider->getDotDFiles($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/fcron.d/");
             foreach ($cronjobs as $cronjob) {
                 $this->processProvider->executeSudoCommand("cat " . $cronjob->getRealPath() . " >> " . $cronjobscript);
-                $this->processProvider->executeSudoCommand("sed -i -e '\$a\\' " . $cronjobscript);
+                $this->processProvider->executeSudoCommand("echo -n '\n' >> " . $cronjobscript);
             }
             $projectAnacrontab = $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/current/app/config/anacrontab";
             $this->processProvider->executeSudoCommand('echo "MAILTO=cron@kunstmaan.be" >> ' . $crontab);
