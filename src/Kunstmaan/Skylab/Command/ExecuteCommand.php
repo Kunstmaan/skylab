@@ -9,6 +9,7 @@ use CL\Slack\Payload\ChatPostMessagePayloadResponse;
 use CL\Slack\Transport\ApiClient;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Parser;
@@ -59,7 +60,9 @@ EOT
                                 if (Process::ERR === $type) {
                                     $this->dialogProvider->logOutput($buffer, true);
                                 } else {
-                                    $this->dialogProvider->logOutput($buffer, false);
+                                    if ($this->output->getVerbosity() > OutputInterface::VERBOSITY_NORMAL) {
+                                        $this->dialogProvider->logOutput($buffer, false);
+                                    }
                                 }
                             }, $yaml["env"]);
                             if ($result === false) {
@@ -207,6 +210,7 @@ EOT
             $mergedYaml = $this->buildMergedYaml();
             $resolverArray = $this->buildResolverArray($mergedYaml);
             $resolvedYaml = $this->resolveYaml($mergedYaml, $resolverArray);
+            $mergedYaml["env"]["SHELL"] = "/bin/bash";
             return array($resolvedYaml, $resolverArray);
         } catch (\Exception $ex){
             $deployEnv = $this->input->getArgument('deploy-environment');
