@@ -1,4 +1,12 @@
 
+1.0.5 / 2015-08-22
+==================
+
+  * Merge pull request #80 from Kunstmaan/deploy-yml
+  * No SSL aliasses
+  * Adding an Execute command to handle CI building from Jenkins and Slack. Also fix several bugs.
+  * Don't try to queue the nightly cronjob if no cronjobs are defined
+
 1.0.4 / 2015-08-12
 ==================
 
