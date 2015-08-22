@@ -1,0 +1,3 @@
+steps:
+  - if [ "no" == "%fetch_mysql%" ] && [ "yes" == "%run_mysql%" ]; then app/console doctrine:schema:create --env=%deploy_symfony_env%; fi
+  - if [ "yes" == "%run_mysql%" ] && [ -d "app/DoctrineMigrations" ]; then app/console doctrine:migrations:migrate --env=%deploy_symfony_env% --no-interaction; fi

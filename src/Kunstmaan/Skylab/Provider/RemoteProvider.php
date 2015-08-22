@@ -57,6 +57,7 @@ class RemoteProvider extends AbstractProvider
             $this->closeFile($tmpfile);
         } else {
             file_put_contents($cacheFile, $result);
+            chmod($cacheFile, 0755);
             return $result;
         }
 

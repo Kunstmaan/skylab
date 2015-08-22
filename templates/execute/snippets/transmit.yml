@@ -1,0 +1,14 @@
+steps:
+  - ssh-keyscan -p %deploy_port% %deploy_server% >> %home%/.ssh/known_hosts
+  - ssh %deploy_server% -p %deploy_port% "sudo mkdir -p /home/projects/%deploy_project%/data/builds/"
+  - ssh %deploy_server% -p %deploy_port% "sudo chown -R %deploy_project%:%deploy_project% /home/projects/%deploy_project%/data/builds/"
+  - ssh %deploy_server% -p %deploy_port% "sudo setfacl -R -m user::rwX /home/projects/%deploy_project%/data/builds/"
+  - ssh %deploy_server% -p %deploy_port% "sudo setfacl -R -m group::r-X /home/projects/%deploy_project%/data/builds/"
+  - ssh %deploy_server% -p %deploy_port% "sudo setfacl -R -m other::--- /home/projects/%deploy_project%/data/builds/"
+  - ssh %deploy_server% -p %deploy_port% "sudo setfacl -R -m u:www-data:r-X /home/projects/%deploy_project%/data/builds/"
+  - ssh %deploy_server% -p %deploy_port% "sudo setfacl -R -m u:%deploy_project%:rwX /home/projects/%deploy_project%/data/builds/"
+  - ssh %deploy_server% -p %deploy_port% "sudo setfacl -R -m u:postgres:r-X /home/projects/%deploy_project%/data/builds/"
+  - ssh %deploy_server% -p %deploy_port% "sudo setfacl -R -m group:admin:rwX /home/projects/%deploy_project%/data/builds/"
+  - rsync -qahL --progress --rsh=/usr/bin/ssh -e "ssh -p %deploy_port%" %home%/builds/%job_name%-%buildtag%.tar.gz %deploy_server%:/home/projects/%deploy_project%/data/builds/rsync 
+  - rm %home%/builds/%job_name%-%buildtag%.tar.gz 
+  - ssh %deploy_server% -p %deploy_port% "cp /home/projects/%deploy_project%/data/builds/rsync /home/projects/%deploy_project%/data/builds/%job_name%-%buildtag%.tar.gz" 

@@ -1,0 +1,4 @@
+steps:
+  - if [ -f "app/console" ]; then app/console assets:install web --env=%deploy_symfony_env%; fi
+  - if [ -f "app/console" ] && grep -q "symfony/assetic-bundle" composer.lock ; then app/console assetic:dump --env=%deploy_symfony_env%; fi
+  - sed -i "s/\\(assets_version:[ ]*\\)\\([a-zA-Z0-9_~]*\\)\\(.*\\)$/\\1%buildtag%\\3/g" app/config/config.yml

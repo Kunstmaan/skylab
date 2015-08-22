@@ -4,6 +4,7 @@ namespace Kunstmaan\Skylab\Provider;
 
 use Cilex\Application;
 use Symfony\Component\Process\Process;
+use Symfony\Component\Process\ProcessBuilder;
 
 /**
  * ProcessProvider
@@ -28,23 +29,9 @@ class ProcessProvider extends AbstractProvider
      * @param  \Closure    $callback
      * @return bool|string
      */
-    public function executeCommand($command, $silent = false, \Closure $callback = null)
+    public function executeCommand($command, $silent = false, \Closure $callback = null, $env=array())
     {
-        if (!$silent) {
-            $this->dialogProvider->logCommand($command);
-        }
-        $process = new Process($command);
-        $process->setTimeout(3600);
-        $process->run($callback);
-        if (!$process->isSuccessful()) {
-            if (!$silent) {
-                $this->dialogProvider->logError($process->getErrorOutput());
-            }
-
-            return false;
-        }
-
-        return $process->getOutput();
+        return $this->performCommand($command, $silent, $callback, $env);
     }
 
     /**
@@ -54,15 +41,14 @@ class ProcessProvider extends AbstractProvider
      *
      * @return bool|string
      */
-    public function executeSudoCommand($command, $silent = false, $sudoAs = null)
+    public function executeSudoCommand($command, $silent = false, $sudoAs = null, \Closure $callback = null, $env=array())
     {
         if (empty($sudoAs)) {
-            $command = 'sudo -p "Please enter your sudo password:" bash -c ' . escapeshellarg($command);
+            $command = 'sudo -s -p "Please enter your sudo password:" ' . $command;
         } else {
-            $command = 'sudo -p "Please enter your sudo password:" -u ' . $sudoAs . ' bash  -c ' . escapeshellarg($command);
+            $command = 'sudo -s -p "Please enter your sudo password:" -u ' . $sudoAs . ' ' . $command;
         }
-
-        return $this->executeCommand($command, $silent);
+        return $this->performCommand($command, $silent, $callback, $env);
     }
 
     /**
@@ -72,5 +58,41 @@ class ProcessProvider extends AbstractProvider
     public function commandExists($cmd)
     {
         return shell_exec("hash " . $cmd . " 2>&1") == '';
+    }
+
+    /**
+     * @param $command
+     * @param $silent
+     * @param \Closure $callback
+     * @param $env
+     * @return bool|string
+     * @throws \Kunstmaan\Skylab\Exceptions\SkylabException
+     */
+    private function performCommand($command, $silent=false, \Closure $callback = null, $env=array())
+    {
+        $startTime = microtime(true);
+
+        if (!$silent) {
+            $this->dialogProvider->logCommand($command);
+        }
+
+        $env = array_replace($_ENV, $_SERVER, $env);
+        $process = new Process($command, null, $env);
+        $process->setTimeout(3600);
+        $process->run($callback);
+        if (!$silent) {
+            $this->dialogProvider->logCommandTime($startTime);
+        }
+        if (!$process->isSuccessful()) {
+            if ($process->getExitCode() == 23){
+                return $process->getOutput();
+            } else {
+                if (!$silent) {
+                    $this->dialogProvider->logError($process->getErrorOutput());
+                }
+                return false;
+            }
+        }
+        return $process->getOutput();
     }
 }

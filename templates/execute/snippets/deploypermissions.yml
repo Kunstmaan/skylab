@@ -1,0 +1,5 @@
+steps:
+  - ssh %deploy_server% -p %deploy_port% "sudo chown -R %deploy_project%:%deploy_project% /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%"
+  - ssh %deploy_server% -p %deploy_port% "sudo setfacl -R -m group:admin:rwx /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%"
+  - ssh %deploy_server% -p %deploy_port% "sudo chmod -R g+w /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%"
+  - ssh %deploy_server% -p %deploy_port% "sudo chmod -R 0777 /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/app/cache"

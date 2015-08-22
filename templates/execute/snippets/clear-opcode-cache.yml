@@ -1,0 +1,11 @@
+steps:
+  - ssh %deploy_server% -p %deploy_port% "sudo ln -sfT /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/ /home/projects/%deploy_project%/data/current"
+  - ssh %deploy_server% -p %deploy_port% "curl -sO http://gordalina.github.io/cachetool/downloads/cachetool.phar"
+  - ssh %deploy_server% -p %deploy_port% "if [ -S /var/run/php5-fpm-%deploy_project%.sock ]; then php cachetool.phar stat:clear --fcgi=/var/run/php5-fpm-%deploy_project%.sock; else php cachetool.phar stat:clear --fcgi=/tmp/.%deploy_project%-fpm.sock; fi"
+  - ssh %deploy_server% -p %deploy_port% "if [ -S /var/run/php5-fpm-%deploy_project%.sock ]; then php cachetool.phar apc:cache:clear all --fcgi=/var/run/php5-fpm-%deploy_project%.sock; else php cachetool.phar apc:cache:clear all --fcgi=/tmp/.%deploy_project%-fpm.sock; fi"
+  - ssh %deploy_server% -p %deploy_port% "if [ \`php -r 'echo PHP_MINOR_VERSION;'\` > 4 ]; then if ([ -S /var/run/php5-fpm-%deploy_project%.sock ]); then php cachetool.phar opcache:reset --fcgi=/var/run/php5-fpm-%deploy_project%.sock; else php cachetool.phar opcache:reset --fcgi=/tmp/.%deploy_project%-fpm.sock; fi ; fi"
+  - ssh %deploy_server% -p %deploy_port% "sleep 2"
+  - ssh %deploy_server% -p %deploy_port% "if ([ -S /var/run/php5-fpm-%deploy_project%.sock ]); then php cachetool.phar stat:clear --fcgi=/var/run/php5-fpm-%deploy_project%.sock; else php cachetool.phar stat:clear --fcgi=/tmp/.%deploy_project%-fpm.sock; fi"
+  - ssh %deploy_server% -p %deploy_port% "if ([ -S /var/run/php5-fpm-%deploy_project%.sock ]); then php cachetool.phar apc:cache:clear all --fcgi=/var/run/php5-fpm-%deploy_project%.sock; else php cachetool.phar apc:cache:clear all --fcgi=/tmp/.%deploy_project%-fpm.sock; fi"
+  - ssh %deploy_server% -p %deploy_port% "if [ \`php -r 'echo PHP_MINOR_VERSION;'\` > 4 ]; then if ([ -S /var/run/php5-fpm-%deploy_project%.sock ]); then php cachetool.phar opcache:reset --fcgi=/var/run/php5-fpm-%deploy_project%.sock; else php cachetool.phar opcache:reset --fcgi=/tmp/.%deploy_project%-fpm.sock; fi ; fi"
+  - "ssh %deploy_server% -p %deploy_port% 'sudo pkill -QUIT -f \"php-fpm: pool %deploy_project%\"'"

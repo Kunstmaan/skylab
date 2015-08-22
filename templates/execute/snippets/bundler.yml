@@ -1,0 +1,3 @@
+steps:
+  - if [ ! -f "Gemfile" ]; then echo "source 'https://rubygems.org'" > Gemfile; echo "gem 'sass', '~> 3.4.9'" >> Gemfile; fi
+  - bundle install --path ~/bundler

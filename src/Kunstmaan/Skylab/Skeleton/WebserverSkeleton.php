@@ -58,9 +58,6 @@ class WebserverSkeleton extends AbstractSkeleton
         } else {
             $serverAlias = $this->generateAliasLine($aliases, $this->app["config"]["webserver"]["engine"]);
             $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/05aliases", $serverAlias);
-            if ($this->skeletonProvider->hasSkeleton($project, $this->skeletonProvider->findSkeleton("ssl"))){
-                $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/65aliases", $serverAlias);
-            }
             if ($this->app["config"]["develmode"]) {
                 $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/06devmode", "SetEnv APP_ENV dev");
             } else {
@@ -324,7 +321,7 @@ class WebserverSkeleton extends AbstractSkeleton
      */
     function checkObviousErrors(\ArrayObject $project, SplFileInfo $config, $content){
         // project was not migrated because the 19php.conf file does not contain "proxy:unix:/var/run/php5-fpm"
-        if (strpos($config->getFilename(), "19php") !== FALSE && strpos($content, "proxy:unix:/var/run/php5-fpm") === FALSE){
+        if (!$this->app["config"]["develmode"] && strpos($config->getFilename(), "19php") !== FALSE && strpos($content, "proxy:unix:/var/run/php5-fpm") === FALSE){
             $this->dialogProvider->logWarning("The ".$project["name"]." project was not migrated yet, this will NOT work");
         }
     }

@@ -22,15 +22,6 @@ abstract class AbstractCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // handle everything that is not an actual exception
-        set_error_handler(function($errno, $errstr, $errfile, $errline, array $errcontext) {
-            // error was suppressed with the @-operator
-            if (0 === error_reporting()) {
-                return false;
-            }
-
-            throw new SkylabException($errstr, 0, $errno, $errfile, $errline, null, array());
-        }, E_ALL);
         /** @var \Cilex\Application $app */
         $app = $this->getContainer();
 
