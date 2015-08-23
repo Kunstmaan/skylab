@@ -3,6 +3,7 @@ namespace Kunstmaan\Skylab\Skeleton;
 
 use Kunstmaan\Skylab\Entity\PermissionDefinition;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Process\Process;
 
 /**
  * ApacheSkeleton
@@ -104,7 +105,7 @@ class SymfonySkeleton extends AbstractSkeleton
             $this->processProvider->executeSudoCommand("rm -f " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/current");
             $this->processProvider->executeSudoCommand("ln -sf " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/" . $project["name"] . "/ " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/current");
         }
-        $this->processProvider->executeSudoCommand('find '.$this->fileSystemProvider->getProjectDirectory($project["name"]).'/data/current -type d -name .git -exec cd {} \; -exec git config core.filemode false \;');
+        $this->processProvider->executeSudoCommand('find '.$this->fileSystemProvider->getProjectDirectory($project["name"]).'/data/current -type d -name .git -exec cd {} "\;" -exec git config core.filemode false "\;"');
     }
 
     /**
