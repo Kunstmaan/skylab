@@ -1,4 +1,23 @@
 
+1.0.7 / 2015-08-23
+==================
+
+  * Remove the debug class loader since it fails in phars on osx
+  * Split in two commands
+  * Fix find on OSX
+  * SH uses different comparison
+  * quoting
+  * Improve cache clear
+  * Better spork detection
+  * Add oro template
+  * force into bash
+  * More sh comparison fixes
+  * Fix sh comparison
+  * Fix sh errors
+  * Fix versioning
+  * Correct the command
+  * Do spork!
+
 1.0.6 / 2015-08-22
 ==================
 
