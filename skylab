@@ -6,8 +6,6 @@ require_once __DIR__.'/vendor/autoload.php';
 
 const BASE_DIR = __DIR__;
 
-\Symfony\Component\Debug\Debug::enable();
-
 $app = new \Cilex\Application('skylab', '0.0.0', array('console.class' => 'Kunstmaan\Skylab\Application', 'skylab.starttime' => $startTime));
 
 $app->register(new \Kunstmaan\Skylab\Provider\ProcessProvider());

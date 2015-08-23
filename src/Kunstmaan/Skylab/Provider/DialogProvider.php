@@ -255,7 +255,6 @@ class DialogProvider extends AbstractProvider
         }
 
         echo $ex->getTraceAsString();
-
         throw $ex;
     }
 

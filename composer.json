@@ -26,7 +26,6 @@
         "sgrodzicki/pingdom":       "dev-master",
         "stecman/symfony-console-completion": "~0.4.4",
         "raven/raven": "0.12.*",
-        "symfony/debug": "^2.7",
         "cleentfaar/slack": "dev-master"
     },
     "autoload": {
