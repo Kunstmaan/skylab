@@ -41,6 +41,7 @@ deploy:
     - ssh %deploy_server% -p %deploy_port% "sudo rm -Rf /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/app/attachment"
     - ssh %deploy_server% -p %deploy_port% "sudo mkdir -p /home/projects/%deploy_project%/data/shared/app/attachment"
     - ssh %deploy_server% -p %deploy_port% "sudo ln -nfs /home/projects/%deploy_project%/data/shared/app/attachment /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/app/attachment"
+    - ssh %deploy_server% -p %deploy_port% "/home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/app/console oro:platform:update --env=%deploy_symfony_env% --force --timeout=3600"
   - resource: snippets/cachewarmup.yml
   - resource: snippets/deploypermissions.yml
 
