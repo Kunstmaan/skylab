@@ -1,0 +1,23 @@
+
+build:
+  - resource: snippets/bundler.yml
+  - resource: snippets/npm.yml
+  - resource: snippets/bower.yml
+  - resource: snippets/gulpgrunt.yml
+
+after_build_success:
+  - resource: snippets/package-build.yml
+
+before_deploy:
+  - resource: snippets/transmit.yml
+
+deploy:
+  - resource: snippets/extract-tar.yml
+  - resource: snippets/setup-config.yml
+  - resource: snippets/deploypermissions.yml
+
+after_deploy_success:
+  - resource: snippets/clear-opcode-cache.yml
+  - resource: snippets/maintenance.yml
+  - resource: snippets/setup-cron.yml
+  - resource: snippets/cleanup.yml
