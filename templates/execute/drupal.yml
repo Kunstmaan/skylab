@@ -4,6 +4,9 @@ build:
   - resource: snippets/npm.yml
   - resource: snippets/bower.yml
   - resource: snippets/gulpgrunt.yml
+  - steps:
+      - sudo chmod a+rw sites/default
+      - sudo chmod a+rw sites/default/settings.php
 
 after_build_success:
   - resource: snippets/package-build.yml
@@ -14,6 +17,14 @@ before_deploy:
 deploy:
   - resource: snippets/extract-tar.yml
   - resource: snippets/setup-config.yml
+  - steps:
+      - drush -r /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag% vset maintenance_mode 1 -y
+      - drush -r /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag% cc all -y
+      - sudo rm -Rf /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/sites/default/files
+      - sudo mkdir -p /home/projects/%deploy_project%/data/shared/sites/default/files
+      - sudo touch /home/projects/%deploy_project%/data/shared/sites/default/settings.php
+      - sudo ln -nfs /home/projects/%deploy_project%/data/shared/sites/default/files /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/sites/default/files
+      - sudo ln -nfs /home/projects/%deploy_project%/data/shared/sites/default/settings.php /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/sites/default/settings.php
   - resource: snippets/deploypermissions.yml
 
 after_deploy_success:
