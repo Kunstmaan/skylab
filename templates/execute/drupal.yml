@@ -18,15 +18,18 @@ deploy:
   - resource: snippets/extract-tar.yml
   - resource: snippets/setup-config.yml
   - steps:
-      - drush -r /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag% vset maintenance_mode 1 -y
-      - drush -r /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag% cc all -y
-      - sudo rm -Rf /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/sites/default/files
-      - sudo mkdir -p /home/projects/%deploy_project%/data/shared/sites/default/files
-      - sudo touch /home/projects/%deploy_project%/data/shared/sites/default/settings.php
-      - sudo ln -nfs /home/projects/%deploy_project%/data/shared/sites/default/files /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/sites/default/files
-      - sudo ln -nfs /home/projects/%deploy_project%/data/shared/sites/default/settings.php /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/sites/default/settings.php
+      - ssh %deploy_server% -p %deploy_port% "drush -r /home/projects/%deploy_project%/data/current/ vset maintenance_mode 1 -y"
+      - ssh %deploy_server% -p %deploy_port% "drush -r /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag% cc all -y"
+      - ssh %deploy_server% -p %deploy_port% "sudo rm -Rf /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/sites/default/files"
+      - ssh %deploy_server% -p %deploy_port% "sudo mkdir -p /home/projects/%deploy_project%/data/shared/sites/default/files"
+      - ssh %deploy_server% -p %deploy_port% "sudo touch /home/projects/%deploy_project%/data/shared/sites/default/settings.php"
+      - ssh %deploy_server% -p %deploy_port% "sudo ln -nfs /home/projects/%deploy_project%/data/shared/sites/default/files" /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/sites/default/files"
+      - ssh %deploy_server% -p %deploy_port% "sudo ln -nfs /home/projects/%deploy_project%/data/shared/sites/default/settings".php /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/sites/default/settings.php"
   - resource: snippets/deploypermissions.yml
 
 after_deploy_success:
+  - resource: snippets/currentsymlink.yml
   - resource: snippets/clear-opcode-cache.yml
+  - steps:
+      - ssh %deploy_server% -p %deploy_port% "drush -r /home/projects/%deploy_project%/data/current/ vset maintenance_mode 0 -y"
   - resource: snippets/cleanup.yml
