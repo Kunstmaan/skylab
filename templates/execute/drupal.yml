@@ -18,6 +18,4 @@ deploy:
 
 after_deploy_success:
   - resource: snippets/clear-opcode-cache.yml
-  - resource: snippets/maintenance.yml
-  - resource: snippets/setup-cron.yml
   - resource: snippets/cleanup.yml
