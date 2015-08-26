@@ -49,9 +49,9 @@ deploy:
 
 after_deploy_success:
   - resource: snippets/currentsymlink.yml
+  - resource: snippets/maintenance.yml
   - resource: snippets/clear-opcode-cache.yml
   - steps:
     - ssh %deploy_server% -p %deploy_port% "if [ -d \"/home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/app/DoctrineMigrations\" ]; then sudo -u %deploy_project% /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/app/console doctrine:migrations:migrate --no-interaction --env=%deploy_symfony_env%; fi"
-  - resource: snippets/maintenance.yml
   - resource: snippets/setup-cron.yml
   - resource: snippets/cleanup.yml

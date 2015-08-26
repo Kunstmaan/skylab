@@ -28,11 +28,11 @@ deploy:
 
 after_deploy_success:
   - resource: snippets/currentsymlink.yml
+  - resource: snippets/maintenance.yml
   - steps:
       - ssh %deploy_server% -p %deploy_port% "sudo rm -Rf /home/projects/%deploy_project%/tomcat/default/webapps%deploy_app_path%"
       - ssh %deploy_server% -p %deploy_port% "sudo ln -sfT /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/ /home/projects/%deploy_project%/tomcat/default/webapps%deploy_app_path%"
       - ssh %deploy_server% -p %deploy_port% "sudo -u %deploy_project% killall -9 java || exit 0"
       - ssh %deploy_server% -p %deploy_port% "cd /home/projects/%deploy_project%/tomcat/default/bin && sudo -u %deploy_project% ./startup.sh"
-  - resource: snippets/maintenance.yml
   - resource: snippets/setup-cron.yml
   - resource: snippets/cleanup.yml
