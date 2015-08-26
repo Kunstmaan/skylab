@@ -146,18 +146,7 @@ EOT
             $this->slackApiClient = new ApiClient("fake key");
         }
 
-        $this->processProvider->executeCommand("git checkout master && git pull && git reset && git clean -d -f");
-
         $deployEnv = $this->input->getArgument('deploy-environment');
-
-        if (!file_exists($this->input->getArgument('file'))) {
-            $this->processProvider->executeCommand("git checkout develop && git pull && git reset && git clean -d -f");
-            if (!file_exists($this->input->getArgument('file'))) {
-                $this->notifySlack("Both master and develop are missing " . $this->input->getArgument('file'), "unknown", array(), "#CC0000", true);
-                $this->dialogProvider->logError("Both master and develop are missing " . $this->input->getArgument('file'), false);
-            }
-        }
-
         list($yaml, $resolverArray) = $this->parseYaml();
 
         if ($this->input->getOption('debug-yml')) {
@@ -170,28 +159,27 @@ EOT
             $this->dialogProvider->logError("You cannot run a deploy step without an environment", true);
         }
         if (isset($yaml["deploy_matrix"][$deployEnv])) {
-            $this->processProvider->executeCommand("git checkout ". $yaml["deploy_matrix"][$deployEnv]["branch"]." && git pull && git reset && git clean -d -f");
-
+            
             //build
-            $this->notifySlack("Building \"" . $yaml["deploy_matrix"][$deployEnv]["branch"] . "\"", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray);
+            $this->notifySlack("Building \"" . getenv("git_branch") . "\"", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray);
             $this->runStep("before_build", $yaml, $deployEnv);
             $this->runStep("build", $yaml, $deployEnv, "after_build_success");
-            $this->notifySlack("Built \"" . $yaml["deploy_matrix"][$deployEnv]["branch"] . "\"", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray, "#FFCC00", true);
+            $this->notifySlack("Built \"" . getenv("git_branch") . "\"", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray, "#FFCC00", true);
 
             // test
             if (!$this->input->getOption('skip-tests')) {
-                $this->notifySlack("Testing \"" . $yaml["deploy_matrix"][$deployEnv]["branch"] . "\"", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray, "#FFCC00", true);
+                $this->notifySlack("Testing \"" . getenv("git_branch") . "\"", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray, "#FFCC00", true);
                 $this->runStep("before_test", $yaml, $deployEnv);
                 $this->runStep("test", $yaml, $deployEnv, "after_test_success");
-                $this->notifySlack("Tested \"" . $yaml["deploy_matrix"][$deployEnv]["branch"] . "\"", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray, "#FFCC00", true);
+                $this->notifySlack("Tested \"" . getenv("git_branch") . "\"", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray, "#FFCC00", true);
             }
 
             // deploy
             if (!$this->input->getOption('skip-deploy')) {
-                $this->notifySlack("Deploying \"" . $yaml["deploy_matrix"][$deployEnv]["branch"] . "\"", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray, "#FFCC00", true);
+                $this->notifySlack("Deploying \"" . getenv("git_branch") . "\"", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray, "#FFCC00", true);
                 $this->runStep("before_deploy", $yaml, $deployEnv);
                 $this->runStep("deploy", $yaml, $deployEnv, "after_deploy_success");
-                $this->notifySlack("Deployed \"" . $yaml["deploy_matrix"][$deployEnv]["branch"] . "\"", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray, "#7CD197", true);
+                $this->notifySlack("Deployed \"" . getenv("git_branch") . "\"", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray, "#7CD197", true);
             } else {
                 $this->dialogProvider->logNotice("Deploy is skipped");
             }
@@ -347,7 +335,7 @@ EOT
         } else {
             $resolverArray[$prefix . "_port"] = 22;
         }
-        $resolverArray[$prefix . "_branch"] = $deploySettings["branch"];
+        $resolverArray[$prefix . "_branch"] = getenv("git_branch");
         $resolverArray[$prefix . "_project"] = $deploySettings["project"];
         if (isset($deploySettings["app_path"])) {
             $resolverArray[$prefix . "_app_path"] = $deploySettings["app_path"];
