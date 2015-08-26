@@ -117,7 +117,7 @@ EOT
         $attachment = new Attachment();
         $attachment->setColor($color);
         $attachment->setFallback("[#" . getenv("BUILD_NUMBER") . "] " . $message . " for " . $project . " in " . $env . " by @" . $user);
-        $attachment->setText("[#" . getenv("BUILD_NUMBER") . "] " . $message . " for \"" . $project . "\" in \"" . $env . "\" by <@" . $user . ">\n<" . getenv("BUILD_URL") . "/console|Jenkins Console>" . (isset($resolverArray["shared_package_target"]) && file_exists($resolverArray["shared_package_target"])?" - <" . $resolverArray["shared_package_url"] . "|Download>":""));
+        $attachment->setText("[".$project."/" . $env . "#" . getenv("BUILD_NUMBER") . "<@" . $user . ">] " . $message . "\n<" . getenv("BUILD_URL") . "/console|Jenkins Console> - <".getenv("BUILD_URL")."/changes|Changes>" . (isset($resolverArray["shared_package_target"]) && file_exists($resolverArray["shared_package_target"])?" - <" . $resolverArray["shared_package_url"] . "|Download>":""));
         $payload->addAttachment($attachment);
 
         $response = $this->slackApiClient->send($payload);
@@ -249,7 +249,7 @@ EOT
             $resolverArray["run_mysql"] = "no";
         }
         $resolverArray["mysql_root_password"] = $this->app["config"]["mysql"]["password"];
-        $resolverArray["buildtag"] = $deployEnv . "-" . $this->processProvider->executeCommand('git log --pretty=format:"%h" -1');
+        $resolverArray["buildtag"] = $deployEnv . "-" . $this->getRevision();
         $resolverArray["home"] = getenv("HOME");
         $resolverArray["job_name"] = getenv("JOB_NAME");
         $resolverArray["build_package_target"] = $resolverArray["home"] . "/builds/".$resolverArray["job_name"]."-".$resolverArray["buildtag"].".tar.gz";
@@ -361,5 +361,13 @@ EOT
         }
         $resolverArray[$prefix . "_timestamp"] = time();
         return $resolverArray;
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function getRevision()
+    {
+        return $this->processProvider->executeCommand('git log --pretty=format:"%h" -1');
     }
 }
