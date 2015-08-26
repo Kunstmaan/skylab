@@ -26,4 +26,6 @@ after_deploy_success:
   - steps:
       - ssh %deploy_server% -p %deploy_port% "drush -r /home/projects/%deploy_project%/data/current/ vset maintenance_mode 0 -y"
       - ssh %deploy_server% -p %deploy_port% "drush -r /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag% cc all -y"
+  - resource: snippets/maintenance.yml
+  - resource: snippets/setup-cron.yml
   - resource: snippets/cleanup.yml
