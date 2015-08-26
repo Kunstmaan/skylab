@@ -1,3 +1,2 @@
 steps:
-  - ssh %deploy_server% -p %deploy_port% "sudo sh -c \"if [ -f /opt/kDeploy/tools/fixcron.py ] ; then cd /opt/kDeploy/tools/; python fixcron.py %deploy_project%; fi\""
-  - ssh %deploy_server% -p %deploy_port% "sudo skylab cron %deploy_project%"
+  - ssh %deploy_server% -p %deploy_port% "sudo sh -c \"if [ -f /opt/kDeploy/tools/fixcron.py ] ; then cd /opt/kDeploy/tools/; python fixcron.py %deploy_project%; else sudo skylab cron %deploy_project%; fi\""
