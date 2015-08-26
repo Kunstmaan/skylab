@@ -117,7 +117,7 @@ EOT
         $attachment = new Attachment();
         $attachment->setColor($color);
         $attachment->setFallback("[#" . getenv("BUILD_NUMBER") . "] " . $message . " for " . $project . " in " . $env . " by @" . $user);
-        $attachment->setText("[".$project."/" . $env . "#" . getenv("BUILD_NUMBER") . "<@" . $user . ">] " . $message . "\n<" . getenv("BUILD_URL") . "/console|Jenkins Console> - <".getenv("BUILD_URL")."/changes|Changes>" . (isset($resolverArray["shared_package_target"]) && file_exists($resolverArray["shared_package_target"])?" - <" . $resolverArray["shared_package_url"] . "|Download>":""));
+        $attachment->setText("[".$project."|" . $env . "|#" . getenv("BUILD_NUMBER") . "|" . $user . "] " . $message . "\n<" . getenv("BUILD_URL") . "/console|Jenkins Console> - <".getenv("BUILD_URL")."/changes|Changes>" . (isset($resolverArray["shared_package_target"]) && file_exists($resolverArray["shared_package_target"])?" - <" . $resolverArray["shared_package_url"] . "|Download>":""));
         $payload->addAttachment($attachment);
 
         $response = $this->slackApiClient->send($payload);
