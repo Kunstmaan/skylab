@@ -36,7 +36,6 @@ class ExecuteCommand extends AbstractCommand
             ->setDescription('Executes a Skylab YAML file')
             ->addArgument('file', InputArgument::REQUIRED, 'The full path to the YAML file')
             ->addArgument('deploy-environment', InputArgument::OPTIONAL, 'The environment to deploy to')
-            ->addArgument('branch', InputArgument::OPTIONAL, 'The branch to deploy')
             ->addOption("--skip-tests", null, InputOption::VALUE_NONE, 'If set, the test steps will be skipped')
             ->addOption("--skip-deploy", null, InputOption::VALUE_NONE, 'If set, the deploy steps will be skipped')
             ->addOption("--debug-yml", null, InputOption::VALUE_NONE, 'If set, the resulting yml will be shown without executing it')
@@ -156,31 +155,33 @@ EOT
             exit(0);
         }
 
+        $branch = $this->getBranch();
+
         if (is_null($deployEnv)) {
             $this->dialogProvider->logError("You cannot run a deploy step without an environment", true);
         }
         if (isset($yaml["deploy_matrix"][$deployEnv])) {
             
             //build
-            $this->notifySlack("Building \"" . $this->input->getArgument('branch') . "\"", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray);
+            $this->notifySlack("Building \"" . $branch . "\"", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray);
             $this->runStep("before_build", $yaml, $deployEnv);
             $this->runStep("build", $yaml, $deployEnv, "after_build_success");
-            $this->notifySlack("Built \"" . $this->input->getArgument('branch') . "\"", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray, "#FFCC00", true);
+            $this->notifySlack("Built \"" . $branch . "\"", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray, "#FFCC00", true);
 
             // test
             if (!$this->input->getOption('skip-tests')) {
-                $this->notifySlack("Testing \"" . $this->input->getArgument('branch') . "\"", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray, "#FFCC00", true);
+                $this->notifySlack("Testing \"" . $branch . "\"", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray, "#FFCC00", true);
                 $this->runStep("before_test", $yaml, $deployEnv);
                 $this->runStep("test", $yaml, $deployEnv, "after_test_success");
-                $this->notifySlack("Tested \"" . $this->input->getArgument('branch') . "\"", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray, "#FFCC00", true);
+                $this->notifySlack("Tested \"" . $branch . "\"", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray, "#FFCC00", true);
             }
 
             // deploy
             if (!$this->input->getOption('skip-deploy')) {
-                $this->notifySlack("Deploying \"" . $this->input->getArgument('branch') . "\"", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray, "#FFCC00", true);
+                $this->notifySlack("Deploying \"" . $branch . "\"", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray, "#FFCC00", true);
                 $this->runStep("before_deploy", $yaml, $deployEnv);
                 $this->runStep("deploy", $yaml, $deployEnv, "after_deploy_success");
-                $this->notifySlack("Deployed \"" . $this->input->getArgument('branch') . "\"", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray, "#7CD197", true);
+                $this->notifySlack("Deployed \"" . $branch . "\"", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray, "#7CD197", true);
             } else {
                 $this->dialogProvider->logNotice("Deploy is skipped");
             }
@@ -336,7 +337,7 @@ EOT
         } else {
             $resolverArray[$prefix . "_port"] = 22;
         }
-        $resolverArray[$prefix . "_branch"] = $this->input->getArgument('branch');
+        $resolverArray[$prefix . "_branch"] = $this->getBranch();
         $resolverArray[$prefix . "_project"] = $deploySettings["project"];
         if (isset($deploySettings["app_path"])) {
             $resolverArray[$prefix . "_app_path"] = $deploySettings["app_path"];
@@ -358,5 +359,13 @@ EOT
     protected function getRevision()
     {
         return $this->processProvider->executeCommand('git log --pretty=format:"%h" -1');
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function getBranch()
+    {
+        return $this->processProvider->executeCommand('git rev-parse --abbrev-ref HEAD');
     }
 }
