@@ -1,4 +1,10 @@
 
+1.0.9 / 2015-08-27
+==================
+
+ * Merge pull request #85 from diskwriter/patch-1
+ * Fix syntax error
+
 1.0.8 / 2015-08-27
 ==================
 
