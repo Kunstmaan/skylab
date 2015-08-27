@@ -1,4 +1,41 @@
 
+1.0.8 / 2015-08-27
+==================
+
+ * Fix for no skylab
+ * Nicer precursor
+ * Cleaner notifications
+ * get the branch from git
+ * add branch
+ * Move to single branch building
+ * Tweak text a bit
+ * Change notifications
+ * Ordering
+ * Symlink test
+ * Fallback for kDeploy servers
+ * Quotes!
+ * Another quote
+ * Extra quote
+ * Safer
+ * Merge branch 'master' of https://github.com/Kunstmaan/skylab
+ * Tweak the mv command
+ * Merge pull request #83 from Devolicious/patch-1
+ * Fix permissions for oro update
+ * Merge pull request #81 from jockri/fix-https-proxypass
+ * added X-Forwarded-Proto header so Symfony knows it needs to generate https url's
+ * Refactor
+ * Fixes
+ * Tweaks
+ * Add shared folders and drush
+ * Check for a running php before clearing the cache
+ * Fix chmod errors for drupal deploys
+ * No skylab available
+ * Empty drupal template
+ * Don't skip the session table
+ * Add an extra ORO command on the server
+ * Fix find for darwin
+ * Use composer show -i
+
 1.0.7 / 2015-08-23
 ==================
 
