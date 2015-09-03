@@ -150,7 +150,7 @@ class PHPSkeleton extends AbstractSkeleton
      */
     public function dependsOn()
     {
-        return array("base", "apache");
+        return array("base", "apache", "pingdom");
     }
 
 }
