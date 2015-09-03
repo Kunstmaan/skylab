@@ -101,15 +101,6 @@ class SymfonySkeleton extends AbstractSkeleton
      */
     public function maintenance(\ArrayObject $project)
     {
-        if ($this->app["config"]["develmode"] || !file_exists($this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/current")) {
-            $this->processProvider->executeSudoCommand("rm -f " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/current");
-            $this->processProvider->executeSudoCommand("ln -sf " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/" . $project["name"] . "/ " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/current");
-        }
-        if (PHP_OS == "Darwin") {
-            $this->processProvider->executeSudoCommand('find ' . $this->fileSystemProvider->getProjectDirectory($project["name"]) . '/data/current -type d -name .git -exec cd {} "\;" -exec git config core.filemode false "\;"');
-        } else {
-            $this->processProvider->executeSudoCommand('find ' . $this->fileSystemProvider->getProjectDirectory($project["name"]) . '/data/current -type d -name .git -exec cd {} \; -exec git config core.filemode false \;');
-        }
     }
 
     /**
