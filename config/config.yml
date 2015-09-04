@@ -61,7 +61,7 @@ skeletons:
     logrotate:   false # Full functionality has been replaced by the Skylab chef cookbook
     nagios:      false # We no longer use Nagios to monitor our websites
     mon:         false # We no longer use Mon to monitor our websites
-    pingdom:     Kunstmaan\Skylab\Skeleton\PingdomSkeleton
+    pingdom:     false
     postgres:    Kunstmaan\Skylab\Skeleton\PostgreSQLSkeleton
     tomcat:      Kunstmaan\Skylab\Skeleton\TomcatSkeleton
     smartcms:    Kunstmaan\Skylab\Skeleton\JavaSkeleton
@@ -70,6 +70,7 @@ skeletons:
     solr:        false
     smlkerberos: false
     ssl:         Kunstmaan\Skylab\Skeleton\SslSkeleton
+    statuscake:  Kunstmaan\Skylab\Skeleton\StatusCakeSkeleton
 
 debug: true
 develmode: true

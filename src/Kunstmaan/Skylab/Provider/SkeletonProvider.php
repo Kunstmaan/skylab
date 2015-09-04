@@ -65,7 +65,9 @@ class SkeletonProvider extends AbstractProvider
             $dependencies->add($theSkeleton->getName(), $skeletonDeps);
             foreach ($skeletonDeps as $skeletonDependencyName) {
                 $aSkeleton = $this->findSkeleton($skeletonDependencyName);
-                $this->resolveDependencies($aSkeleton, $dependencies);
+                if ($aSkeleton) {
+                    $this->resolveDependencies($aSkeleton, $dependencies);
+                }
             }
         }
     }
