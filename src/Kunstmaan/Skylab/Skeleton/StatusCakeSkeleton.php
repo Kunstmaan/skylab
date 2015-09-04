@@ -55,7 +55,7 @@ class StatusCakeSkeleton extends AbstractSkeleton
                 $this->createTest($project);
             }
         } else {
-            $this->dialogProvider->logQuery("Statuscake is disabled", (isset($this->app["config"]["statuscake"])?$this->app["config"]["statuscake"]:null));
+            $this->dialogProvider->logConfig("Statuscake is disabled");
         }
     }
 
@@ -136,7 +136,7 @@ class StatusCakeSkeleton extends AbstractSkeleton
 
         $response = curl_exec($ch);
         $response = json_decode($response, true);
-        $this->dialogProvider->logConfig("Sent a " . $method . " call to " . "https://www.statuscake.com/API/" . $url . " and got a response " . ($method == "GET"?"with " . sizeof($response) . " checks":$response["Message"]));
+        $this->dialogProvider->logConfig("Sent a " . $method . " call to " . "https://www.statuscake.com/API/" . $url . " and got a response: " . ($method == "GET"?"with " . sizeof($response) . " checks":$response["Message"]));
         return $response;
     }
 
