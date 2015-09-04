@@ -99,7 +99,7 @@ class StatusCakeSkeleton extends AbstractSkeleton
         $data = array();
         if (!is_null($project)) {
             $data = array(
-                "WebsiteName" => $project["name"],
+                "WebsiteName" => $project["name"] . "." . str_replace(".kunstmaan.com", "", $this->app["config"]["webserver"]["hostmachine"]),
                 "Paused" => 0,
                 "WebsiteURL" => "http://" . $project["name"] . "." . $this->app["config"]["webserver"]["hostmachine"],
                 "CheckRate" => "300",
