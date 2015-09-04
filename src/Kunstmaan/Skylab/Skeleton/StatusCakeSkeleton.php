@@ -47,7 +47,7 @@ class StatusCakeSkeleton extends AbstractSkeleton
      */
     public function maintenance(\ArrayObject $project)
     {
-        if (isset($this->app["config"]["statuscake"]["enable"]) && $this->app["config"]["statuscake"]["enable"]){
+        if (isset($this->app["config"]["statuscake"]["enabled"]) && $this->app["config"]["statuscake"]["enabled"]){
             $id = $this->getTestId($project["name"]);
             if ($id) {
                 $this->updateTest($id, $project);
@@ -174,9 +174,11 @@ class StatusCakeSkeleton extends AbstractSkeleton
      */
     public function postRemove(\ArrayObject $project)
     {
-        if (isset($this->app["config"]["statuscake"]["enable"]) && $this->app["config"]["statuscake"]["enable"]) {
+        if (isset($this->app["config"]["statuscake"]["enabled"]) && $this->app["config"]["statuscake"]["enabled"]) {
             $id = $this->getTestId($project["name"]);
             $this->deleteTest($id);
+        } else {
+            $this->dialogProvider->logQuery("Statuscake is disabled", (isset($this->app["config"]["statuscake"])?$this->app["config"]["statuscake"]:$this->app["config"]));
         }
     }
 
