@@ -48,7 +48,7 @@ class StatusCakeSkeleton extends AbstractSkeleton
     public function maintenance(\ArrayObject $project)
     {
         if (isset($this->app["config"]["statuscake"]["enabled"]) && $this->app["config"]["statuscake"]["enabled"]){
-            $id = $this->getTestId($project["name"]);
+            $id = $this->getTestId($project);
             if ($id) {
                 $this->updateTest($id, $project);
             } else {
@@ -59,13 +59,16 @@ class StatusCakeSkeleton extends AbstractSkeleton
         }
     }
 
-    private function getTestId($name)
-    {
+    private function getCheckName(\ArrayObject $project){
+        return $project["name"] . "." . str_replace(".kunstmaan.com", "", $this->app["config"]["webserver"]["hostmachine"]);
+    }
 
+    private function getTestId(\ArrayObject $project)
+    {
         $tests = $this->performAPICall("Tests/", "GET");
         $found = false;
-        array_walk($tests, function ($item, $key) use (&$found, $name) {
-            if ($item["WebsiteName"] == $name) {
+        array_walk($tests, function ($item, $key) use (&$found, $project) {
+            if ($item["WebsiteName"] == $this->getCheckName($project)) {
                 $found = $item["TestID"];
             }
         });
@@ -99,7 +102,7 @@ class StatusCakeSkeleton extends AbstractSkeleton
         $data = array();
         if (!is_null($project)) {
             $data = array(
-                "WebsiteName" => $project["name"] . "." . str_replace(".kunstmaan.com", "", $this->app["config"]["webserver"]["hostmachine"]),
+                "WebsiteName" => $this->getCheckName($project),
                 "Paused" => 0,
                 "WebsiteURL" => "http://" . $project["name"] . "." . $this->app["config"]["webserver"]["hostmachine"],
                 "CheckRate" => "300",
