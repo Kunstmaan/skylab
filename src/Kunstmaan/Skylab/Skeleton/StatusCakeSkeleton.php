@@ -55,7 +55,7 @@ class StatusCakeSkeleton extends AbstractSkeleton
                 $this->createTest($project);
             }
         } else {
-            $this->dialogProvider->logQuery("Statuscake is disabled", (isset($this->app["config"]["statuscake"])?$this->app["config"]["statuscake"]:$this->app["config"]));
+            $this->dialogProvider->logQuery("Statuscake is disabled", (isset($this->app["config"]["statuscake"])?$this->app["config"]["statuscake"]:null));
         }
     }
 
