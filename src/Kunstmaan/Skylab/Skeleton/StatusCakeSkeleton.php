@@ -104,7 +104,7 @@ class StatusCakeSkeleton extends AbstractSkeleton
             $data = array(
                 "WebsiteName" => $this->getCheckName($project),
                 "Paused" => 0,
-                "WebsiteURL" => "http://" . $project["name"] . "." . $this->app["config"]["webserver"]["hostmachine"],
+                "WebsiteURL" => ($this->skeletonProvider->hasSkeleton($project, $this->skeletonProvider->findSkeleton("ssl"))?"https://":"http://") . $project["url"],
                 "CheckRate" => "300",
                 "TestType" => "HTTP",
                 "WebsiteHost" => $this->app["config"]["webserver"]["hostmachine"],
