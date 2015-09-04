@@ -168,7 +168,7 @@ class MonitoringSkeleton extends AbstractSkeleton
     public function postRemove(\ArrayObject $project)
     {
         if (isset($this->app["config"]["monitoring"]["enabled"]) && $this->app["config"]["monitoring"]["enabled"]){
-            $id = $this->getTestId($project["name"]);
+            $id = $this->getTestId($project);
             $this->deleteTest($id);
         } else {
             $this->dialogProvider->logConfig("Monitoring is disabled");
