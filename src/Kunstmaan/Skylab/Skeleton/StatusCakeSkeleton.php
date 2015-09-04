@@ -136,7 +136,7 @@ class StatusCakeSkeleton extends AbstractSkeleton
 
         $response = curl_exec($ch);
         $response = json_decode($response, true);
-        $this->dialogProvider->logConfig("Sent a " . $method . " call to " . "https://www.statuscake.com/API/" . $url . " and got a response ", print_r($response, true));
+        $this->dialogProvider->logConfig("Sent a " . $method . " call to " . "https://www.statuscake.com/API/" . $url . " and got a response " . print_r($response, true));
         return $response;
     }
 
