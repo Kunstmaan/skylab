@@ -70,7 +70,8 @@ skeletons:
     solr:        false
     smlkerberos: false
     ssl:         Kunstmaan\Skylab\Skeleton\SslSkeleton
-    statuscake:  Kunstmaan\Skylab\Skeleton\StatusCakeSkeleton
+    statuscake:  false
+    monitoring:  Kunstmaan\Skylab\Skeleton\MonitoringSkeleton
 
 debug: true
 develmode: true

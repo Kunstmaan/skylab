@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "04a8bda9f3206ffecd06f95813f9c809",
+    "hash": "e07f2c14a920501df0d4afe3295122f2",
     "packages": [
         {
             "name": "cilex/cilex",
@@ -123,6 +123,45 @@
                 "silex"
             ],
             "time": "2012-12-19 10:50:58"
+        },
+        {
+            "name": "ckdarby/php-uptimerobot",
+            "version": "v0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ckdarby/PHP-UptimeRobot.git",
+                "reference": "9838aa04fd7ba317b9f8f95d9473ae46f064294a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ckdarby/PHP-UptimeRobot/zipball/9838aa04fd7ba317b9f8f95d9473ae46f064294a",
+                "reference": "9838aa04fd7ba317b9f8f95d9473ae46f064294a",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "UptimeRobot": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Cory Kennedy-Darby",
+                    "email": "ckdarby+uptimerobotapi@gmail.com",
+                    "homepage": "https://github.com/ckdarby/"
+                }
+            ],
+            "description": "PHP Wrapper for UptimeRobot.com API",
+            "homepage": "https://github.com/ckdarby/PHP-UptimeRobot/",
+            "time": "2014-10-25 00:06:52"
         },
         {
             "name": "cleentfaar/slack",
