@@ -101,7 +101,7 @@ class StatusCakeSkeleton extends AbstractSkeleton
             $data = array(
                 "WebsiteName" => $project["name"],
                 "Paused" => 0,
-                "WebsiteURL" => $project['url'],
+                "WebsiteURL" => "http://" . $project["name"] . "." . $this->app["config"]["webserver"]["hostmachine"],
                 "CheckRate" => "300",
                 "TestType" => "HTTP",
                 "WebsiteHost" => $this->app["config"]["webserver"]["hostmachine"],
@@ -136,7 +136,7 @@ class StatusCakeSkeleton extends AbstractSkeleton
 
         $response = curl_exec($ch);
         $response = json_decode($response, true);
-        $this->dialogProvider->logConfig("Sent a " . $method . " call to " . "https://www.statuscake.com/API/" . $url . " and got a response " . ($method == "GET"?" with " . sizeof($response) . " checks":$response["Message"]));
+        $this->dialogProvider->logConfig("Sent a " . $method . " call to " . "https://www.statuscake.com/API/" . $url . " and got a response " . ($method == "GET"?"with " . sizeof($response) . " checks":$response["Message"]));
         return $response;
     }
 
