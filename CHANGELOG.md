@@ -1,4 +1,23 @@
 
+1.0.10 / 2015-09-04
+==================
+
+  * Fixke
+  * Use the server url
+  * Tweak logging
+  * Improve logging
+  * Correct logging
+  * Fix the enabled key
+  * More debugging
+  * Move to statuscake
+  * Always depend on pingdom
+  * Merge branch 'master' of https://github.com/Kunstmaan/skylab
+  * Move "current" and filemode to the webserver skeleton
+  * Merge pull request #86 from kimausloos/master
+  * Text fixes
+  * Set the build home
+  * Run oro update from the project directory
+
 1.0.9 / 2015-08-27
 ==================
 
