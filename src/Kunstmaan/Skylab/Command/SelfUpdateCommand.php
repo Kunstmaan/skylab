@@ -55,6 +55,10 @@ EOT
         }
         $data = json_decode($json, true);
 
+        if ($data == null){
+            $this->dialogProvider->logError("Unable to fetch the Github releases", false);
+        }
+
         usort($data, function ($a, $b) {
             return version_compare($a["tag_name"], $b["tag_name"]) * -1;
         });
