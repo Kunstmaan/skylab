@@ -307,7 +307,11 @@ class WebserverSkeleton extends AbstractSkeleton
             if ($config->getExtension() == "dist" ){
                 $realPathArray = explode("\n", file_get_contents($config->getRealPath()));
                 $realPath = $realPathArray[0];
-                $content = $this->fileSystemProvider->renderString(file_get_contents(BASE_DIR . "/templates" . $realPath), array());
+                $path = BASE_DIR . "/templates" . $realPath;
+                if (!file_exists($path)){
+                    $this->dialogProvider->logError("There is Apache config in a .dist file, or you mistyped the template path, check " . $config);
+                }
+                $content = $this->fileSystemProvider->renderString(file_get_contents($path), array());
             } else {
                 $realPath = $config->getRealPath();
                 $content = file_get_contents($realPath);
