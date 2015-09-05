@@ -97,14 +97,21 @@ class MySQLSkeleton extends AbstractSkeleton
             $this->processProvider->executeSudoCommand('rm -f ' . $backupDir . '/mysql.dmp.previous.gz');
             $this->processProvider->executeSudoCommand('mv ' . $backupDir . '/mysql.dmp.gz ' . $backupDir . '/mysql.dmp.previous.gz');
         }
-        $this->processProvider->executeSudoCommand("echo 'SET autocommit=0;' > " . $backupDir . "/mysql.dmp");
-        $this->processProvider->executeSudoCommand("echo 'SET unique_checks=0;' >> " . $backupDir . "/mysql.dmp");
-        $this->processProvider->executeSudoCommand("echo 'SET foreign_key_checks=0;' >> " . $backupDir . "/mysql.dmp");
-        $this->processProvider->executeSudoCommand("mysqldump --skip-opt --add-drop-table --add-locks --create-options --disable-keys --single-transaction --skip-extended-insert --quick --set-charset -u " . $project["mysqluser"] . " -p" . $project["mysqlpass"] . " " . $project["mysqldbname"] . " >> " . $backupDir . "/mysql.dmp");
-        $this->processProvider->executeSudoCommand("echo 'COMMIT;' >> " . $backupDir . "/mysql.dmp");
-        $this->processProvider->executeSudoCommand("echo 'SET autocommit=1;' >> " . $backupDir . "/mysql.dmp");
-        $this->processProvider->executeSudoCommand("echo 'SET unique_checks=1;' >> " . $backupDir . "/mysql.dmp");
-        $this->processProvider->executeSudoCommand("echo 'SET foreign_key_checks=1;' >> " . $backupDir . "/mysql.dmp");
+        $this->processProvider->executeSudoCommand("touch " . $backupDir . "/mysql.dmp");
+        $this->processProvider->executeSudoCommand('chmod -R 755 ' . $backupDir . "/mysql.dmp");
+        $this->fileSystemProvider->writeProtectedFile($backupDir . "/mysql.dmp", "SET autocommit=0;\n", true);
+        $this->fileSystemProvider->writeProtectedFile($backupDir . "/mysql.dmp", "SET unique_checks=0;\n", true);
+        $this->fileSystemProvider->writeProtectedFile($backupDir . "/mysql.dmp", "SET foreign_key_checks=0;\n", true);
+
+        $tmpfname = tempnam(sys_get_temp_dir(), "skylab");
+        $this->processProvider->executeSudoCommand("mysqldump --skip-opt --add-drop-table --add-locks --create-options --disable-keys --single-transaction --skip-extended-insert --quick --set-charset -u " . $project["mysqluser"] . " -p" . $project["mysqlpass"] . " " . $project["mysqldbname"] . " >> " . $tmpfname);
+        $this->processProvider->executeSudoCommand("cat " . $tmpfname . " | sudo tee -a " . $backupDir . "/mysql.dmp");
+        $this->processProvider->executeSudoCommand("rm -f " . $tmpfname);
+
+        $this->fileSystemProvider->writeProtectedFile($backupDir . "/mysql.dmp", "COMMIT;\n", true);
+        $this->fileSystemProvider->writeProtectedFile($backupDir . "/mysql.dmp", "SET autocommit=1;\n", true);
+        $this->fileSystemProvider->writeProtectedFile($backupDir . "/mysql.dmp", "SET unique_checks=1;\n", true);
+        $this->fileSystemProvider->writeProtectedFile($backupDir . "/mysql.dmp", "SET foreign_key_checks=1;\n", true);
         $this->processProvider->executeSudoCommand("gzip " . $backupDir . "/mysql.dmp -f");
     }
 

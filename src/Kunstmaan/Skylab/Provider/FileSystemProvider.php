@@ -235,11 +235,12 @@ class FileSystemProvider extends AbstractProvider
      * @param $path
      * @param $content
      */
-    public function writeProtectedFile($path, $content)
+    public function writeProtectedFile($path, $content, $append=false)
     {
         $tmpfname = tempnam(sys_get_temp_dir(), "skylab");
         file_put_contents($tmpfname, $content);
-        $this->processProvider->executeSudoCommand("cat " . $tmpfname . " | sudo tee " . $path);
+        $this->processProvider->executeSudoCommand("cat " . $tmpfname . " | sudo tee " . ($append?"-a ":"") . $path);
+        $this->processProvider->executeSudoCommand("rm -f " . $tmpfname);
     }
 
     /**
