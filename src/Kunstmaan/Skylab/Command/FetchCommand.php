@@ -72,6 +72,7 @@ EOT
             ".ssh",
             ".bash_history",
             ".config",
+            ".cache",
             ".mysql_history",
             "data/current/app/logs/*",
             "data/current/app/cache/*"
