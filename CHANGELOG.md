@@ -1,4 +1,21 @@
 
+1.0.11 / 2015-09-05
+==================
+
+  * Don't cache to prevent permission errors
+  * Fix backups
+  * Show an error message if you messed up your configuration files
+  * Don't throw an error when Github is unresponsive
+  * Exclude .cache, fixes https://app.getsentry.com/smarties/skylab/group/80027759/
+  * Fix
+  * Use Pro features
+  * Add a monitoring skeleton
+  * Increase check speed
+  * Use the main domainname and use SSL when needed
+  * Fix error in remove
+  * Factor out the check name
+  * Fix error
+
 1.0.10 / 2015-09-04
 ==================
 
