@@ -144,7 +144,7 @@ class SymfonySkeleton extends AbstractSkeleton
      */
     public function dependsOn()
     {
-        return array("base", "php5", "mysql");
+        return array("base", "php5", "mysql", "anacron");
     }
 
 }
