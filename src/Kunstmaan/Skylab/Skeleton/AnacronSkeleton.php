@@ -71,9 +71,8 @@ class AnacronSkeleton extends AbstractSkeleton
                 $this->processProvider->executeSudoCommand("cat " . $projectAnacrontab . " >> " . $crontab);
                 $this->processProvider->executeSudoCommand('echo >> ' . $crontab);
             }
-            $this->processProvider->executeSudoCommand('echo >> ' . $crontab);
             if (sizeof($cronjobs) > 0){
-                $this->processProvider->executeSudoCommand('echo "' . '0 3 * * * ' . $cronjobscript . '" >> ' . $crontab);
+                $this->processProvider->executeSudoCommand("echo '0 3 * * * " . $cronjobscript . "' >> ' . $crontab);
             }
             $this->processProvider->executeSudoCommand('echo >> ' . $crontab);
             // load the anacrontab file
