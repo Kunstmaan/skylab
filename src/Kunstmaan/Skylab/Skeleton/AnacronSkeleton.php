@@ -69,13 +69,13 @@ class AnacronSkeleton extends AbstractSkeleton
             $this->processProvider->executeSudoCommand('echo "MAILTO=cron@kunstmaan.be" >> ' . $crontab);
             if (file_exists($projectAnacrontab)) {
                 $this->processProvider->executeSudoCommand("cat " . $projectAnacrontab . " >> " . $crontab);
-                $this->processProvider->executeSudoCommand('printf "\n" >> ' . $crontab);
+                $this->processProvider->executeSudoCommand('echo "\n" >> ' . $crontab);
             }
-            $this->processProvider->executeSudoCommand('printf "\n" >> ' . $crontab);
+            $this->processProvider->executeSudoCommand('echo "\n" >> ' . $crontab);
             if (sizeof($cronjobs) > 0){
                 $this->processProvider->executeSudoCommand('echo "' . '0 3 * * * ' . $cronjobscript . '" >> ' . $crontab);
             }
-            $this->processProvider->executeSudoCommand('printf "\n" >> ' . $crontab);
+            $this->processProvider->executeSudoCommand('echo "\n" >> ' . $crontab);
             // load the anacrontab file
             $this->processProvider->executeSudoCommand("crontab -u " . $project["name"] . " " . $crontab);
         }
