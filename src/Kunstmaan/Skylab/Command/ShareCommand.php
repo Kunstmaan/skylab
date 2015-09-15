@@ -29,6 +29,10 @@ EOT
      */
     protected function doExecute()
     {
+        if(!$this->app["config"]["develmode"]) {
+           $this->dialogProvider->logWarning('develmode=false, You do not have xip.io urls when your develmode is set to false');
+           return;
+        }
         $rows = array();
         $ip = $this->getIP();
         $projects = $this->fileSystemProvider->getProjects();
@@ -43,7 +47,7 @@ EOT
         $os = strtolower(PHP_OS);
         switch ($os) {
             case 'linux': //Linux
-                preg_match_all('/inet addr: ?([^ ]+)/', `ifconfig`, $ips);
+                preg_match_all('/inet addr: ?([^ ]+)/', `ifconfig |grep "inet " |grep -v "127.0.0.1"`, $ips);
                 break;
             case 'darwin': //OSX
                 preg_match_all('/inet ?([^ ]+)/', `ifconfig -au |grep "inet " |grep -v "127.0.0.1"`, $ips);
