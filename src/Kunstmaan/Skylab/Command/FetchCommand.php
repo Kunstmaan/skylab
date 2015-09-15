@@ -98,6 +98,10 @@ EOT
                 $mvCommand = "mv " . $this->fileSystemProvider->getProjectDirectory($projectname) . "/data/current " . $this->fileSystemProvider->getProjectDirectory($projectname) . "/data/" . $projectname;
                 $this->processProvider->executeCommand($mvCommand);
             }
+            if (file_exists($this->fileSystemProvider->getProjectDirectory($projectname) . "/data/" . $projectname)) {
+                $this->dialogProvider->logStep("Getting git repo data and resetting to the master branch");
+                $this->processProvider->executeCommand("cd ".$this->fileSystemProvider->getProjectDirectory($projectname) . "/data/" . $projectname. "; git pull 2>/dev/null ; git reset --hard; git clean -f -d; git checkout master");
+            }
         } else {
             $this->dialogProvider->logStep("Running the update rsync commands since " . $projectname . " already is on this computer");
             $updateExcludes = $excludes;
@@ -123,6 +127,11 @@ EOT
                 "/home/projects/" . $projectname . "/data/current/sites/default/files/*",
                 $updateExcludes
             );
+            if (file_exists($this->fileSystemProvider->getProjectDirectory($projectname) . "/data/" . $projectname) && $this->processProvider->executeCommand("cd ".$this->fileSystemProvider->getProjectDirectory($projectname) . "/data/" . $projectname. "; git status", true)===false) {
+                if($this->dialogProvider->askConfirmation("It looks like your source repo is broken, can I reset this to master? [Y,n]")){
+                    $this->processProvider->executeCommand("cd ".$this->fileSystemProvider->getProjectDirectory($projectname) . "/data/" . $projectname. "; git pull 2>/dev/null ; git reset --hard; git clean -f -d; git checkout master");
+                }
+            }
         }
         if (file_exists($this->fileSystemProvider->getProjectDirectory($projectname) . "/data/" . $projectname . '/.skylab/conf') && is_link($this->fileSystemProvider->getProjectDirectory($projectname) . '/conf')) {
         	$this->processProvider->executeSudoCommand("ln -sf " . $this->fileSystemProvider->getProjectDirectory($projectname) . "/data/" . $projectname . '/.skylab/conf ' . $this->fileSystemProvider->getProjectDirectory($projectname).'/conf');
