@@ -2,6 +2,28 @@
     ServerName no_website_configured_at_this_address
     ServerAdmin {{ admin }}
     DocumentRoot /opt/nowebsite/
+    RewriteEngine on
+    Redirect 404 /
+    ErrorDocument 404 "Page Not Found"
+    <Directory /opt/nowebsite >
+        Options None
+        Order allow,deny
+        Allow from all
+    </Directory>
+    LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" %A \"%{Host}i\" \"%q\"  " nositelog
+    ErrorLog /dev/null
+    CustomLog /var/log/nowebsite.log nositelog
+</VirtualHost>
+<VirtualHost *:443>
+    ServerName no_website_configured_at_this_address
+    ServerAdmin support@kunstmaan.be
+    DocumentRoot /opt/nowebsite/
+    RewriteEngine on
+    Redirect 404 /
+    ErrorDocument 404 "Page Not Found"
+    SSLEngine on
+    SSLCertificateFile    /etc/ssl/certs/ssl-cert-snakeoil.pem
+    SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
     <Directory /opt/nowebsite >
         Options None
         Order allow,deny
