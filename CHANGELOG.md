@@ -1,4 +1,13 @@
 
+1.0.15 / 2015-09-18
+==================
+
+  * Only set first vhost for ssl if ssl is enabled
+  * Block unknown ssl hosts
+  * replace the "<path to>" entries in the anacrontab with the correct projectfolder
+  * fixing git repo after fetching a new project
+  * fix share command for linux, and show warning when develmode is false and xipio will not work
+
 1.0.14 / 2015-09-14
 ==================
 
