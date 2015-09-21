@@ -68,7 +68,20 @@ class AnacronSkeleton extends AbstractSkeleton
             $projectAnacrontab = $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/current/app/config/anacrontab";
             $this->processProvider->executeSudoCommand('echo "MAILTO=cron@kunstmaan.be" >> ' . $crontab);
             if (file_exists($projectAnacrontab)) {
-                $this->processProvider->executeSudoCommand("cat " . $projectAnacrontab . " | sed -r 's/\/<path to>/".str_replace('/', '\/',$this->fileSystemProvider->getProjectDirectory($project["name"])) ."\/data\/current/g' >> " . $crontab);
+                $os = strtolower(PHP_OS);
+                switch ($os) {
+                    case 'linux': //Linux
+                        $sed = 'sed -r';
+                        break;
+                    case 'darwin': //OSX
+                        $sed = 'sed -E';
+                        break;
+                    default:
+                        throw new \Exception("Unsupported OS: " . $os);
+                        break;
+                }
+
+                $this->processProvider->executeSudoCommand("cat " . $projectAnacrontab . " | " . $sed . " 's/\/<path to>/".str_replace('/', '\/',$this->fileSystemProvider->getProjectDirectory($project["name"])) ."\/data\/current/g' >> " . $crontab);
                 $this->processProvider->executeSudoCommand('echo >> ' . $crontab);
             }
             if (sizeof($cronjobs) > 0){
