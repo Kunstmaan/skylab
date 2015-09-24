@@ -99,8 +99,8 @@ EOT
                 $this->processProvider->executeCommand($mvCommand);
             }
             if (file_exists($this->fileSystemProvider->getProjectDirectory($projectname) . "/data/" . $projectname)) {
-                $this->dialogProvider->logStep("Getting git repo data and resetting to the master branch");
-                $this->processProvider->executeCommand("cd ".$this->fileSystemProvider->getProjectDirectory($projectname) . "/data/" . $projectname. "; git pull 2>/dev/null; git branch master origin/master; git reset --hard; git clean -f -d; git checkout master");
+                $this->dialogProvider->logStep("Getting git repo data and try resetting to the master branch");
+                $this->processProvider->executeCommand("cd ".$this->fileSystemProvider->getProjectDirectory($projectname) . "/data/" . $projectname. "; git pull 2>/dev/null; git fetch origin && git branch master origin/master && git reset --hard && git clean -f -d && git checkout master");
             }
         } else {
             $this->dialogProvider->logStep("Running the update rsync commands since " . $projectname . " already is on this computer");
@@ -128,8 +128,8 @@ EOT
                 $updateExcludes
             );
             if (file_exists($this->fileSystemProvider->getProjectDirectory($projectname) . "/data/" . $projectname) && $this->processProvider->executeCommand("cd ".$this->fileSystemProvider->getProjectDirectory($projectname) . "/data/" . $projectname. "; git status", true)===false) {
-                if($this->dialogProvider->askConfirmation("It looks like your source repo is broken, can I reset this to master? [Y,n]")){
-                    $this->processProvider->executeCommand("cd ".$this->fileSystemProvider->getProjectDirectory($projectname) . "/data/" . $projectname. "; git pull 2>/dev/null; git branch master origin/master; git reset --hard; git clean -f -d; git checkout master");
+                if($this->dialogProvider->askConfirmation("It looks like your source repo is broken, can I try reset this to master? [Y,n]")){
+                    $this->processProvider->executeCommand("cd ".$this->fileSystemProvider->getProjectDirectory($projectname) . "/data/" . $projectname. "; git pull 2>/dev/null; git fetch origin && git branch master origin/master && git reset --hard && git clean -f -d && git checkout master");
                 }
             }
         }
