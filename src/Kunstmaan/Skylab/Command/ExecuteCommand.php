@@ -229,7 +229,7 @@ EOT
             $resolverArray["fetch_mysql"] = "no";
         }
         $parametersFile = dirname(dirname($this->input->getArgument('file'))) . "/app/config/parameters.yml";
-        if (file_exists($parametersFile)) {
+        if (file_exists($parametersFile) && strpos(file_get_contents($parametersFile), 'database_host') !== false) {
             $parametersYaml = $this->loadYaml($parametersFile);
             $resolverArray = array_merge($parametersYaml["parameters"], $resolverArray);
             $resolverArray["run_mysql"] = "yes";
