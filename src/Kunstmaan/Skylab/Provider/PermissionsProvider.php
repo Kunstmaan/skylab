@@ -64,7 +64,11 @@ class PermissionsProvider extends AbstractProvider
                 $maxid = $this->processProvider->executeSudoCommand("dscl . list /Users UniqueID | awk '{print $2}' | sort -ug | tail -1");
                 $maxid = $maxid + 1;
                 $this->processProvider->executeSudoCommand('dscl . create /Users/' . $userName);
-                $this->processProvider->executeSudoCommand('dscl . create /Users/' . $userName . ' UserShell /bin/bash');
+                if (file_exists("/usr/local/bin/bash")){
+                    $this->processProvider->executeSudoCommand('dscl . create /Users/' . $userName . ' UserShell /usr/local/bin/bash');
+                } else {
+                    $this->processProvider->executeSudoCommand('dscl . create /Users/' . $userName . ' UserShell /bin/bash');
+                }
                 $this->processProvider->executeSudoCommand('dscl . create /Users/' . $userName . ' NFSHomeDirectory ' . $this->app["config"]["projects"]["path"] . "/" . $userName);
                 $this->processProvider->executeSudoCommand('dscl . create /Users/' . $userName . ' PrimaryGroupID 20');
                 $this->processProvider->executeSudoCommand('dscl . create /Users/' . $userName . ' UniqueID ' . $maxid);
