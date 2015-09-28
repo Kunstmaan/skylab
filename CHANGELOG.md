@@ -1,4 +1,24 @@
 
+1.0.16 / 2015-09-28
+==================
+
+  * Use custom bash if installed
+  * ionice does not exist on OSX
+  * Fix for specific projects
+  * Fix for large projects
+  * only change web/app.php file if it exists
+  * only change asset version in config.yml if the file exists
+  * don't run mysql if the parameters file does not contain database info
+  * fix fetch fixer
+  * Merge branch 'master' of github.com:Kunstmaan/skylab
+  * fix fetch fixer
+  * Merge pull request #89 from Kunstmaan/fix/cantdeploywithoutpostgresuser
+  * check if postgres user exists
+  * Fix the git repo fixer
+  * Fix the git repo fixer
+  * Merge pull request #87 from piotrbelina/master
+  * Fixed OS X sed option
+
 1.0.15 / 2015-09-18
 ==================
 
