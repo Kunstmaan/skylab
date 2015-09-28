@@ -78,7 +78,7 @@ class ProcessProvider extends AbstractProvider
 
         $env = array_replace($_ENV, $_SERVER, $env);
         $process = new Process($command, null, $env);
-        $process->setTimeout(14400);
+        $process->setTimeout(14400*100);
         $process->run($callback);
         if (!$silent) {
             $this->dialogProvider->logCommandTime($startTime);
