@@ -20,6 +20,7 @@ build:
   - resource: snippets/gulpgrunt.yml
   - resource: snippets/assets.yml
   - resource: snippets/appdotphpfix.yml
+  - resource: snippets/cron.yml
 
 after_build_success:
   - resource: snippets/package-build.yml
