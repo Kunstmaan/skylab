@@ -1,4 +1,14 @@
 
+1.0.18 / 2015-10-02
+==================
+
+  * Add monitoring calls
+  * Fix typo
+  * Make sure the symfony cron tasks run with the correct environment
+  * only symlink to web/uploads if the destination folder exists
+  * only symlink to web/uploads if the destination folder exists
+  * The check if postgres driver is available was wrong, it's pgsql instead of postgresql
+
 1.0.17 / 2015-09-28
 ==================
 
