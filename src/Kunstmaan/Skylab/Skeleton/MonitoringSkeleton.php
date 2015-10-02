@@ -104,7 +104,7 @@ class MonitoringSkeleton extends AbstractSkeleton
                 "monitorFriendlyName" => $this->getCheckName($project),
                 "monitorURL" => ($this->skeletonProvider->hasSkeleton($project, $this->skeletonProvider->findSkeleton("ssl"))?"https://":"http://") . $project["url"],
                 "monitorType" => 1,
-                "monitorAlertContacts" => "2351398_5_30-0254691_5_30",
+                "monitorAlertContacts" => "2351398_5_60-0254691_5_60-2356728_5_60-2356781_5_60",
                 "monitorInterval" => 1
             );
         }
