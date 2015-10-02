@@ -1,0 +1,2 @@
+steps:
+  - if [ -f "app/config/anacrontab" ]; then sed -i -E "s/--env=[a-z]+/--env=%deploy_symfony_env%/" app/config/anacrontab; fi

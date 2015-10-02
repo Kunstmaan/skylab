@@ -143,7 +143,7 @@ EOT
                 $dbh = new \PDO('mysql:host=localhost;', $this->app["config"]["mysql"]["user"], $this->app["config"]["mysql"]["password"]);
                 $dbh->query("DROP DATABASE IF EXISTS " . $projectname);
             }
-            if (in_array("postgresql", \PDO::getAvailableDrivers(), TRUE)) {
+            if (in_array("pgsql", \PDO::getAvailableDrivers(), TRUE)) {
                 $this->dialogProvider->logTask("Dropping the PostgreSQL database");
                 $dbh = new \PDO(
                     $this->dialogProvider->logQuery(
