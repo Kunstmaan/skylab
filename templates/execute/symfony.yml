@@ -2,6 +2,7 @@
 before_build:
   - steps:
     - mkdir -p app/cache
+    - rm -rf app/cache/*
     - if [ "yes" = "%fetch_mysql%" ] && [ "yes" = "%run_mysql%" ]; then ssh-keyscan -p %dbsource_port% %dbsource_server% >> %home%/.ssh/known_hosts; fi
     - if [ "yes" = "%fetch_mysql%" ] && [ "yes" = "%run_mysql%" ]; then scp -P %dbsource_port% "%dbsource_server%:/home/projects/%dbsource_project%/backup/mysql.dmp.gz" app/cache/mysql.dmp.gz; fi
     - if [ "yes" = "%run_mysql%" ]; then echo "DROP DATABASE IF EXISTS %database_name%" | mysql -u "root" -p%mysql_root_password% | true; fi
