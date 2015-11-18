@@ -243,7 +243,7 @@ EOT
         $resolverArray["build_package_target"] = $resolverArray["home"] . "/builds/".$resolverArray["job_name"]."-".$resolverArray["buildtag"].".tar.gz";
         $resolverArray["shared_package_folder"] = "/home/projects/build/data/shared/web/uploads/";
         $resolverArray["shared_package_target"] = "/home/projects/build/data/shared/web/uploads/".$resolverArray["job_name"]."-".$resolverArray["deploy_timestamp"] . "-" . $resolverArray["buildtag"].".tar.gz";
-        $resolverArray["shared_package_url"] = "http://build.kunstmaan.be/uploads/".$resolverArray["job_name"]."-".$resolverArray["buildtag"].".tar.gz";
+        $resolverArray["shared_package_url"] = "http://build.kunstmaan.be/uploads/".$resolverArray["job_name"]."-".$resolverArray["deploy_timestamp"] . "-" . $resolverArray["buildtag"].".tar.gz";
         return $resolverArray;
     }
 
