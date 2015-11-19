@@ -65,6 +65,7 @@ class AnacronSkeleton extends AbstractSkeleton
                 $this->processProvider->executeSudoCommand("cat " . $cronjob->getRealPath() . " >> " . $cronjobscript);
                 $this->processProvider->executeSudoCommand("echo -n '\n' >> " . $cronjobscript);
             }
+            $this->processProvider->executeSudoCommand("chmod +x ".$cronjobscript);
             $projectAnacrontab = $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/current/app/config/anacrontab";
             $this->processProvider->executeSudoCommand('echo "MAILTO=cron@kunstmaan.be" >> ' . $crontab);
             if (file_exists($projectAnacrontab)) {
