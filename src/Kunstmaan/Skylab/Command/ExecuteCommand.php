@@ -116,8 +116,8 @@ EOT
 
         $attachment = new Attachment();
         $attachment->setColor($color);
-        $attachment->setFallback("[".$project."#" . getenv("BUILD_NUMBER")." to ". $env . "] " . $message);
-        $attachment->setText("[".$project."#" . getenv("BUILD_NUMBER")." to ". $env . "] " . $message . "\n<" . getenv("BUILD_URL") . "/console|Jenkins Console> - <".getenv("BUILD_URL")."/changes|Changes>" . (isset($resolverArray["shared_package_target"]) && file_exists($resolverArray["shared_package_target"])?" - <" . $resolverArray["shared_package_url"] . "|Download>":""));
+        $attachment->setFallback("[".$project."#" . getenv("BUILD_NUMBER"). " - " . $this->getBranch() . " to ". $env . "] " . $message);
+        $attachment->setText("[".$project."#" . getenv("BUILD_NUMBER"). " - " . $this->getBranch() . " to ". $env . "] " . $message . "\n<" . getenv("BUILD_URL") . "/console|Jenkins Console> - <".getenv("BUILD_URL")."/changes|Changes>" . (isset($resolverArray["shared_package_target"]) && file_exists($resolverArray["shared_package_target"])?" - <" . $resolverArray["shared_package_url"] . "|Download>":""));
         $payload->addAttachment($attachment);
 
         $response = $this->slackApiClient->send($payload);
