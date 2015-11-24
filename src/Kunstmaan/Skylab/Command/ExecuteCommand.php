@@ -236,6 +236,7 @@ EOT
         } else {
             $resolverArray["run_mysql"] = "no";
         }
+        $resolverArray["webserver_engine"] = $this->app["config"]["webserver"]["engine"];
         $resolverArray["mysql_root_password"] = $this->app["config"]["mysql"]["password"];
         $resolverArray["buildtag"] = $deployEnv . "-" . $this->getRevision();
         $resolverArray["home"] = getenv("HOME");
