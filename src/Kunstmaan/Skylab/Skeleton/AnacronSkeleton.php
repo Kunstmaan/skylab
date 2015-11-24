@@ -61,6 +61,7 @@ class AnacronSkeleton extends AbstractSkeleton
         // generate anacronjobs file
         if (!$this->app["config"]["develmode"]) {
             $cronjobs = $this->fileSystemProvider->getDotDFiles($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/fcron.d/");
+            $this->processProvider->executeSudoCommand("echo -n -e '\n' >> " . $cronjobscript);
             foreach ($cronjobs as $cronjob) {
                 $this->processProvider->executeSudoCommand("cat " . $cronjob->getRealPath() . " >> " . $cronjobscript);
                 $this->processProvider->executeSudoCommand("echo -n -e '\n' >> " . $cronjobscript);
