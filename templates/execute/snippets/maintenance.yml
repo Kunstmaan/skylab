@@ -1,3 +1,4 @@
 steps:
   - ssh %deploy_server% -p %deploy_port% "sudo skylab maintenance --quick || sudo python /opt/kDeploy/tools/maintenance.py --quick"
-  - ssh %deploy_server% -p %deploy_port% "sudo service apache2 reload"
+  - if [ "apache" = "%webserver_engine%" ]; then ssh %deploy_server% -p %deploy_port% "sudo service apache2 reload"; fi
+  - if [ "nginx" = "%webserver_engine%" ]; then ssh %deploy_server% -p %deploy_port% "sudo service nginx reload"; fi
