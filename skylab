@@ -33,6 +33,7 @@ $app->command(new \Kunstmaan\Skylab\Command\ShareCommand());
 $app->command(new \Kunstmaan\Skylab\Command\NameserverCheckCommand());
 $app->command(new \Kunstmaan\Skylab\Command\DnsCheckCommand());
 $app->command(new \Kunstmaan\Skylab\Command\FixCronCommand());
+$app->command(new \Kunstmaan\Skylab\Command\WebserverCommand());
 
 if (isset($app["config"]["slack_api_key"])) {
     $app->command(new \Kunstmaan\Skylab\Command\ExecuteCommand());
