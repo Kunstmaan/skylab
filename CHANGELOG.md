@@ -1,4 +1,23 @@
 
+1.0.19 / 2015-11-24
+==================
+
+  * Add 'webserver' command to perform webserver operations with abstraction of the webserver engine
+  * Merge remote-tracking branch 'upstream/master'
+  * Fix: check if apache2 or nginx is installed before reloading webserver configuration (2)
+  * Revert "Fix: check if apache2 or nginx is installed before reloading webserver configuration"
+  * Fix: check if apache2 or nginx is installed before reloading webserver configuration
+  * Merge pull request #101 from benoitgeerinck/master
+  * change branch retrieval when execute is launched
+  * Merge pull request #100 from benoitgeerinck/master
+  * remove double slash in slack URL
+  * add branch name in slack notification
+  * enable interpretation of backslash escapes
+  * add execution permissions on anacronjobs file
+  * add timestamp to shared_package_url
+  * Merge pull request #97 from jockri/fix-cache-issue
+  * Fix cache issue that occurs after you upgrade several composer packages and deploy again
+
 1.0.18 / 2015-10-02
 ==================
 
