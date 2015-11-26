@@ -1,4 +1,9 @@
 
+1.0.21 / 2015-11-26
+==================
+
+  * Fix: anacron files not created correctly when no anacronjobs are defined
+
 1.0.20 / 2015-11-24
 ==================
 
