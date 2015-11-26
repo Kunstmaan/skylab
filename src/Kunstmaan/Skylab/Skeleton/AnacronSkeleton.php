@@ -53,22 +53,35 @@ class AnacronSkeleton extends AbstractSkeleton
 
         $cronjobscript = $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/anacronjobs";
         $crontab = $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/anacrontab";
+
         // cleanup
         $this->processProvider->executeSudoCommand("rm -f " . $cronjobscript);
         $this->processProvider->executeSudoCommand("rm -f " . $crontab);
-
         $this->processProvider->executeSudoCommand("crontab -r -u " . $project["name"], true);
+
         // generate anacronjobs file
         if (!$this->app["config"]["develmode"]) {
+
+            // anacrontab
+            $this->processProvider->executeSudoCommand('touch ' . $crontab);
+            $this->processProvider->executeSudoCommand('chmod a+w ' . $crontab);
+            $this->processProvider->executeSudoCommand('echo "MAILTO=cron@kunstmaan.be" >> ' . $crontab);
+
+            // anacronjobs
             $cronjobs = $this->fileSystemProvider->getDotDFiles($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/fcron.d/");
             $this->processProvider->executeSudoCommand("echo -n -e '\n' >> " . $cronjobscript);
             foreach ($cronjobs as $cronjob) {
                 $this->processProvider->executeSudoCommand("cat " . $cronjob->getRealPath() . " >> " . $cronjobscript);
                 $this->processProvider->executeSudoCommand("echo -n -e '\n' >> " . $cronjobscript);
             }
-            $this->processProvider->executeSudoCommand("chmod +x ".$cronjobscript);
+
+            if (sizeof($cronjobs) > 0){
+                $this->processProvider->executeSudoCommand("chmod +x ".$cronjobscript);
+                $this->processProvider->executeSudoCommand("set -f;echo '0 3 * * * " . $cronjobscript . "' >> " . $crontab . ';set -f');
+            }
+
+            // project anacronjobs
             $projectAnacrontab = $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/current/app/config/anacrontab";
-            $this->processProvider->executeSudoCommand('echo "MAILTO=cron@kunstmaan.be" >> ' . $crontab);
             if (file_exists($projectAnacrontab)) {
                 $os = strtolower(PHP_OS);
                 switch ($os) {
@@ -86,12 +99,11 @@ class AnacronSkeleton extends AbstractSkeleton
                 $this->processProvider->executeSudoCommand("cat " . $projectAnacrontab . " | " . $sed . " 's/\/<path to>/".str_replace('/', '\/',$this->fileSystemProvider->getProjectDirectory($project["name"])) ."\/data\/current/g' >> " . $crontab);
                 $this->processProvider->executeSudoCommand('echo >> ' . $crontab);
             }
-            if (sizeof($cronjobs) > 0){
-                $this->processProvider->executeSudoCommand("set -f;echo '0 3 * * * " . $cronjobscript . "' >> " . $crontab . ';set -f');
-            }
             $this->processProvider->executeSudoCommand('echo >> ' . $crontab);
+
             // load the anacrontab file
             $this->processProvider->executeSudoCommand("crontab -u " . $project["name"] . " " . $crontab);
+
         }
     }
 
