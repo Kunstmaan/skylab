@@ -1,4 +1,9 @@
 
+1.0.22 / 2015-11-27
+==================
+
+  * Fix: no permissions to create anacronjobs file
+
 1.0.21 / 2015-11-26
 ==================
 
