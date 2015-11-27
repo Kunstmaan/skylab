@@ -1,4 +1,10 @@
 
+1.0.21 / 2015-11-27
+==================
+
+  * Merge pull request #107 from benoitgeerinck/master
+  * Fix: anacron files not created correctly when no anacronjobs are defined
+
 1.0.20 / 2015-11-24
 ==================
 
