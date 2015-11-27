@@ -16,7 +16,7 @@ class ShareCommand extends AbstractCommand
             ->setName('share')
             ->setDescription('Get a full table of all your projects with the xip.io url')
             ->setHelp(<<<EOT
-The <info>share</info> command show a table of all your locally installed projects together with the xip.io url.
+The <info>share</info> command shows a table of all your locally installed projects together with the xip.io url.
 
 <info>php skylab.phar share</info>                         # Will show the xip.io table
 

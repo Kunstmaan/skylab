@@ -6,10 +6,10 @@ require_once __DIR__.'/vendor/autoload.php';
 # Skylab
 
 Skylab is a 100% backwards compatible PHP port of the Python based hosting scripts used at Kunstmaan. By using the Cilex,
-Symfony Components and lot's of good code samples from the Composer project we hope to create an application where
+Symfony Components and lots of good code samples from the Composer project we hope to create an application that
 everyone in our organisation can work with, and if issues or new needed features should arise, be able to work on.
 
-Kunstmaan wouldn't be Kunstmaan is we didn't open-source this, so here it is. [MIT licensed](./LICENSE).
+Kunstmaan wouldn't be Kunstmaan if we didn't open-source this, so here it is. [MIT licensed](./LICENSE).
 
 ## Installation
 
