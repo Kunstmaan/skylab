@@ -2,9 +2,6 @@
     ServerName no_website_configured_at_this_address
     ServerAdmin {{ admin }}
     DocumentRoot /opt/nowebsite/
-    RewriteEngine on
-    Redirect 404 /
-    ErrorDocument 404 "Page Not Found"
     <Directory /opt/nowebsite >
         Options None
         Order allow,deny
