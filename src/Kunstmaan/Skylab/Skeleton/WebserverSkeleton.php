@@ -34,7 +34,7 @@ class WebserverSkeleton extends AbstractSkeleton
      */
     public function preMaintenance()
     {
-        if ($this->app["config"]["webserver"]["engine"] == 'nginx') {
+        if ($this->isWebserverNginx()) {
             $this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["nginx"]["sitesavailable"] . "/*");
             $this->processProvider->executeSudoCommand("rm -Rf " . $this->app["config"]["nginx"]["sitesenabled"] . "/*");
         } else {
@@ -56,6 +56,7 @@ class WebserverSkeleton extends AbstractSkeleton
                 $this->processProvider->executeSudoCommand("ln -sf " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/" . $project["name"] . "/ " . $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/current");
             }
         }
+
         if (PHP_OS == "Darwin") {
             $this->processProvider->executeSudoCommand('find ' . $this->fileSystemProvider->getProjectDirectory($project["name"]) . '/data/current -type d -name .git -exec cd {} "\;" -exec git config core.filemode false "\;"');
         } else {
@@ -65,21 +66,10 @@ class WebserverSkeleton extends AbstractSkeleton
         $this->dialogProvider->logConfig("Updating aliases webserver config file");
         $this->generateBasicAliases($project, $aliases);
 
-        if ($this->app["config"]["webserver"]["engine"] == 'nginx') {
+        if ($this->isWebserverNginx()) {
             $this->maintenanceNginx($project, $aliases);
         } else {
-            $serverAlias = $this->generateAliasLine($aliases, $this->app["config"]["webserver"]["engine"]);
-            $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/05aliases", $serverAlias);
-            if ($this->app["config"]["develmode"]) {
-                $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/06devmode", "SetEnv APP_ENV dev");
-            } else {
-                $this->processProvider->executeSudoCommand("rm -f " . $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/06devmode");
-            }
-            $configcontent = $this->processConfigFiles($project, $this->fileSystemProvider->getProjectApacheConfigs($project));
-            if ($this->app["config"]["develmode"]) {
-                $configcontent = str_replace("-Indexes", "+Indexes", $configcontent);
-            }
-            $this->fileSystemProvider->writeProtectedFile($this->app["config"]["apache"]["sitesavailable"] . "/" . $project["name"] . ".conf", $configcontent);
+            $this->maintenanceApache($project, $aliases);
         }
     }
 
@@ -88,8 +78,8 @@ class WebserverSkeleton extends AbstractSkeleton
      */
     public function postMaintenance()
     {
-        $this->writeHostFile();
-        if ($this->app["config"]["webserver"]["engine"] == 'nginx') {
+        $this->writeToHostFile();
+        if ($this->isWebserverNginx()) {
             $finder = new Finder();
             $finder->files()->in($this->app["config"]["nginx"]["sitesavailable"])->name("*.conf");
             /** @var SplFileInfo $config */
@@ -97,7 +87,7 @@ class WebserverSkeleton extends AbstractSkeleton
                 $this->processProvider->executeSudoCommand("ln -sf " . $this->app["config"]["nginx"]["sitesavailable"] . "/" . $config->getFilename() . " " . $this->app["config"]["nginx"]["sitesenabled"] . "/" . $config->getFilename());
             }
         } else {
-            $this->writeFirsthost();
+            $this->writeToFirstHostFile();
             $finder = new Finder();
             $finder->files()->in($this->app["config"]["apache"]["sitesavailable"])->name("*.conf");
             /** @var SplFileInfo $config */
@@ -107,14 +97,21 @@ class WebserverSkeleton extends AbstractSkeleton
         }
     }
 
-    private function writeHostFile()
+    private function writeToFirstHostFile()
+    {
+        $this->fileSystemProvider->render("/apache/000firsthost.conf.twig", $this->app["config"]["apache"]["sitesavailable"] . "/000firsthost.conf", array(
+            'admin' => $this->app["config"]["apache"]["admin"]
+        ));
+    }
+
+    private function writeToHostFile()
     {
         $hostlines = array();
         $dialogProvider = $this->dialogProvider;
         $this->fileSystemProvider->projectsLoop(function ($project) use (&$hostlines, $dialogProvider) {
             $hostlines[] = $this->app["config"]["webserver"]["localip"] . " " . $project["name"] . "." . $this->app["config"]["webserver"]["hostmachine"] . " www." . $project["name"] . "." . $this->app["config"]["webserver"]["hostmachine"] . "\n";
         });
-        $this->dialogProvider->logTask("Updating the /etc/hosts file");
+        $this->dialogProvider->logTask("Updating the /etc/hosts file (add lines)");
         $hostsfile = file("/etc/hosts");
         $resultLines = array();
         $foundSection = false;
@@ -145,21 +142,32 @@ class WebserverSkeleton extends AbstractSkeleton
     }
 
     /**
+     * @param \ArrayObject $project
+     */
+    private function removeFromHostFile(\ArrayObject $project)
+    {
+
+        $hostlines[] = $this->app["config"]["webserver"]["localip"] . " " . $project["name"] . "." . $this->app["config"]["webserver"]["hostmachine"] . " www." . $project["name"] . "." . $this->app["config"]["webserver"]["hostmachine"] . "\n";
+
+        $this->dialogProvider->logTask("Updating the /etc/hosts file (remove lines)");
+        $hostsfile = file("/etc/hosts");
+        $resultLines = array();
+
+        foreach ($hostsfile as $line) {
+            if (!in_array($line, $hostlines)) {
+                $resultLines[] = $line;
+            }
+        }
+
+        $this->fileSystemProvider->writeProtectedFile("/etc/hosts", implode("", $resultLines));
+    }
+
+    /**
      * @return string
      */
     public function getName()
     {
         return self::NAME;
-    }
-
-    /**
-     *
-     */
-    private function writeFirsthost()
-    {
-        $this->fileSystemProvider->render("/apache/000firsthost.conf.twig", $this->app["config"]["apache"]["sitesavailable"] . "/000firsthost.conf", array(
-            'admin' => $this->app["config"]["apache"]["admin"]
-        ));
     }
 
     /**
@@ -196,6 +204,28 @@ class WebserverSkeleton extends AbstractSkeleton
      */
     public function postRemove(\ArrayObject $project)
     {
+        $this->removeFromHostFile($project);
+
+        if ($this->isWebserverNginx()) {
+            $this->processProvider->executeSudoCommand("rm -f ".$this->app["config"]["nginx"]["sitesenabled"] . "/" . $project["name"] . ".conf");
+            $this->processProvider->executeSudoCommand("rm -f ".$this->app["config"]["nginx"]["sitesavailable"] . "/" . $project["name"] . ".conf");
+        }
+        else{
+            $this->processProvider->executeSudoCommand("rm -f ".$this->app["config"]["apache"]["sitesenabled"] . "/" . $project["name"] . ".conf");
+            $this->processProvider->executeSudoCommand("rm -f ".$this->app["config"]["apache"]["sitesavailable"] . "/" . $project["name"] . ".conf");
+        }
+
+        if (PHP_OS == "Darwin") {
+            $this->processProvider->executeSudoCommand("apachectl -k restart");
+        }
+        else{
+            if ($this->isWebserverNginx()) {
+                $this->processProvider->executeSudoCommand("service nginx reload");
+            } else {
+                $this->processProvider->executeSudoCommand("service apache2 reload");
+            }
+        }
+
     }
 
     /**
@@ -374,5 +404,32 @@ class WebserverSkeleton extends AbstractSkeleton
         $this->fileSystemProvider->writeProtectedFile($this->app["config"]["nginx"]["sitesavailable"] . "/" . $project["name"] . ".conf", $configcontent);
     }
 
+    /**
+     * @param \ArrayObject $project
+     * @param $aliases
+     */
+    private function maintenanceApache(\ArrayObject $project, $aliases)
+    {
+        $serverAlias = $this->generateAliasLine($aliases, $this->app["config"]["webserver"]["engine"]);
+        $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/05aliases", $serverAlias);
+        if ($this->app["config"]["develmode"]) {
+            $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/06devmode", "SetEnv APP_ENV dev");
+        } else {
+            $this->processProvider->executeSudoCommand("rm -f " . $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/06devmode");
+        }
+        $configcontent = $this->processConfigFiles($project, $this->fileSystemProvider->getProjectApacheConfigs($project));
+        if ($this->app["config"]["develmode"]) {
+            $configcontent = str_replace("-Indexes", "+Indexes", $configcontent);
+        }
+        $this->fileSystemProvider->writeProtectedFile($this->app["config"]["apache"]["sitesavailable"] . "/" . $project["name"] . ".conf", $configcontent);
+    }
+
+    /**
+     * @return bool
+     */
+    private function isWebserverNginx()
+    {
+        return $this->app["config"]["webserver"]["engine"] == 'nginx';
+    }
 
 }

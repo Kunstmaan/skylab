@@ -134,6 +134,7 @@ class PHPSkeleton extends AbstractSkeleton
      */
     public function preRemove(\ArrayObject $project)
     {
+        $this->processProvider->executeSudoCommand("rm -f /etc/php5/fpm/pool.d/".$project["name"].".conf");
     }
 
     /**

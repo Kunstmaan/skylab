@@ -37,10 +37,15 @@ EOT
         if($action === 'reload')
         {
 
-            if ($this->app["config"]["webserver"]["engine"] == 'nginx') {
-                $this->processProvider->executeSudoCommand("service nginx reload");
-            } else {
-                $this->processProvider->executeSudoCommand("service apache2 reload");
+            if (PHP_OS == "Darwin") {
+                $this->processProvider->executeSudoCommand("apachectl -k restart");
+            }
+            else{
+                if ($this->app["config"]["webserver"]["engine"] == 'nginx') {
+                    $this->processProvider->executeSudoCommand("service nginx reload");
+                } else {
+                    $this->processProvider->executeSudoCommand("service apache2 reload");
+                }
             }
 
         }
