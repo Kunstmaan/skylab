@@ -144,13 +144,18 @@ EOT
         $this->projectConfigProvider->writeProjectConfig($project);
 
         if (!$this->input->getOption('no-database')) {
+
             $this->dialogProvider->logStep("Dropping the databases");
-            if (in_array("mysql", \PDO::getAvailableDrivers(), TRUE)) {
+
+            if( in_array('mysql', $this->skeletonProvider->getSkeletons() ) )
+            {
                 $this->dialogProvider->logTask("Dropping the MySQL database");
                 $dbh = new \PDO('mysql:host=localhost;', $this->app["config"]["mysql"]["user"], $this->app["config"]["mysql"]["password"]);
                 $dbh->query("DROP DATABASE IF EXISTS " . $projectname);
             }
-            if (in_array("pgsql", \PDO::getAvailableDrivers(), TRUE)) {
+
+            if( in_array('postgres', $this->skeletonProvider->getSkeletons() ) )
+            {
                 $this->dialogProvider->logTask("Dropping the PostgreSQL database");
                 $dbh = new \PDO(
                     $this->dialogProvider->logQuery(
@@ -165,6 +170,7 @@ EOT
                 );
                 $dbh->query("DROP DATABASE IF EXISTS " . $projectname);
             }
+
         }
     }
 

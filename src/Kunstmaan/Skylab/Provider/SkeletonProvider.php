@@ -91,13 +91,25 @@ class SkeletonProvider extends AbstractProvider
     }
 
     /**
-     *
+     * @return void
      */
     public function listSkeletons()
     {
         foreach (array_keys($this->app["config"]["skeletons"]) as $name) {
             $this->dialogProvider->logTask($name);
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function getSkeletons()
+    {
+        foreach (array_keys($this->app["config"]["skeletons"]) as $name) {
+            $skeletons[] = $name;
+        }
+
+        return $skeletons;
     }
 
     /**
