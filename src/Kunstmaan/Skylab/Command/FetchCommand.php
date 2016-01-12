@@ -134,9 +134,15 @@ EOT
                 }
             }
         }
+
         if (file_exists($this->fileSystemProvider->getProjectDirectory($projectname) . "/data/" . $projectname . '/.skylab/conf') && is_link($this->fileSystemProvider->getProjectDirectory($projectname) . '/conf')) {
         	$this->processProvider->executeSudoCommand("ln -sf " . $this->fileSystemProvider->getProjectDirectory($projectname) . "/data/" . $projectname . '/.skylab/conf ' . $this->fileSystemProvider->getProjectDirectory($projectname).'/conf');
         }
+        
+        $project = $this->projectConfigProvider->loadProjectConfig($projectname);
+        $project['dir'] = $this->app["config"]["projects"]["path"] . $projectname;
+        $this->projectConfigProvider->writeProjectConfig($project);
+
         if (!$this->input->getOption('no-database')) {
             $this->dialogProvider->logStep("Dropping the databases");
             if (in_array("mysql", \PDO::getAvailableDrivers(), TRUE)) {
