@@ -94,13 +94,14 @@ EOT
                 $fullExcludes,
                 true
             );
+
             if ($type !== self::TYPE_JAVA) {
                 $mvCommand = "mv " . $this->fileSystemProvider->getProjectDirectory($projectname) . "/data/current " . $this->fileSystemProvider->getProjectDirectory($projectname) . "/data/" . $projectname;
                 $this->processProvider->executeCommand($mvCommand);
             }
             if (file_exists($this->fileSystemProvider->getProjectDirectory($projectname) . "/data/" . $projectname)) {
                 $this->dialogProvider->logStep("Getting git repo data and try resetting to the master branch");
-                $this->processProvider->executeCommand("cd ".$this->fileSystemProvider->getProjectDirectory($projectname) . "/data/" . $projectname. "; git pull 2>/dev/null; git fetch origin && git branch master origin/master && git reset --hard && git clean -f -d && git checkout master", true);
+                $this->processProvider->executeCommand("cd ".$this->fileSystemProvider->getProjectDirectory($projectname) . "/data/" . $projectname. "; git pull 2>/dev/null; git fetch origin && git reset --hard && git clean -f -d && git checkout master", true);
             }
         } else {
             $this->dialogProvider->logStep("Running the update rsync commands since " . $projectname . " already is on this computer");
