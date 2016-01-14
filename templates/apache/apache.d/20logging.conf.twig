@@ -1,4 +1,4 @@
-ErrorLog @project.dir@/apachelogs/error.log
+ErrorLog @config.projectsdir@@project.name@/apachelogs/error.log
 
 LogFormat "%v:%p %h %l %u %t \"%r\" %>s \"%{Referer}i\" \"%{User-Agent}i\" SSL-TERMINATED:%{X-SSL-TERMINATED}i" skylab_combined
-CustomLog @project.dir@/apachelogs/access.log skylab_combined
+CustomLog @config.projectsdir@@project.name@/apachelogs/access.log skylab_combined
