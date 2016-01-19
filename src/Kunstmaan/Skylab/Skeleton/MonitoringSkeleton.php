@@ -106,8 +106,8 @@ class MonitoringSkeleton extends AbstractSkeleton
                 $monitorPath = $project['monuri'];
             }
 
-            if (isset($project['monitor_path'])) {
-                $monitorPath = $project['monitor_path'];
+            if (isset($project['monitoring_path'])) {
+                $monitorPath = $project['monitoring_path'];
             }
 
             $monitorUrl = ($this->skeletonProvider->hasSkeleton($project, $this->skeletonProvider->findSkeleton("ssl"))?"https://":"http://") . $project["url"] . $monitorPath;
