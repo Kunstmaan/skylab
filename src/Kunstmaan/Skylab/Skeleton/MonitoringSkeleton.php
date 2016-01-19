@@ -100,9 +100,26 @@ class MonitoringSkeleton extends AbstractSkeleton
     {
         $data = array();
         if (!is_null($project)) {
+
+            $monitorPath = '';
+            if (isset($project['monuri'])) { //for backwards compatibility only
+                $monitorPath = $project['monuri'];
+            }
+
+            if (isset($project['monitor_path'])) {
+                $monitorPath = $project['monitor_path'];
+            }
+
+            $monitorUrl = ($this->skeletonProvider->hasSkeleton($project, $this->skeletonProvider->findSkeleton("ssl"))?"https://":"http://") . $project["url"] . $monitorPath;
+            if (filter_var($monitorUrl, FILTER_VALIDATE_URL, array('flags' => array(FILTER_FLAG_SCHEME_REQUIRED, FILTER_FLAG_HOST_REQUIRED))) === false) {
+                //fallback to basic url
+                $this->dialogProvider->logWarning("The ".$project["name"]." monitoring url is not valid: " . $monitorUrl);
+                $monitorUrl = ($this->skeletonProvider->hasSkeleton($project, $this->skeletonProvider->findSkeleton("ssl"))?"https://":"http://") . $project["url"];
+            }
+
             $data = array(
                 "monitorFriendlyName" => $this->getCheckName($project),
-                "monitorURL" => ($this->skeletonProvider->hasSkeleton($project, $this->skeletonProvider->findSkeleton("ssl"))?"https://":"http://") . $project["url"],
+                "monitorURL" => $monitorUrl,
                 "monitorType" => 1,
                 "monitorAlertContacts" => "2351398_5_60-0254691_5_60-2356728_5_60-2356781_5_60",
                 "monitorInterval" => 1
