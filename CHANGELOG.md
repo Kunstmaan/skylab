@@ -1,4 +1,35 @@
 
+1.0.22 / 2016-02-18
+==================
+
+  * Merge pull request #122 from jockri/assetic_update
+  * Fix for new assetic verion parameter name
+  * Merge pull request #120 from kimausloos/feature/monitoring_path
+  * Merge pull request #121 from Devolicious/mautic
+  * added mautic template + updated build for mautic
+  * Use correct naming
+  * Add monitoring path config options
+  * Merge pull request #119 from BranchBit/fix-projects-dir
+  * fix projects ditr
+  * Merge pull request #118 from benoitgeerinck/master
+  * Fetch: check project skeleton instead of PDO drivers when dropping database (closes Kunstmaan/skylab#98)
+  * Merge pull request #117 from sandergo90/fix/fetch-project-dir
+  * Change project directory in config.xml when fetching project
+  * Merge pull request #115 from sandergo90/fix/git-detached-head
+  * Remove git branch command because of detached git head
+  * Merge pull request #114 from benoitgeerinck/fix/improve-remove-command
+  * Fix: remove webserver and php-fpm config file when removing a project
+  * Merge pull request #112 from benoitgeerinck/fix/pkill-space-char
+  * Merge pull request #113 from benoitgeerinck/fix/apache-serverstatus
+  * remove settings from 000firsthost.conf to avoid 404 on apache's server-status page
+  * Fix: add space char to proces name for pkill php-fpm
+  * Merge pull request #111 from benoitgeerinck/master
+  * enhance slack messaging
+  * Merge pull request #110 from benoitgeerinck/master
+  * add slack user in slack notification message
+  * Merge pull request #109 from ehershey/typos
+  * Grammar/Punctuation
+
 1.0.21 / 2015-11-27
 ==================
 
