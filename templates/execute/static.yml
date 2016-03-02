@@ -1,0 +1,23 @@
+after_build_success:
+  - steps:
+    - GZIP="--rsyncable" tar -zcf %build_package_target% --exclude="./.git/objects/*" --exclude="./.git/refs/tags/*"  .
+    - mkdir -p %shared_package_folder%
+    - cp %build_package_target% %shared_package_target%
+
+build:
+  - steps:
+    - echo 'Nothing to build, moving on ...'
+
+before_deploy:
+  - resource: snippets/transmit.yml
+
+deploy:
+  - resource: snippets/extract-tar.yml
+  - resource: snippets/setup-config.yml
+
+after_deploy_success:
+  - resource: snippets/currentsymlink.yml
+  - resource: snippets/maintenance.yml
+  - resource: snippets/setup-cron.yml
+  - resource: snippets/cleanup.yml
+
