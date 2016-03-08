@@ -98,7 +98,7 @@ class JavaSkeleton extends AbstractSkeleton
      */
     public function dependsOn()
     {
-        return array("base", "apache", "tomcat", "postgres");
+        return array("base", "apache", "tomcat");
     }
 
 }
