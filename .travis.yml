@@ -1,50 +1,45 @@
 language: php
-
+sudo: false
+cache:
+  directories:
+    - $HOME/.composer/cache/files
+matrix:
+  fast_finish: true
+  include:
+    - php: 5.4
+    - php: 5.5
+    - php: 5.6
+    - php: 7.0
+before_install:
+  - mkdir out
+  - composer self-update
+  - curl -LSs https://box-project.github.io/box2/installer.php | php
+  - mv box.phar box
+  - chmod 755 box
+script:
+  - composer install --optimize-autoloader
+  - php box build
+  - sha1sum out/skylab.phar > out/skylab.version
+deploy:
+  - provider: releases
+    skip_cleanup: true
+    api_key: 'make secure'
+    file: out/skylab.phar
+    on:
+      repo: Kunstmaan/skylab
+      php: 7.0
+      tags: true
+  - provider: s3
+    access_key_id: 'make secure'
+    secret_access_key: 'make secure'
+    bucket: kunstmaan-skylab
+    skip_cleanup: true
+    acl: public_read
+    region: eu-west-1
+    local_dir: out
+    on:
+      repo: Kunstmaan/skylab
+      php: 7.0
 notifications:
   slack:
     secure: YPOKgHTBB/kJJCd6fsUhZxHE4TLAXWvzCGlAUT1LyTdMrIKgW2we31b24iYyNuYbb3LSTTCc1ipByh5kzjM9o+uzHvS3GbSkh8Kdn+e4b62Z+6g1TiLfFZcJi/vorPyHuUVFGhTryTBTxMwDNbQBNMxMkMxofYLfOszsBx1dOkw=
-
-cache:
-  directories:
-    - $HOME/.composer/cache
-
-php:
-  - 5.4
-  - 5.5
-  - 5.6
-  - 7.0
-
-matrix:
-  allow_failures:
-    - php: 7.0
-
-before_script:
-    - sh -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm-nightly" ]; then echo "" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini; fi;'
-    - sh -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm-nightly" ] && [ $(php -r "echo PHP_MINOR_VERSION;") -le 4 ]; then echo "extension = apc.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi;'
-    - sudo locale-gen nl_BE.UTF-8 && sudo update-locale
-    - sudo mkdir -p /home/projects
-    - echo "USE mysql;\nUPDATE user SET password=PASSWORD('password') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root
-    - sudo apt-get update
-    - sudo apt-get install apache2 apache2-mpm-event libapache2-mod-jk
-    - psql -d template1 -c 'create user skylab with SUPERUSER;' -U postgres
-    - psql -d template1 -c "alter user skylab with password 'password';" -U postgres
-    - psql -d template1 -c 'GRANT SELECT ON pg_shadow TO skylab;' -U postgres
-    - composer selfupdate
-    - composer install --prefer-source
-
-script:
-    - bash -c "./compile --version 0.0.0"
-    - bash -c "php skylab.phar new test -vvv --no-interaction"
-    - bash -c "php skylab.phar apply test symfony -vvv --no-interaction"
-    - bash -c "php skylab.phar maintenance -vvv --no-interaction"
-    - bash -c "php skylab.phar backup -vvv --no-interaction"
-    - bash -c "php skylab.phar permissions test -vvv --no-interaction"
-    - bash -c "php skylab.phar cron test -vvv --no-interaction"
-    - bash -c "php skylab.phar remove test --force -vvv --no-interaction"
-    - bash -c "./skylab new test -vvv --no-interaction"
-    - bash -c "./skylab apply test symfony -vvv --no-interaction"
-    - bash -c "./skylab maintenance -vvv --no-interaction"
-    - bash -c "./skylab backup -vvv --no-interaction"
-    - bash -c "./skylab permissions test -vvv --no-interaction"
-    - bash -c "./skylab cron test -vvv --no-interaction"
-    - bash -c "./skylab remove test --force -vvv --no-interaction"
