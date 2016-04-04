@@ -1,5 +1,5 @@
 {
-  "directories": ["src/"],
+  "directories": ["src/", "config/", "templates/"],
   "finder": [
     {
       "name": "*.php",
