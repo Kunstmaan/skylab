@@ -7,8 +7,7 @@ use Cilex\Provider\Console\ContainerAwareApplication as BaseApplication;
 class Application extends BaseApplication
 {
 
-    const VERSION = '@package_version@';
-    const RELEASE_DATE = '@release_date@';
+    const VERSION = '@app_version@';
 
     public static $logo = '<fg=green;options=bold>
   ___________           .__        ___.

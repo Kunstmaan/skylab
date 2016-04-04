@@ -2,44 +2,47 @@ language: php
 sudo: false
 cache:
   directories:
-    - $HOME/.composer/cache/files
+  - $HOME/.composer/cache/files
 matrix:
   fast_finish: true
   include:
-    - php: 5.4
-    - php: 5.5
-    - php: 5.6
-    - php: 7.0
+  - php: 5.4
+  - php: 5.5
+  - php: 5.6
+  - php: 7.0
 before_install:
-  - mkdir out
-  - composer self-update
-  - curl -LSs https://box-project.github.io/box2/installer.php | php
-  - mv box.phar box
-  - chmod 755 box
+- mkdir out
+- composer self-update
+- curl -LSs https://box-project.github.io/box2/installer.php | php
+- mv box.phar box
+- chmod 755 box
 script:
-  - composer install --optimize-autoloader
-  - php box build
-  - sha1sum out/skylab.phar > out/skylab.version
+- composer install --optimize-autoloader
+- php box build
+- sha1sum out/skylab.phar > out/skylab.version
 deploy:
-  - provider: releases
-    skip_cleanup: true
-    api_key: 'make secure'
-    file: out/skylab.phar
-    on:
-      repo: Kunstmaan/skylab
-      php: 7.0
-      tags: true
-  - provider: s3
-    access_key_id: 'make secure'
-    secret_access_key: 'make secure'
-    bucket: kunstmaan-skylab
-    skip_cleanup: true
-    acl: public_read
-    region: eu-west-1
-    local_dir: out
-    on:
-      repo: Kunstmaan/skylab
-      php: 7.0
+- provider: releases
+  api_key:
+    secure: Exv6EL2XUkdgqQA1NVb8+WroTFiWNnCvx0YapwjsCa7On8joUPFwC3Iq7JJw2cIZB2pl4oNt6Bfxpwt1eQEtxg9Db6pFpU+Yh7YwhZLN45KPtYmIwjJUGwBr9k+dCmxxnIBzFfQzVvqYGIrpoBuoqrxVbsw+3Yps83H+MucPPTI=
+  file: out/skylab.phar
+  on:
+    repo: Kunstmaan/skylab
+    php: 7.0
+    tags: true
+- provider: s3
+  access_key_id:
+    secure: dNgRv5ajWjGrVrGS3GAxD6pqoVBcCcv5AtHjwJk7D9sjCkCwKN5RNKXTyv+NhD3Qbt2e2/33wxBr7oA5mN5+uPjVwYgb6e0n7Ok1A2Md3xoMID8sQybzOoAHKuC3FsfmHCh9Oub0MEdsBaFj90uQlL/uosHnPKvfBHZSZIZf2Ic=
+  secret_access_key:
+    secure: L0nWzdlqntiruhcGriLMrrUEPenYX0e+8L/Qx7AFp12t967jLZ9Il2MeJtj5D77ixQHnV3888Om+zFmaMsw+puKb3d8rmnHWAj/dZmad/eWPqMQASbcM9J2ngifwEQrNm6/wa1+jFqFKY3kAfQ8ZRqIJS+dcx1AOVAkAxcyII24=
+  bucket: kunstmaan-skylab
+  skip_cleanup: true
+  acl: public_read
+  region: eu-west-1
+  local_dir: out
+  on:
+    repo: Kunstmaan/skylab
+    php: 7.0
+    branch: v2
 notifications:
   slack:
     secure: YPOKgHTBB/kJJCd6fsUhZxHE4TLAXWvzCGlAUT1LyTdMrIKgW2we31b24iYyNuYbb3LSTTCc1ipByh5kzjM9o+uzHvS3GbSkh8Kdn+e4b62Z+6g1TiLfFZcJi/vorPyHuUVFGhTryTBTxMwDNbQBNMxMkMxofYLfOszsBx1dOkw=
