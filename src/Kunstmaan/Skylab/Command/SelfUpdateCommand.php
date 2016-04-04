@@ -1,18 +1,63 @@
 <?php
 namespace Kunstmaan\Skylab\Command;
 
-use Kunstmaan\Skylab\Application;
-use Kunstmaan\Skylab\Exceptions\AccessDeniedException;
-use Symfony\Component\Yaml\Exception\RuntimeException;
+use Humbug\SelfUpdate\Strategy\GithubStrategy;
+use Humbug\SelfUpdate\Strategy\ShaStrategy;
+use Humbug\SelfUpdate\Updater;
+use Humbug\SelfUpdate\VersionParser;
+use Symfony\Component\Console\Input\InputOption;
+
 
 class SelfUpdateCommand extends AbstractCommand
 {
+
+    const VERSION_URL = 'https://s3-eu-west-1.amazonaws.com/kunstmaan-skylab/skylab.version';
+    const PHAR_URL = 'https://s3-eu-west-1.amazonaws.com/kunstmaan-skylab/skylab.phar';
+    const PACKAGE_NAME = 'kunstmaan/skylab';
+    const FILE_NAME = 'skylab.phar';
+
     protected function configure()
     {
         $this
             ->addDefaults()
             ->setName('self-update')
-            ->setDescription('Updates skylab.phar to the latest version.')
+            ->setDescription('Update skylab.phar to most recent stable, pre-release or development build.')
+            ->addOption(
+                'dev',
+                'd',
+                InputOption::VALUE_NONE,
+                'Update to most recent development build of Skylab.'
+            )
+            ->addOption(
+                'non-dev',
+                'N',
+                InputOption::VALUE_NONE,
+                'Update to most recent non-development (alpha/beta/stable) build of Skylab tagged on Github.'
+            )
+            ->addOption(
+                'pre',
+                'p',
+                InputOption::VALUE_NONE,
+                'Update to most recent pre-release version of Skylab (alpha/beta/rc) tagged on Github.'
+            )
+            ->addOption(
+                'stable',
+                's',
+                InputOption::VALUE_NONE,
+                'Update to most recent stable version of Skylab tagged on Github.'
+            )
+            ->addOption(
+                'rollback',
+                'r',
+                InputOption::VALUE_NONE,
+                'Rollback to previous version of Skylab if available on filesystem.'
+            )
+            ->addOption(
+                'check',
+                'c',
+                InputOption::VALUE_NONE,
+                'Checks what updates are available across all possible stability tracks.'
+            )
             ->setHelp(<<<EOT
 The <info>self-update</info> command will check if there is an updated skylab.phar released and updates if it is.
 
@@ -22,77 +67,220 @@ EOT
             );
     }
 
-    /**
-     * @return int
-     * @throws \Symfony\Component\Yaml\Exception\RuntimeException
-     * @throws \Exception
-     */
     protected function doExecute()
     {
-        $cacheDir = sys_get_temp_dir();
 
-        $localFilename = realpath($_SERVER['argv'][0]) ? : $_SERVER['argv'][0];
+        $parser = new VersionParser();
 
-        // Check if current dir is writable and if not try the cache dir from settings
-        $tmpDir = is_writable(dirname($localFilename)) ? dirname($localFilename) : $cacheDir;
-        $tempFilename = $tmpDir . '/' . basename($localFilename, '.phar') . '-temp.phar';
-
-        // check for permissions in local filesystem before start connection process
-        if (!is_writable($tmpDir)) {
-            throw new RuntimeException('Skylab update failed: the "' . $tmpDir . '" directory used to download the temp file could not be written');
+        /**
+         * Check for ancilliary options
+         */
+        if ($this->input->getOption('rollback')) {
+            $this->rollback();
+            return;
         }
 
-        $username = null;
-        $password = null;
-        $url = 'https://api.github.com/repos/kunstmaan/skylab/releases';
-        try {
-           $json = $this->remoteProvider->curl($url, null, null, 60);
-        } catch (AccessDeniedException $e) {
-           $this->dialogProvider->logWarning('The url ' . $url . ' has reached the api limit, please provide a login/password.');
-           $username = $this->dialogProvider->askFor('Username:');
-           $password = $this->dialogProvider->askHiddenResponse('Password:');
-           $json = $this->remoteProvider->curl($url, null, null, 60, $username, $password);
-        }
-        $data = json_decode($json, true);
-
-        if ($data == null){
-            $this->dialogProvider->logError("Unable to fetch the Github releases", false);
+        if ($this->input->getOption('check')) {
+            $this->printAvailableUpdates();
+            return;
         }
 
-        usort($data, function ($a, $b) {
-            return version_compare($a["tag_name"], $b["tag_name"]) * -1;
-        });
-
-        $latest = $data[0];
-        if (version_compare(Application::VERSION, $latest["tag_name"]) < 0) {
-            $this->dialogProvider->logTask('New release found: ' . $latest["tag_name"] . ', updating...');
-            $this->remoteProvider->curl($latest["assets"][0]["url"], $latest["assets"][0]["content_type"], $tempFilename, 0, $username, $password);
-            if (!file_exists($tempFilename)) {
-                $this->dialogProvider->logError('The download of the new Skylab version failed for an unexpected reason');
-
-                return 1;
-            }
-            try {
-                chmod($tempFilename, 0777 & ~umask());
-                // test the phar validity
-                $phar = new \Phar($tempFilename);
-                // free the variable to unlock the file
-                unset($phar);
-                $this->processProvider->executeSudoCommand("mv " . $tempFilename . " " . $localFilename);
-            } catch (\Exception $e) {
-                unlink($tempFilename);
-                if (!$e instanceof \UnexpectedValueException && !$e instanceof \PharException) {
-                    throw $e;
-                }
-                $this->dialogProvider->logError('The download is corrupted (' . $e->getMessage() . '). Please re-run the self-update command to try again.');
-
-                return 1;
-            }
-        } else {
-            $this->dialogProvider->logTask('You are running the latest release: ' . $latest["tag_name"]);
+        /**
+         * Update to any specified stability option
+         */
+        if ($this->input->getOption('dev')) {
+            $this->updateToDevelopmentBuild();
+            return;
         }
 
-        return 0;
+        if ($this->input->getOption('pre')) {
+            $this->updateToPreReleaseBuild();
+            return;
+        }
+
+        if ($this->input->getOption('stable')) {
+            $this->updateToStableBuild();
+            return;
+        }
+
+        if ($this->input->getOption('non-dev')) {
+            $this->updateToMostRecentNonDevRemote();
+            return;
+        }
+
+        /**
+         * If current build is stable, only update to more recent stable versions if available. User may specify
+         * otherwise using options.
+         */
+        if ($parser->isStable($this->getApplication()->getVersion())) {
+            $this->updateToStableBuild();
+            return;
+        }
+
+        /**
+         * By default, update to most recent remote version regardless of stability.
+         */
+        $this->updateToMostRecentNonDevRemote();
     }
 
+    protected function getStableUpdater()
+    {
+        $updater = new Updater(null, false);
+        $updater->setStrategy(Updater::STRATEGY_GITHUB);
+        return $this->getGithubReleasesUpdater($updater);
+    }
+
+    protected function getPreReleaseUpdater()
+    {
+        $updater = new Updater(null, false);
+        $updater->setStrategy(Updater::STRATEGY_GITHUB);
+        /** @var GithubStrategy $strategyInterface */
+        $strategyInterface = $updater->getStrategy();
+        $strategyInterface->setStability(GithubStrategy::UNSTABLE);
+        return $this->getGithubReleasesUpdater($updater);
+    }
+
+    protected function getMostRecentNonDevUpdater()
+    {
+        $updater = new Updater(null, false);
+        $updater->setStrategy(Updater::STRATEGY_GITHUB);
+        /** @var GithubStrategy $strategyInterface */
+        $strategyInterface = $updater->getStrategy();
+        $strategyInterface->setStability(GithubStrategy::ANY);
+        return $this->getGithubReleasesUpdater($updater);
+    }
+
+    protected function getGithubReleasesUpdater(Updater $updater)
+    {
+        /** @var GithubStrategy $strategyInterface */
+        $strategyInterface = $updater->getStrategy();
+        $strategyInterface->setPackageName(self::PACKAGE_NAME);
+        $strategyInterface->setPharName(self::FILE_NAME);
+        $strategyInterface->setCurrentLocalVersion($this->getApplication()->getVersion());
+        return $updater;
+    }
+
+    protected function getDevelopmentUpdater()
+    {
+        $updater = new Updater(null, false);
+        /** @var ShaStrategy $strategyInterface */
+        $strategyInterface = $updater->getStrategy();
+        $strategyInterface->setPharUrl(self::PHAR_URL);
+        $strategyInterface->setVersionUrl(self::VERSION_URL);
+        return $updater;
+    }
+
+    protected function updateToStableBuild()
+    {
+        $this->update($this->getStableUpdater());
+    }
+
+    protected function updateToPreReleaseBuild()
+    {
+        $this->update($this->getPreReleaseUpdater());
+    }
+
+    protected function updateToMostRecentNonDevRemote()
+    {
+        $this->update($this->getMostRecentNonDevUpdater());
+    }
+
+    protected function updateToDevelopmentBuild()
+    {
+        $this->update($this->getDevelopmentUpdater());
+    }
+
+    protected function update(Updater $updater)
+    {
+        $this->dialogProvider->logCommand("Updating Skylab");
+        try {
+            $result = $updater->update();
+
+            $newVersion = $updater->getNewVersion();
+            $oldVersion = $updater->getOldVersion();
+            if (strlen($newVersion) == 40) {
+                $newVersion = 'dev-' . $newVersion;
+            }
+            if (strlen($oldVersion) == 40) {
+                $oldVersion = 'dev-' . $oldVersion;
+            }
+
+            if ($result) {
+                $this->dialogProvider->logTask("Skylab has been updated from $oldVersion to $newVersion");
+            } else {
+                $this->dialogProvider->logTask("Skylab is currently up to date at $oldVersion");
+            }
+        } catch (\Exception $e) {
+            $this->dialogProvider->logError("Error: " . $e->getMessage());
+        }
+        $this->dialogProvider->logNotice('You can also select update stability using --dev, --pre (alpha/beta/rc) or --stable.');
+    }
+
+    protected function rollback()
+    {
+        $updater = new Updater;
+        try {
+            $result = $updater->rollback();
+            if ($result) {
+                $this->dialogProvider->logTask("Skylab has been rolled back to prior version.");
+            } else {
+                $this->dialogProvider->logError("Rollback failed for reasons unknown.");
+            }
+        } catch (\Exception $e) {
+            $this->dialogProvider->logError("Error: " . $e->getMessage());
+        }
+    }
+
+    protected function printAvailableUpdates()
+    {
+        $this->printCurrentLocalVersion();
+        $this->printCurrentStableVersion();
+        $this->printCurrentPreReleaseVersion();
+        $this->printCurrentDevVersion();
+        $this->dialogProvider->logNotice('You can select update stability using --dev, --pre or --stable when self-updating.');
+    }
+
+    protected function printCurrentLocalVersion()
+    {
+        $this->dialogProvider->logTask("Your current local build version is: " . $this->getApplication()->getVersion());
+    }
+
+    protected function printCurrentStableVersion()
+    {
+        $this->printVersion($this->getStableUpdater());
+    }
+
+    protected function printCurrentPreReleaseVersion()
+    {
+        $this->printVersion($this->getPreReleaseUpdater());
+    }
+
+    protected function printCurrentDevVersion()
+    {
+        $this->printVersion($this->getDevelopmentUpdater());
+    }
+
+    protected function printVersion(Updater $updater)
+    {
+        $stability = 'stable';
+        $strategyInterface = $updater->getStrategy();
+        if ($strategyInterface instanceof ShaStrategy) {
+            $stability = 'development';
+        } elseif ($strategyInterface instanceof GithubStrategy
+            && $strategyInterface->getStability() == GithubStrategy::UNSTABLE) {
+            $stability = 'pre-release';
+        }
+
+        try {
+            if ($updater->hasUpdate()) {
+                $this->dialogProvider->logTask("The current $stability build available remotely is: " . $updater->getNewVersion());
+            } elseif (false == $updater->getNewVersion()) {
+                $this->dialogProvider->logTask("There are no $stability builds available.");
+            } else {
+                $this->dialogProvider->logTask("You have the current $stability build installed.");
+            }
+        } catch (\Exception $e) {
+            $this->dialogProvider->logError("Error: " . $e->getMessage());
+        }
+    }
 }
