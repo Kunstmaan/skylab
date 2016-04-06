@@ -1,8 +1,13 @@
 steps:
   - ssh %deploy_server% -p %deploy_port% "sudo rm -Rf /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/app/cache"
   - ssh %deploy_server% -p %deploy_port% "sudo mkdir -p /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/app/cache"
+  - ssh %deploy_server% -p %deploy_port% "sudo rm -Rf /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/var/cache"
+  - ssh %deploy_server% -p %deploy_port% "sudo mkdir -p /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/var/cache"
   - ssh %deploy_server% -p %deploy_port% "sudo rm -Rf /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/app/logs"
   - ssh %deploy_server% -p %deploy_port% "sudo mkdir -p /home/projects/%deploy_project%/data/shared/app/logs"
+  - ssh %deploy_server% -p %deploy_port% "sudo rm -Rf /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/var/logs"
+  - ssh %deploy_server% -p %deploy_port% "sudo mkdir -p /home/projects/%deploy_project%/data/shared/var/logs"
+  - ssh %deploy_server% -p %deploy_port% "sudo ln -nfs /home/projects/%deploy_project%/data/shared/vr/logs /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/app/logs"
   - ssh %deploy_server% -p %deploy_port% "sudo ln -nfs /home/projects/%deploy_project%/data/shared/app/logs /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/app/logs"
   - ssh %deploy_server% -p %deploy_port% "sudo rm -Rf /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/web/uploads"
   - ssh %deploy_server% -p %deploy_port% "sudo mkdir -p /home/projects/%deploy_project%/data/shared/web/uploads"
