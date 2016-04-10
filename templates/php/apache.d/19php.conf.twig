@@ -1,17 +1,39 @@
-<IfModule mod_php5.c>
-    AddType application/x-httpd-php .php .phtml .php3
-    AddType application/x-httpd-php-source .phps
-    php_flag    engine  on
-</IfModule>
-
-<IfModule !mod_php5.c>
-    <IfModule proxy_fcgi_module>
-        <FilesMatch \.php$>
-            SetHandler "proxy:unix:/var/run/php5-fpm-@project.name@.sock|fcgi://localhost"
-        </FilesMatch>
-    </IfModule>    
-    <IfModule mod_fastcgi.c>
-        FastCgiExternalServer @config.projectsdir@@project.name@/php5-fpm/php5.external -socket /tmp/.@project.name@-fpm.sock -idle-timeout 7200
-        Alias /php5-fpm/ @config.projectsdir@@project.name@/php5-fpm/
+<IfDefine !PHP7>
+    <IfModule mod_php5.c>
+        AddType application/x-httpd-php .php .phtml .php3
+        AddType application/x-httpd-php-source .phps
+        php_flag    engine  on
     </IfModule>
-</IfModule>
+
+    <IfModule !mod_php5.c>
+        <IfModule proxy_fcgi_module>
+            <FilesMatch \.php$>
+                SetHandler "proxy:unix:/var/run/php-fpm-@project.name@.sock|fcgi://localhost"
+            </FilesMatch>
+        </IfModule>
+        <IfModule mod_fastcgi.c>
+            FastCgiExternalServer @config.projectsdir@@project.name@/php-fpm/php.external -socket /tmp/.@project.name@-fpm.sock -idle-timeout 7200
+            Alias /php-fpm/ @config.projectsdir@@project.name@/php-fpm/
+        </IfModule>
+    </IfModule>
+</IfDefine>
+
+<IfDefine PHP7>
+    <IfModule mod_php7.c>
+        AddType application/x-httpd-php .php .phtml .php3
+        AddType application/x-httpd-php-source .phps
+        php_flag    engine  on
+    </IfModule>
+
+    <IfModule !mod_php7.c>
+        <IfModule proxy_fcgi_module>
+            <FilesMatch \.php$>
+                SetHandler "proxy:unix:/run/php-fpm-@project.name@.sock|fcgi://localhost"
+            </FilesMatch>
+        </IfModule>
+        <IfModule mod_fastcgi.c>
+            FastCgiExternalServer @config.projectsdir@@project.name@/php-fpm/php.external -socket /tmp/.@project.name@-fpm.sock -idle-timeout 7200
+            Alias /php-fpm/ @config.projectsdir@@project.name@/php-fpm/
+        </IfModule>
+    </IfModule>
+</IfDefine>
