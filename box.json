@@ -1,20 +1,5 @@
 {
-  "directories": ["src/", "config/", "templates/"],
-  "finder": [
-    {
-      "name": "*.php",
-      "exclude": [
-        ".gitignore",
-        ".md",
-        "phpunit",
-        "Tester",
-        "Tests",
-        "tests",
-        "yaml"
-      ],
-      "in": "vendor"
-    }
-  ],
+  "directories": ["src/", "config/", "templates/", "vendor/"],
   "compactors": [
     "Herrera\\Box\\Compactor\\Json",
     "Herrera\\Box\\Compactor\\Php"
