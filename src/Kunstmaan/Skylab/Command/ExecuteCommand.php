@@ -159,7 +159,7 @@ EOT
             $this->dialogProvider->logError("You cannot run a deploy step without an environment", true);
         }
         if (isset($yaml["deploy_matrix"][$deployEnv])) {
-            
+
             //build
             $this->notifySlack("Build started", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray);
             $this->runStep("before_build", $yaml, $deployEnv);
@@ -232,7 +232,7 @@ EOT
         if (file_exists($parametersFile) && strpos(file_get_contents($parametersFile), 'database_host') !== false) {
             $parametersYaml = $this->loadYaml($parametersFile);
             $resolverArray = array_merge($parametersYaml["parameters"], $resolverArray);
-            $resolverArray["run_mysql"] = "yes";
+            $resolverArray["run_mysql"] = (getenv('NO_MYSQL')?"no":"yes");
         } else {
             $resolverArray["run_mysql"] = "no";
         }
