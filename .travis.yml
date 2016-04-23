@@ -42,7 +42,7 @@ deploy:
   on:
     repo: Kunstmaan/skylab
     php: 7.0
-    branch: v2
+    branch: master
 notifications:
   slack:
     secure: YPOKgHTBB/kJJCd6fsUhZxHE4TLAXWvzCGlAUT1LyTdMrIKgW2we31b24iYyNuYbb3LSTTCc1ipByh5kzjM9o+uzHvS3GbSkh8Kdn+e4b62Z+6g1TiLfFZcJi/vorPyHuUVFGhTryTBTxMwDNbQBNMxMkMxofYLfOszsBx1dOkw=
