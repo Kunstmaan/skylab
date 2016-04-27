@@ -75,7 +75,9 @@ EOT
             ".cache",
             ".mysql_history",
             "data/current/app/logs/*",
-            "data/current/app/cache/*"
+            "data/current/var/logs/*",
+            "data/current/app/cache/*",
+            "data/current/var/cache/*",
         );
 
         if (!$this->fileSystemProvider->projectExists($projectname)) {
