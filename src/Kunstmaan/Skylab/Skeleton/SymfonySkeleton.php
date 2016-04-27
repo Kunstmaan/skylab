@@ -41,10 +41,14 @@ class SymfonySkeleton extends AbstractSkeleton
             $project["permissions"]["/data"] = $permissionDefinition;
         }
         $project = $this->addReadWriteFolder("/data/" . $project["name"] . "/app/cache", $project);
+        $project = $this->addReadWriteFolder("/data/" . $project["name"] . "/var/cache", $project);
         $project = $this->addReadWriteFolder("/data/" . $project["name"] . "/app/logs", $project);
+        $project = $this->addReadWriteFolder("/data/" . $project["name"] . "/var/logs", $project);
         $project = $this->addReadWriteFolder("/data/" . $project["name"] . "/web/media", $project);
         $project = $this->addReadWriteFolder("/data/current/app/cache", $project);
+        $project = $this->addReadWriteFolder("/data/current/var/cache", $project);
         $project = $this->addReadWriteFolder("/data/current/app/logs", $project);
+        $project = $this->addReadWriteFolder("/data/current/var/logs", $project);
         $project = $this->addReadWriteFolder("/data/current/web/media", $project);
 
 	$this->fileSystemProvider->renderDistConfig($this->fileSystemProvider->getConfigTemplateDir("symfony"),$this->fileSystemProvider->getConfigTemplateDir("symfony",true),$this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/");
