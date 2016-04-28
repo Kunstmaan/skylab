@@ -2,4 +2,4 @@ steps:
   - if [ -f "app/console" ]; then app/console assets:install web --env=%deploy_symfony_env%; fi
   - if [ -f "app/console" ] && composer show -i | grep -q "symfony/assetic-bundle"; then if composer show -i | grep -q "kriswallsmith/spork"; then app/console assetic:dump --forks 8 --env=%deploy_symfony_env%; else app/console assetic:dump --env=%deploy_symfony_env%; fi; fi
   - if [ -f "app/config/config.yml" ]; then sed -i "s/\\(assets_version:[ ]*\\)\\([a-zA-Z0-9_~]*\\)\\(.*\\)$/\\1%buildtag%\\3/g" app/config/config.yml; fi
-  - if [ -f "app/config/config.yml" ]; then sed -i "s/\\([ ]+version:[ ]*\\)\\([a-zA-Z0-9_~]*\\)\\(.*\\)$/\\1%buildtag%\\3/g" app/config/config.yml; fi
+  - if [ -f "app/config/config.yml" ]; then sed -i "s/\\([ ]\\+version:[ ]*\\)\\([a-zA-Z0-9_~]*\\)\\(.*\\)$/\\1%buildtag%\\3/g" app/config/config.yml; fi
