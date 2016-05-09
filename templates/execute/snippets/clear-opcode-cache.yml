@@ -1,6 +1,5 @@
 steps:
-  - ssh %deploy_server% -p %deploy_port% "curl -sO http://gordalina.github.io/cachetool/downloads/cachetool.phar"
-  - ssh %deploy_server% -p %deploy_port% "if [ ! -f /etc/init/php7.0-fpm.conf ] ; then if sudo service php5-fpm status ; then sudo service php5-fpm reload; else sudo service php5-fpm start; fi; fi"
+  - ssh %deploy_server% -p %deploy_port% "if [ \$(php -r 'echo PHP_MAJOR_VERSION;') -eq 5 ] && [ \$(php -r 'echo PHP_MINOR_VERSION;') -eq 4 ]; then curl -s http://gordalina.github.io/cachetool/downloads/cachetool-1.10.0.phar -o cachetool.phar; else curl -s http://gordalina.github.io/cachetool/downloads/cachetool.phar -o cachetool.phar; fi"  - ssh %deploy_server% -p %deploy_port% "if [ ! -f /etc/init/php7.0-fpm.conf ] ; then if sudo service php5-fpm status ; then sudo service php5-fpm reload; else sudo service php5-fpm start; fi; fi"
   - ssh %deploy_server% -p %deploy_port% "if [ -f /etc/init/php7.0-fpm.conf ] ; then if sudo service php7.0-fpm status ; then sudo service php7.0-fpm reload; else sudo service php7.0-fpm start; fi; fi"
   - ssh %deploy_server% -p %deploy_port% "if [ -S /var/run/php-fpm-%deploy_project%.sock ]; then php cachetool.phar stat:clear --fcgi=/var/run/php-fpm-%deploy_project%.sock; elif [ -S /var/run/php5-fpm-%deploy_project%.sock ]; then php cachetool.phar stat:clear --fcgi=/var/run/php5-fpm-%deploy_project%.sock; else php cachetool.phar stat:clear --fcgi=/tmp/.%deploy_project%-fpm.sock; fi"
   - ssh %deploy_server% -p %deploy_port% "sleep 2"
