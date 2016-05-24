@@ -95,8 +95,10 @@ class PermissionsProvider extends AbstractProvider
      */
     public function applyOwnership(\ArrayObject $project)
     {
-        /** @var PermissionDefinition $pd */
-        foreach ($project["permissions"] as $pd) {
+		$permissions_sorted = new \ArrayObject($project["permissions"]);
+		$permissions_sorted->ksort();
+		/** @var PermissionDefinition $pd */
+		foreach ($permissions_sorted as $pd) {
             $thePath = $this->fileSystemProvider->getProjectDirectory($project["name"]) . $pd->getPath();
             if (!$pd->getOwnership()) {
                 $this->dialogProvider->logNotice("No ownership information for " . $thePath . ", do not chown");
@@ -136,10 +138,12 @@ class PermissionsProvider extends AbstractProvider
                 $this->processProvider->executeSudoCommand('chmod -R 700 ' . $this->fileSystemProvider->getProjectDirectory($project["name"]) . '/.ssh/');
             }
         } else {
+            $permissions_sorted = new \ArrayObject($project["permissions"]);
+            $permissions_sorted->ksort();
             /** @var PermissionDefinition $pd */
-            foreach ($project["permissions"] as $pd) {
+            foreach ($permissions_sorted as $pd) {
+                $path = $this->fileSystemProvider->getProjectDirectory($project["name"]) . $pd->getPath();
                 foreach ($pd->getAcl() as $acl) {
-                    $path = $this->fileSystemProvider->getProjectDirectory($project["name"]) . $pd->getPath();
                     if (file_exists($path)) {
                         $this->processProvider->executeSudoCommand('setfacl ' . $this->projectConfigProvider->searchReplacer($acl, $project) . ' ' . $path, true);
                     } else {
