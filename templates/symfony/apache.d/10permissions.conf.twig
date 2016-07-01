@@ -1,4 +1,4 @@
-<Directory @config.projectsdir@@project.name@/data/current/web >
+<Directory @config.projectsdir@@project.name@/data/current/web>
   Options -Indexes +MultiViews +Includes +FollowSymLinks
   AllowOverride All
   <IfVersion < 2.4>
@@ -8,4 +8,9 @@
   <IfVersion >= 2.4>
     Require all granted
   </IfVersion>
+</Directory>
+
+<Directory @config.projectsdir@@project.name@/data/current/web/uploads/*>
+  AllowOverride None
+  php_flag engine off
 </Directory>
