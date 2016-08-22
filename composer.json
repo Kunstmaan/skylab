@@ -28,7 +28,8 @@
         "raven/raven": "0.12.*",
         "cleentfaar/slack": "dev-master",
         "ckdarby/php-uptimerobot": "^0.1.0",
-        "padraic/phar-updater": "^1.0"
+        "padraic/phar-updater": "^1.0",
+        "symfony/process" : "^2.7"
     },
     "autoload": {
         "psr-0": { "Kunstmaan": "src/" }
