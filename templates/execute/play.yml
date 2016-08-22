@@ -1,7 +1,7 @@
 
 build:
   - steps:
-    - java -jar /opt/ci-deploy-scripts/lib/sbt/sbt0.13.6-launch.jar -XX:-UseSplitVerifier -Dsbt.log.noformat=true clean update compile package dist
+    - java -jar /usr/share/sbt-launcher-packaging/bin/sbt-launch.jar -XX:-UseSplitVerifier -Dsbt.log.noformat=true clean update compile package dist
 
 after_build_success:
   - steps:
