@@ -1,0 +1,29 @@
+
+build:
+  - steps:
+    - java -jar /usr/share/sbt-launcher-packaging/bin/sbt-launch.jar -XX:-UseSplitVerifier -Dsbt.log.noformat=true clean update compile package dist
+
+after_build_success:
+  - steps:
+    - cd target/universal && unzip -o %deploy_project%-*.zip && cd %deploy_project%-* && chmod 755 bin/%deploy_project% && GZIP="--rsyncable" tar -zcf %home%/builds/%job_name%-%buildtag%.tar.gz .
+
+before_deploy:
+  - resource: snippets/transmit.yml
+  - resource: snippets/setup-config.yml
+
+deploy:
+  - resource: snippets/extract-tar.yml
+  - steps:
+      - ssh %deploy_server% -p %deploy_port% "sudo rm -Rf /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/logs"
+      - ssh %deploy_server% -p %deploy_port% "sudo mkdir -p /home/projects/%deploy_project%/data/shared/logs"
+      - ssh %deploy_server% -p %deploy_port% "sudo ln -nfs /home/projects/%deploy_project%/data/shared/logs /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/logs"
+
+after_deploy_success:
+  - steps:
+      - ssh %deploy_server% -p %deploy_port% "if command -v systemctl > /dev/null 2>&1; then sudo systemctl stop %deploy_project% || exit 0; else sudo initctl stop %deploy_project% || exit 0; fi"
+  - resource: snippets/currentsymlink.yml
+  - steps:
+      - ssh %deploy_server% -p %deploy_port% "if command -v systemctl > /dev/null 2>&1; then sudo ln -sf /home/projects/%deploy_project%/data/current/init/%deploy_project%.service /lib/systemd/system/%deploy_project%.service ; else sudo ln -sf /home/projects/%deploy_project%/data/current/init/%deploy_project%.conf /etc/init/%deploy_project%.conf; fi"
+      - ssh %deploy_server% -p %deploy_port% "if command -v systemctl > /dev/null 2>&1; then sudo systemctl daemon-reload ; else sudo initctl reload-configuration; fi"
+      - ssh %deploy_server% -p %deploy_port% "if command -v systemctl > /dev/null 2>&1; then sudo systemctl start %deploy_project% ; else sudo initctl start %deploy_project%; fi"
+  - resource: snippets/cleanup.yml

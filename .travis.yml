@@ -13,12 +13,11 @@ matrix:
 before_install:
 - mkdir out
 - composer self-update
-- curl -LSs https://box-project.github.io/box2/installer.php | php
-- mv box.phar box
-- chmod 755 box
+- composer global require kherge/box:2.7.3
+- PATH=$PATH:/home/travis/.composer/vendor/bin/
 script:
 - composer install --optimize-autoloader
-- php box build
+- box build
 - sha1sum out/skylab.phar > out/skylab.version
 deploy:
 - provider: releases
