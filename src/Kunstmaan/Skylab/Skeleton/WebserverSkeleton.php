@@ -58,7 +58,7 @@ class WebserverSkeleton extends AbstractSkeleton
         }
 
         if (PHP_OS == "Darwin") {
-            $this->processProvider->executeSudoCommand('find ' . $this->fileSystemProvider->getProjectDirectory($project["name"]) . '/data/current -type d -name .git -exec cd {} "\;" -exec git config core.filemode false "\;"');
+            $this->processProvider->executeSudoCommand('find ' . $this->fileSystemProvider->getProjectDirectory($project["name"]) . '/data/current -type d -name .git -exec cd {} \; -exec git config core.filemode false \;');
         } else {
             $this->processProvider->executeSudoCommand('find ' . $this->fileSystemProvider->getProjectDirectory($project["name"]) . '/data/current -type d -name .git -exec cd {} \; -exec git config core.filemode false \;');
         }
