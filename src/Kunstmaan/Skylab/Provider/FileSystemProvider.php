@@ -82,7 +82,7 @@ class FileSystemProvider extends AbstractProvider
      */
     public function getProjectDirectory($projectname)
     {
-        return $this->app["config"]["projects"]["path"] . '/' . $projectname;
+        return $this->app["config"]["projects"]["path"] . $projectname;
     }
 
     /**
