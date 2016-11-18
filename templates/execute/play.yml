@@ -22,6 +22,7 @@ after_deploy_success:
   - steps:
       - ssh %deploy_server% -p %deploy_port% "if command -v systemctl > /dev/null 2>&1; then sudo systemctl stop %deploy_project% || exit 0; else sudo initctl stop %deploy_project% || exit 0; fi"
   - resource: snippets/currentsymlink.yml
+  - resource: snippets/maintenance.yml
   - steps:
       - ssh %deploy_server% -p %deploy_port% "if command -v systemctl > /dev/null 2>&1; then sudo ln -sf /home/projects/%deploy_project%/data/current/init/%deploy_project%.service /lib/systemd/system/%deploy_project%.service ; else sudo ln -sf /home/projects/%deploy_project%/data/current/init/%deploy_project%.conf /etc/init/%deploy_project%.conf; fi"
       - ssh %deploy_server% -p %deploy_port% "if command -v systemctl > /dev/null 2>&1; then sudo systemctl daemon-reload ; else sudo initctl reload-configuration; fi"
