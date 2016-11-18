@@ -149,14 +149,14 @@ EOT
 
             $this->dialogProvider->logStep("Dropping the databases");
 
-            if( in_array('mysql', $this->skeletonProvider->getSkeletons() ) )
+            if( in_array('mysql', $project['skeletons']) )
             {
                 $this->dialogProvider->logTask("Dropping the MySQL database");
                 $dbh = new \PDO('mysql:host=localhost;', $this->app["config"]["mysql"]["user"], $this->app["config"]["mysql"]["password"]);
                 $dbh->query("DROP DATABASE IF EXISTS " . $projectname);
             }
 
-            if( in_array('postgres', $this->skeletonProvider->getSkeletons() ) )
+            if( in_array('postgres', $project['skeletons'] ) )
             {
                 $this->dialogProvider->logTask("Dropping the PostgreSQL database");
                 $dbh = new \PDO(
