@@ -6,7 +6,7 @@ require_once __DIR__.'/vendor/autoload.php';
 
 const BASE_DIR = __DIR__;
 
-$app = new \Cilex\Application('skylab', '@app_version@', array('console.class' => 'Kunstmaan\Skylab\Application', 'skylab.starttime' => $startTime));
+$app = new \Cilex\Application('skylab', '@app_version@', array('console.class' => 'Kunstmaan\Skylab\Application', 'skylab.starttime' => $startTime, 'php_version' => PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION));
 
 $app->register(new \Kunstmaan\Skylab\Provider\ProcessProvider());
 $app->register(new \Kunstmaan\Skylab\Provider\FallbackConfigServiceProvider(),

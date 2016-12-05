@@ -78,8 +78,7 @@ class PHPSkeleton extends AbstractSkeleton
      */
     public function preMaintenance()
     {
-        $this->processProvider->executeSudoCommand("rm -Rf /etc/php5/fpm/pool.d/*");
-        $this->processProvider->executeSudoCommand("rm -Rf /etc/php/7.0/fpm/pool.d/*");
+        $this->processProvider->executeSudoCommand("rm -Rf /etc/php/" . $this->app['php_version'] . "/fpm/pool.d/*");
     }
 
     /**
@@ -96,22 +95,11 @@ class PHPSkeleton extends AbstractSkeleton
      */
     public function maintenance(\ArrayObject $project)
     {
-        $this->processProvider->executeSudoCommand("mkdir -p /etc/php5/fpm/pool.d/");
+        $phpFpmLocation = "/etc/php/" . $this->app['php_version'] . "/fpm/pool.d/";
+        $this->processProvider->executeSudoCommand("mkdir -p " . $phpFpmLocation);
         $this->fileSystemProvider->render(
             "/php/php-fpm.conf.twig",
-            "/etc/php5/fpm/pool.d/" . $project["name"] . ".conf",
-            array(
-                "projectdir" => $this->fileSystemProvider->getProjectDirectory($project["name"]),
-                "projectname" => $project["name"],
-                "projectuser" => $project["name"],
-                "projectgroup" => $project["name"],
-                "develmode" => $this->app["config"]["develmode"]
-            )
-        );
-        $this->processProvider->executeSudoCommand("mkdir -p /etc/php/7.0/fpm/pool.d/");
-        $this->fileSystemProvider->render(
-            "/php/php-fpm.conf.twig",
-            "/etc/php/7.0/fpm/pool.d/" . $project["name"] . ".conf",
+            $phpFpmLocation . $project["name"] . ".conf",
             array(
                 "projectdir" => $this->fileSystemProvider->getProjectDirectory($project["name"]),
                 "projectname" => $project["name"],
@@ -147,8 +135,8 @@ class PHPSkeleton extends AbstractSkeleton
      */
     public function preRemove(\ArrayObject $project)
     {
-        $this->processProvider->executeSudoCommand("rm -f /etc/php5/fpm/pool.d/".$project["name"].".conf");
-        $this->processProvider->executeSudoCommand("rm -f /etc/php/7.0/fpm/pool.d/".$project["name"].".conf");
+
+        $this->processProvider->executeSudoCommand("rm -f /etc/php/" . $this->app['php_version'] . "/fpm/pool.d/".$project["name"].".conf");
     }
 
     /**
