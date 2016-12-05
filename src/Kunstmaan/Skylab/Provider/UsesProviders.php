@@ -105,6 +105,8 @@ trait UsesProviders
         } else {
             $this->noInteraction = false;
         }
+
+        $app["php-fpm_enabled"] = $this->processProvider->commandExists("php-fpm5.6");
     }
 
 }
