@@ -215,6 +215,7 @@ EOT
     {
         $resolverArray = array_merge($this->app["config"], $mergedYaml["env"]);
         $resolverArray["base_dir"] = BASE_DIR;
+        $resolverArray["php_version"] = $this->app["php_version"];
         $deployEnv = $this->input->getArgument('deploy-environment');
         if (!empty($deployEnv) && isset($mergedYaml["deploy_matrix"][$deployEnv])) {
             $resolverArray = $this->collectDeploySettings($mergedYaml["deploy_matrix"][$deployEnv], "deploy", $resolverArray);
