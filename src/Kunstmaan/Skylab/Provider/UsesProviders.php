@@ -106,7 +106,7 @@ trait UsesProviders
             $this->noInteraction = false;
         }
 
-        $app["php-fpm_enabled"] = $this->processProvider->commandExists("php-fpm".$app["php_version"]);
+        $app["php-fpm_installed"] = $this->processProvider->commandExists("php-fpm".$app["php_version"]);
 
         if (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION <= 5) {
             $app["php-fpm_service"] = "php5-fpm";
