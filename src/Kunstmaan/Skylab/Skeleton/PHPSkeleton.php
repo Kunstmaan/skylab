@@ -28,27 +28,29 @@ class PHPSkeleton extends AbstractSkeleton
      */
     public function create(\ArrayObject $project)
     {
-        $this->fileSystemProvider->createDirectory($project, 'php-fpm');
-        {
-            $permissionDefinition = new PermissionDefinition();
-            $permissionDefinition->setPath("/php-fpm");
-            $permissionDefinition->setOwnership("-R @project.user@.@project.group@");
-            $permissionDefinition->addAcl("-R -m user::rwX");
-            $permissionDefinition->addAcl("-R -m group::r-X");
-            $permissionDefinition->addAcl("-R -m other::---");
-            $permissionDefinition->addAcl("-R -m u:@config.wwwuser@:r-X");
-            $project["permissions"]["/php-fpm"] = $permissionDefinition;
-        }
-        $this->fileSystemProvider->createDirectory($project, 'tmp');
-        {
-            $permissionDefinition = new PermissionDefinition();
-            $permissionDefinition->setPath("/tmp");
-            $permissionDefinition->setOwnership("-R @project.user@.@project.group@");
-            $permissionDefinition->addAcl("-R -m user::rwX");
-            $permissionDefinition->addAcl("-R -m group::r-X");
-            $permissionDefinition->addAcl("-R -m other::---");
-            $permissionDefinition->addAcl("-R -m u:@config.wwwuser@:r-X");
-            $project["permissions"]["/tmp"] = $permissionDefinition;
+        if (!$this->app["php-fpm_installed"]) {
+            $this->fileSystemProvider->createDirectory($project, 'php-fpm');
+            {
+                $permissionDefinition = new PermissionDefinition();
+                $permissionDefinition->setPath("/php-fpm");
+                $permissionDefinition->setOwnership("-R @project.user@.@project.group@");
+                $permissionDefinition->addAcl("-R -m user::rwX");
+                $permissionDefinition->addAcl("-R -m group::r-X");
+                $permissionDefinition->addAcl("-R -m other::---");
+                $permissionDefinition->addAcl("-R -m u:@config.wwwuser@:r-X");
+                $project["permissions"]["/php-fpm"] = $permissionDefinition;
+            }
+            $this->fileSystemProvider->createDirectory($project, 'tmp');
+            {
+                $permissionDefinition = new PermissionDefinition();
+                $permissionDefinition->setPath("/tmp");
+                $permissionDefinition->setOwnership("-R @project.user@.@project.group@");
+                $permissionDefinition->addAcl("-R -m user::rwX");
+                $permissionDefinition->addAcl("-R -m group::r-X");
+                $permissionDefinition->addAcl("-R -m other::---");
+                $permissionDefinition->addAcl("-R -m u:@config.wwwuser@:r-X");
+                $project["permissions"]["/tmp"] = $permissionDefinition;
+            }
         }
 
         $this->fileSystemProvider->render(
@@ -78,8 +80,9 @@ class PHPSkeleton extends AbstractSkeleton
      */
     public function preMaintenance()
     {
-        $this->processProvider->executeSudoCommand("rm -Rf /etc/php5/fpm/pool.d/*");
-        $this->processProvider->executeSudoCommand("rm -Rf /etc/php/7.0/fpm/pool.d/*");
+        if (!$this->app["php-fpm_installed"]) {
+            $this->processProvider->executeSudoCommand("rm -Rf /etc/php/" . $this->app['php_version'] . "/fpm/pool.d/*");
+        }
     }
 
     /**
@@ -96,30 +99,21 @@ class PHPSkeleton extends AbstractSkeleton
      */
     public function maintenance(\ArrayObject $project)
     {
-        $this->processProvider->executeSudoCommand("mkdir -p /etc/php5/fpm/pool.d/");
-        $this->fileSystemProvider->render(
-            "/php/php-fpm.conf.twig",
-            "/etc/php5/fpm/pool.d/" . $project["name"] . ".conf",
-            array(
-                "projectdir" => $this->fileSystemProvider->getProjectDirectory($project["name"]),
-                "projectname" => $project["name"],
-                "projectuser" => $project["name"],
-                "projectgroup" => $project["name"],
-                "develmode" => $this->app["config"]["develmode"]
-            )
-        );
-        $this->processProvider->executeSudoCommand("mkdir -p /etc/php/7.0/fpm/pool.d/");
-        $this->fileSystemProvider->render(
-            "/php/php-fpm.conf.twig",
-            "/etc/php/7.0/fpm/pool.d/" . $project["name"] . ".conf",
-            array(
-                "projectdir" => $this->fileSystemProvider->getProjectDirectory($project["name"]),
-                "projectname" => $project["name"],
-                "projectuser" => $project["name"],
-                "projectgroup" => $project["name"],
-                "develmode" => $this->app["config"]["develmode"]
-            )
-        );
+        if (!$this->app["php-fpm_installed"]) {
+            $phpFpmLocation = "/etc/php/" . $this->app['php_version'] . "/fpm/pool.d/";
+            $this->processProvider->executeSudoCommand("mkdir -p " . $phpFpmLocation);
+            $this->fileSystemProvider->render(
+                "/php/php-fpm.conf.twig",
+                $phpFpmLocation . $project["name"] . ".conf",
+                array(
+                    "projectdir" => $this->fileSystemProvider->getProjectDirectory($project["name"]),
+                    "projectname" => $project["name"],
+                    "projectuser" => $project["name"],
+                    "projectgroup" => $project["name"],
+                    "develmode" => $this->app["config"]["develmode"]
+                )
+            );
+        }
     }
 
     /**
@@ -147,8 +141,9 @@ class PHPSkeleton extends AbstractSkeleton
      */
     public function preRemove(\ArrayObject $project)
     {
-        $this->processProvider->executeSudoCommand("rm -f /etc/php5/fpm/pool.d/".$project["name"].".conf");
-        $this->processProvider->executeSudoCommand("rm -f /etc/php/7.0/fpm/pool.d/".$project["name"].".conf");
+        if (!$this->app["php-fpm_installed"]) {
+            $this->processProvider->executeSudoCommand("rm -f /etc/php/" . $this->app['php_version'] . "/fpm/pool.d/".$project["name"].".conf");
+        }
     }
 
     /**
