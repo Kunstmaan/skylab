@@ -28,7 +28,7 @@ class PHPSkeleton extends AbstractSkeleton
      */
     public function create(\ArrayObject $project)
     {
-        if (!$this->app["php-fpm_installed"]) {
+        if ($this->app["php-fpm_installed"]) {
             $this->fileSystemProvider->createDirectory($project, 'php-fpm');
             {
                 $permissionDefinition = new PermissionDefinition();
@@ -80,7 +80,7 @@ class PHPSkeleton extends AbstractSkeleton
      */
     public function preMaintenance()
     {
-        if (!$this->app["php-fpm_installed"]) {
+        if ($this->app["php-fpm_installed"]) {
             $this->processProvider->executeSudoCommand("rm -Rf /etc/php/" . $this->app['php_version'] . "/fpm/pool.d/*");
         }
     }
@@ -99,7 +99,7 @@ class PHPSkeleton extends AbstractSkeleton
      */
     public function maintenance(\ArrayObject $project)
     {
-        if (!$this->app["php-fpm_installed"]) {
+        if ($this->app["php-fpm_installed"]) {
             $phpFpmLocation = "/etc/php/" . $this->app['php_version'] . "/fpm/pool.d/";
             $this->processProvider->executeSudoCommand("mkdir -p " . $phpFpmLocation);
             $this->fileSystemProvider->render(
@@ -141,7 +141,7 @@ class PHPSkeleton extends AbstractSkeleton
      */
     public function preRemove(\ArrayObject $project)
     {
-        if (!$this->app["php-fpm_installed"]) {
+        if ($this->app["php-fpm_installed"]) {
             $this->processProvider->executeSudoCommand("rm -f /etc/php/" . $this->app['php_version'] . "/fpm/pool.d/".$project["name"].".conf");
         }
     }
