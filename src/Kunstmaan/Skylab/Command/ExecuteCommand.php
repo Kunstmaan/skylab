@@ -1,6 +1,7 @@
 <?php
 namespace Kunstmaan\Skylab\Command;
 
+use CL\Slack\Exception\SlackException;
 use CL\Slack\Model\Attachment;
 use CL\Slack\Model\AttachmentField;
 use CL\Slack\Payload\ChatDeletePayload;
@@ -88,16 +89,45 @@ EOT
 
     protected function notifySlack($message, $project, $env, $user, $resolverArray, $color = "#FFCC00", $update = false)
     {
-        if ($update) {
-            $payload = new ChatDeletePayload();
-            $payload->setSlackTimestamp($this->ts);
-            $payload->setChannelId($this->channel);
-            $response = $this->slackApiClient->send($payload);
+        try {
+            if ($update) {
+                $payload = new ChatDeletePayload();
+                $payload->setSlackTimestamp($this->ts);
+                $payload->setChannelId($this->channel);
+                $response = $this->slackApiClient->send($payload);
 
+                if ($response->isOk()) {
+                    if ($response instanceof ChatPostMessagePayloadResponse) {
+                        /** @var ChatPostMessagePayloadResponse $response */
+                        $this->ts = $response->getSlackTimestamp();
+                    }
+                } else {
+                    // something went wrong, but what?
+                    // simple error (Slack's error message)
+                    echo $response->getError();
+                    // explained error (Slack's explanation of the error, according to the documentation)
+                    echo $response->getErrorExplanation();
+                }
+            }
+
+            $payload = new ChatPostMessagePayload();
+            $payload->setChannel("#" . getenv("slack_channel"));
+            $payload->setIconUrl("https://www.dropbox.com/s/ivrj3wcze7cwh54/masterjenkins.png?dl=1");
+            $payload->setUsername("Master Jenkins");
+
+            $attachment = new Attachment();
+            $attachment->setColor($color);
+            $attachment->setMrkdwnIn(array("text"));
+            $attachment->setFallback("[".$project."#" . getenv("BUILD_NUMBER"). " - branch *" . getenv("GIT_BRANCH") . "* to *". $env . "* by _" . $user . "_] " . $message);
+            $attachment->setText("[".$project."#" . getenv("BUILD_NUMBER"). " - branch *" . getenv("GIT_BRANCH") . "* to *". $env . "* by _" . $user ."_] " . $message . "\n<" . getenv("BUILD_URL") . "console|Jenkins Console> - <".getenv("BUILD_URL")."changes|Changes>" . (isset($resolverArray["shared_package_target"]) && file_exists($resolverArray["shared_package_target"])?" - <" . $resolverArray["shared_package_url"] . "|Download>":""));
+            $payload->addAttachment($attachment);
+
+            $response = $this->slackApiClient->send($payload);
             if ($response->isOk()) {
                 if ($response instanceof ChatPostMessagePayloadResponse) {
                     /** @var ChatPostMessagePayloadResponse $response */
                     $this->ts = $response->getSlackTimestamp();
+                    $this->channel = $response->getChannelId();
                 }
             } else {
                 // something went wrong, but what?
@@ -105,36 +135,9 @@ EOT
                 echo $response->getError();
                 // explained error (Slack's explanation of the error, according to the documentation)
                 echo $response->getErrorExplanation();
-                exit(1);
             }
-        }
-
-        $payload = new ChatPostMessagePayload();
-        $payload->setChannel("#" . getenv("slack_channel"));
-        $payload->setIconUrl("https://www.dropbox.com/s/ivrj3wcze7cwh54/masterjenkins.png?dl=1");
-        $payload->setUsername("Master Jenkins");
-
-        $attachment = new Attachment();
-        $attachment->setColor($color);
-        $attachment->setFallback("[".$project."#" . getenv("BUILD_NUMBER"). " - branch *" . getenv("GIT_BRANCH") . "* to *". $env . "* by _" . $user . "_] " . $message);
-        $attachment->setText("[".$project."#" . getenv("BUILD_NUMBER"). " - branch *" . getenv("GIT_BRANCH") . "* to *". $env . "* by _" . $user ."_] " . $message . "\n<" . getenv("BUILD_URL") . "console|Jenkins Console> - <".getenv("BUILD_URL")."changes|Changes>" . (isset($resolverArray["shared_package_target"]) && file_exists($resolverArray["shared_package_target"])?" - <" . $resolverArray["shared_package_url"] . "|Download>":""));
-        $payload->addAttachment($attachment);
-
-        $response = $this->slackApiClient->send($payload);
-
-        if ($response->isOk()) {
-            if ($response instanceof ChatPostMessagePayloadResponse) {
-                /** @var ChatPostMessagePayloadResponse $response */
-                $this->ts = $response->getSlackTimestamp();
-                $this->channel = $response->getChannelId();
-            }
-        } else {
-            // something went wrong, but what?
-            // simple error (Slack's error message)
-            echo $response->getError();
-            // explained error (Slack's explanation of the error, according to the documentation)
-            echo $response->getErrorExplanation();
-            exit(1);
+        } catch (SlackException $e) {
+            //Ignore the slackException and continue with the deployment
         }
     }
 
