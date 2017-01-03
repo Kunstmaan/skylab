@@ -40,14 +40,10 @@ class SymfonySkeleton extends AbstractSkeleton
             $permissionDefinition->addAcl("-R -m u:@config.wwwuser@:r-X");
             $project["permissions"]["/data"] = $permissionDefinition;
         }
-        $project = $this->addReadWriteFolder("/data/" . $project["name"] . "/app/cache", $project);
         $project = $this->addReadWriteFolder("/data/" . $project["name"] . "/var/cache", $project);
-        $project = $this->addReadWriteFolder("/data/" . $project["name"] . "/app/logs", $project);
         $project = $this->addReadWriteFolder("/data/" . $project["name"] . "/var/logs", $project);
         $project = $this->addReadWriteFolder("/data/" . $project["name"] . "/web/media", $project);
-        $project = $this->addReadWriteFolder("/data/current/app/cache", $project);
         $project = $this->addReadWriteFolder("/data/current/var/cache", $project);
-        $project = $this->addReadWriteFolder("/data/current/app/logs", $project);
         $project = $this->addReadWriteFolder("/data/current/var/logs", $project);
         $project = $this->addReadWriteFolder("/data/current/web/media", $project);
 
