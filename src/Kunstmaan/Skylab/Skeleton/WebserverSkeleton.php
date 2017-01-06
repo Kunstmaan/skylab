@@ -57,11 +57,7 @@ class WebserverSkeleton extends AbstractSkeleton
             }
         }
 
-        if (PHP_OS == "Darwin") {
-            $this->processProvider->executeSudoCommand('find ' . $this->fileSystemProvider->getProjectDirectory($project["name"]) . '/data/current -type d -name .git -exec cd {} "\;" -exec git config core.filemode false "\;"');
-        } else {
-            $this->processProvider->executeSudoCommand('find ' . $this->fileSystemProvider->getProjectDirectory($project["name"]) . '/data/current -type d -name .git -exec cd {} \; -exec git config core.filemode false \;');
-        }
+        $this->processProvider->executeSudoCommand('find  '. $this->fileSystemProvider->getProjectDirectory($project["name"]) . '/data/current -type d -name .git -exec git config -f \'{}/config\' core.filemode false \;');
 
         $this->dialogProvider->logConfig("Updating aliases webserver config file");
         $this->generateBasicAliases($project, $aliases);
