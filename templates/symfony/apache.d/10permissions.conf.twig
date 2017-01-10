@@ -12,5 +12,7 @@
 
 <Directory @config.projectsdir@@project.name@/data/current/web/uploads/*>
   AllowOverride None
-  php_flag engine off
+  <FilesMatch \.(?i:php)$>
+    Deny from all
+  </FilesMatch>
 </Directory>
