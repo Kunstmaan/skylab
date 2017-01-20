@@ -153,7 +153,16 @@ class PermissionsProvider extends AbstractProvider
             }
         }
 
-        $this->processProvider->executeSudoCommand('find ' . $this->fileSystemProvider->getProjectDirectory($project["name"]) . '/ -type d -exec chmod o+rx {} \;');
+        $command = "find  ". $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/ -type d -exec chmod o+rx {} %s";
+        $command_end = "\;";
+        if(PHP_OS === "Darwin") {
+            $osxVersion = trim($this->processProvider->executeSudoCommand("sw_vers -productVersion | cut -d '.' -f 2"));
+            if ($osxVersion <= "11") {
+                $command_end = "\\\\\;";
+            }
+        }
+        $this->processProvider->executeSudoCommand(sprintf($command, $command_end));
+
     }
 
     /**
