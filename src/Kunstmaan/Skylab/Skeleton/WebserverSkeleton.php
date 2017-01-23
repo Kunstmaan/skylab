@@ -57,7 +57,7 @@ class WebserverSkeleton extends AbstractSkeleton
             }
         }
 
-        $command = "find  ". $this->fileSystemProvider->getProjectDirectory($project["name"]) . " -type d -name .git -exec git config -f '{}/config' core.filemode false %s";
+        $command = "find -L ". $this->fileSystemProvider->getProjectDirectory($project["name"]) . "/data/current -maxdepth 1 -type d -name .git -exec git config -f '{}/config' core.filemode false %s";
         $command_end = "\;";
         if(PHP_OS === "Darwin") {
             $osxVersion = trim($this->processProvider->executeSudoCommand("sw_vers -productVersion | cut -d '.' -f 2"));
