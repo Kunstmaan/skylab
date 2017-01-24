@@ -190,7 +190,7 @@ Full details at [doc/SelfUpdateCommand.md](doc/SelfUpdateCommand.md)
 1. Generate an updated changelog using ```git changelog``` from [git-extras](https://github.com/visionmedia/git-extras)
 1. Commit this new changelog
 1. Create a new release from the Github interface, add the new changelog part in the description and name the release for [the next brightst star in this list](http://en.wikipedia.org/wiki/List_of_brightest_stars)
-1. Compile a new version ```./compile --version 0.1.2```
+1. Build a new version using box.phar ```box.phar build -v```. Note: make sure you have pulled in the latest tag!!
 1. Add the new phar file to the release on GitHub
 
 ## Modifying the documentation
