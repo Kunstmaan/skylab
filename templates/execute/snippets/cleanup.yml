@@ -1,2 +1,3 @@
 steps:
   - ssh %deploy_server% -p %deploy_port% 'COUNT_BUILDS=$(readlink -f /home/projects/%deploy_project%/data/current/ > /tmp/%deploy_project%-current; ls -1dt /home/projects/%deploy_project%/data/builds/* | grep -v -f /tmp/%deploy_project%-current | grep -v rsync | wc -l); if [ $COUNT_BUILDS -ge 3 ]; then ls -1dt /home/projects/%deploy_project%/data/builds/* | grep -v -f /tmp/%deploy_project%-current | grep -v rsync | tail -n +3 | sudo xargs nice -n 19 rm -rf; fi;'
+  - rm %shared_package_target%
