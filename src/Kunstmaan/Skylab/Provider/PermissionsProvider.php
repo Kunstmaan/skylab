@@ -61,7 +61,7 @@ class PermissionsProvider extends AbstractProvider
     {
         if (!$this->isUser($userName)) {
             if (PHP_OS == "Darwin") {
-                $maxid = $this->processProvider->executeSudoCommand("dscl . list /Users UniqueID | awk '{print $2}' | sort -ug | tail -1");
+                $maxid = (int) $this->processProvider->executeSudoCommand("dscl . list /Users UniqueID | awk '{print $2}' | sort -ug | tail -1");
                 $maxid = $maxid + 1;
                 $this->processProvider->executeSudoCommand('dscl . create /Users/' . $userName);
                 if (file_exists("/usr/local/bin/bash")){
