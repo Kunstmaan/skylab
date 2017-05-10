@@ -4,8 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "0280292894e92cfee6e8076bb7fe55ed",
-    "content-hash": "ad1390e42238fbe2aab6a29899c99345",
+    "content-hash": "f1847168d5368b331d46fc684b490681",
     "packages": [
         {
             "name": "cilex/cilex",
@@ -64,7 +63,7 @@
                 "cli",
                 "microframework"
             ],
-            "time": "2014-03-29 14:03:13"
+            "time": "2014-03-29T14:03:13+00:00"
         },
         {
             "name": "cilex/console-service-provider",
@@ -123,7 +122,7 @@
                 "service-provider",
                 "silex"
             ],
-            "time": "2012-12-19 10:50:58"
+            "time": "2012-12-19T10:50:58+00:00"
         },
         {
             "name": "ckdarby/php-uptimerobot",
@@ -162,7 +161,7 @@
             ],
             "description": "PHP Wrapper for UptimeRobot.com API",
             "homepage": "https://github.com/ckdarby/PHP-UptimeRobot/",
-            "time": "2014-10-25 00:06:52"
+            "time": "2014-10-25T00:06:52+00:00"
         },
         {
             "name": "cleentfaar/slack",
@@ -288,7 +287,7 @@
                 "docblock",
                 "parser"
             ],
-            "time": "2015-08-31 12:32:49"
+            "time": "2015-08-31T12:32:49+00:00"
         },
         {
             "name": "doctrine/collections",
@@ -354,7 +353,7 @@
                 "collections",
                 "iterator"
             ],
-            "time": "2015-04-14 22:21:58"
+            "time": "2015-04-14T22:21:58+00:00"
         },
         {
             "name": "doctrine/lexer",
@@ -408,7 +407,7 @@
                 "lexer",
                 "parser"
             ],
-            "time": "2014-09-09 13:34:57"
+            "time": "2014-09-09T13:34:57+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -466,7 +465,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2015-05-20 03:47:55"
+            "time": "2015-05-20T03:47:55+00:00"
         },
         {
             "name": "guzzlehttp/ringphp",
@@ -517,7 +516,7 @@
                 }
             ],
             "description": "Provides a simple API and specification that abstracts away the details of HTTP into a single PHP function.",
-            "time": "2015-05-20 03:37:09"
+            "time": "2015-05-20T03:37:09+00:00"
         },
         {
             "name": "guzzlehttp/streams",
@@ -567,7 +566,7 @@
                 "Guzzle",
                 "stream"
             ],
-            "time": "2014-10-12 19:18:40"
+            "time": "2014-10-12T19:18:40+00:00"
         },
         {
             "name": "ircmaxell/password-compat",
@@ -609,7 +608,7 @@
                 "hashing",
                 "password"
             ],
-            "time": "2014-11-20 16:49:30"
+            "time": "2014-11-20T16:49:30+00:00"
         },
         {
             "name": "jms/metadata",
@@ -661,7 +660,7 @@
                 "xml",
                 "yaml"
             ],
-            "time": "2014-07-12 07:13:19"
+            "time": "2014-07-12T07:13:19+00:00"
         },
         {
             "name": "jms/parser-lib",
@@ -696,7 +695,7 @@
                 "Apache2"
             ],
             "description": "A library for easily creating recursive-descent parsers.",
-            "time": "2012-11-18 18:08:43"
+            "time": "2012-11-18T18:08:43+00:00"
         },
         {
             "name": "jms/serializer",
@@ -766,19 +765,109 @@
                 "serialization",
                 "xml"
             ],
-            "time": "2014-03-18 08:39:00"
+            "time": "2014-03-18T08:39:00+00:00"
+        },
+        {
+            "name": "kunstmaan/cilex-twig",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Kunstmaan/cilex-twig.git",
+                "reference": "e4d375e76db7211fff2fb7e6d2b947e6c1f9cb40"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Kunstmaan/cilex-twig/zipball/e4d375e76db7211fff2fb7e6d2b947e6c1f9cb40",
+                "reference": "e4d375e76db7211fff2fb7e6d2b947e6c1f9cb40",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3",
+                "twig/twig": ">=1.8.0,<2.0-dev"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Cilex": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Igor Wiedler",
+                    "email": "igor@wiedler.ch"
+                }
+            ],
+            "description": "The Twig provider from Silex for Cilex",
+            "keywords": [
+                "cilex",
+                "provider",
+                "twig"
+            ],
+            "time": "2015-04-07T09:13:40+00:00"
+        },
+        {
+            "name": "kunstmaan/pwgen-php",
+            "version": "0.1.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Kunstmaan/pwgen-php.git",
+                "reference": "80f70098a8a516ef4ae633fc1664fa2dcb42b392"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Kunstmaan/pwgen-php/zipball/80f70098a8a516ef4ae633fc1664fa2dcb42b392",
+                "reference": "80f70098a8a516ef4ae633fc1664fa2dcb42b392",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "PWGen": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL"
+            ],
+            "authors": [
+                {
+                    "name": "Theodore Ts'o",
+                    "email": "tytso@alum.mit.edu"
+                },
+                {
+                    "name": "Superwayne",
+                    "email": "superwayne@superwayne.org"
+                }
+            ],
+            "description": "pwgen-php is a simple PHP class which aims to clone the GNU pwgen functionality.",
+            "keywords": [
+                "generator",
+                "password"
+            ],
+            "time": "2016-02-27T21:46:56+00:00"
         },
         {
             "name": "padraic/humbug_get_contents",
             "version": "1.0.4",
             "source": {
                 "type": "git",
-                "url": "https://github.com/padraic/file_get_contents.git",
+                "url": "https://github.com/humbug/file_get_contents.git",
                 "reference": "66797199019d0cb4529cb8d29c6f0b4c5085b53a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/padraic/file_get_contents/zipball/66797199019d0cb4529cb8d29c6f0b4c5085b53a",
+                "url": "https://api.github.com/repos/humbug/file_get_contents/zipball/66797199019d0cb4529cb8d29c6f0b4c5085b53a",
                 "reference": "66797199019d0cb4529cb8d29c6f0b4c5085b53a",
                 "shasum": ""
             },
@@ -823,19 +912,19 @@
                 "ssl",
                 "tls"
             ],
-            "time": "2015-04-22 18:45:00"
+            "time": "2015-04-22T18:45:00+00:00"
         },
         {
             "name": "padraic/phar-updater",
             "version": "1.0.3",
             "source": {
                 "type": "git",
-                "url": "https://github.com/padraic/phar-updater.git",
+                "url": "https://github.com/humbug/phar-updater.git",
                 "reference": "c17eeb3887dc4269d1b4837dc875d39e9f8149a8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/padraic/phar-updater/zipball/c17eeb3887dc4269d1b4837dc875d39e9f8149a8",
+                "url": "https://api.github.com/repos/humbug/phar-updater/zipball/c17eeb3887dc4269d1b4837dc875d39e9f8149a8",
                 "reference": "c17eeb3887dc4269d1b4837dc875d39e9f8149a8",
                 "shasum": ""
             },
@@ -875,7 +964,7 @@
                 "self-update",
                 "update"
             ],
-            "time": "2016-01-05 23:08:01"
+            "time": "2016-01-05T23:08:01+00:00"
         },
         {
             "name": "phpcollection/phpcollection",
@@ -925,7 +1014,7 @@
                 "sequence",
                 "set"
             ],
-            "time": "2014-03-11 13:46:42"
+            "time": "2014-03-11T13:46:42+00:00"
         },
         {
             "name": "phpoption/phpoption",
@@ -975,7 +1064,7 @@
                 "php",
                 "type"
             ],
-            "time": "2015-07-25 16:39:46"
+            "time": "2015-07-25T16:39:46+00:00"
         },
         {
             "name": "pimple/pimple",
@@ -1021,7 +1110,7 @@
                 "container",
                 "dependency injection"
             ],
-            "time": "2013-11-22 08:30:29"
+            "time": "2013-11-22T08:30:29+00:00"
         },
         {
             "name": "raven/raven",
@@ -1075,7 +1164,8 @@
                 "log",
                 "logging"
             ],
-            "time": "2015-08-25 22:38:46"
+            "abandoned": "sentry/sentry",
+            "time": "2015-08-25T22:38:46+00:00"
         },
         {
             "name": "react/promise",
@@ -1119,97 +1209,7 @@
                 }
             ],
             "description": "A lightweight implementation of CommonJS Promises/A for PHP",
-            "time": "2016-03-31 13:10:33"
-        },
-        {
-            "name": "roderik/cilex-twig",
-            "version": "1.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/roderik/cilex-twig.git",
-                "reference": "e4d375e76db7211fff2fb7e6d2b947e6c1f9cb40"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/roderik/cilex-twig/zipball/e4d375e76db7211fff2fb7e6d2b947e6c1f9cb40",
-                "reference": "e4d375e76db7211fff2fb7e6d2b947e6c1f9cb40",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3",
-                "twig/twig": ">=1.8.0,<2.0-dev"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Cilex": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Igor Wiedler",
-                    "email": "igor@wiedler.ch"
-                }
-            ],
-            "description": "The Twig provider from Silex for Cilex",
-            "keywords": [
-                "cilex",
-                "provider",
-                "twig"
-            ],
-            "time": "2015-04-07 09:13:40"
-        },
-        {
-            "name": "roderik/pwgen-php",
-            "version": "0.1.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/roderik/pwgen-php.git",
-                "reference": "80f70098a8a516ef4ae633fc1664fa2dcb42b392"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/roderik/pwgen-php/zipball/80f70098a8a516ef4ae633fc1664fa2dcb42b392",
-                "reference": "80f70098a8a516ef4ae633fc1664fa2dcb42b392",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "PWGen": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL"
-            ],
-            "authors": [
-                {
-                    "name": "Theodore Ts'o",
-                    "email": "tytso@alum.mit.edu"
-                },
-                {
-                    "name": "Superwayne",
-                    "email": "superwayne@superwayne.org"
-                }
-            ],
-            "description": "pwgen-php is a simple PHP class which aims to clone the GNU pwgen functionality.",
-            "keywords": [
-                "generator",
-                "password"
-            ],
-            "time": "2016-02-27 21:46:56"
+            "time": "2016-03-31T13:10:33+00:00"
         },
         {
             "name": "sgrodzicki/pingdom",
@@ -1294,7 +1294,7 @@
                 }
             ],
             "description": "Automatic BASH completion for Symfony Console Component based applications.",
-            "time": "2014-11-18 03:19:13"
+            "time": "2014-11-18T03:19:13+00:00"
         },
         {
             "name": "symfony/console",
@@ -1354,7 +1354,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2016-03-17 09:19:04"
+            "time": "2016-03-17T09:19:04+00:00"
         },
         {
             "name": "symfony/event-dispatcher",
@@ -1414,7 +1414,7 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
-            "time": "2016-03-07 14:04:32"
+            "time": "2016-03-07T14:04:32+00:00"
         },
         {
             "name": "symfony/finder",
@@ -1463,7 +1463,7 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "https://symfony.com",
-            "time": "2016-03-10 10:53:53"
+            "time": "2016-03-10T10:53:53+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -1522,7 +1522,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2016-01-20 09:13:37"
+            "time": "2016-01-20T09:13:37+00:00"
         },
         {
             "name": "symfony/polyfill-php55",
@@ -1578,7 +1578,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2016-01-20 09:13:37"
+            "time": "2016-01-20T09:13:37+00:00"
         },
         {
             "name": "symfony/process",
@@ -1627,7 +1627,7 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
-            "time": "2016-03-23 13:11:46"
+            "time": "2016-03-23T13:11:46+00:00"
         },
         {
             "name": "symfony/serializer",
@@ -1691,7 +1691,7 @@
             ],
             "description": "Symfony Serializer Component",
             "homepage": "https://symfony.com",
-            "time": "2016-03-07 14:04:32"
+            "time": "2016-03-07T14:04:32+00:00"
         },
         {
             "name": "symfony/yaml",
@@ -1740,33 +1740,34 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2016-03-04 07:54:35"
+            "time": "2016-03-04T07:54:35+00:00"
         },
         {
             "name": "twig/twig",
-            "version": "v1.24.0",
+            "version": "v1.33.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "3e5aa30ebfbafd5951fb1b01e338e1800ce7e0e8"
+                "reference": "dd6ca96227917e1e85b41c7c3cc6507b411e0927"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/3e5aa30ebfbafd5951fb1b01e338e1800ce7e0e8",
-                "reference": "3e5aa30ebfbafd5951fb1b01e338e1800ce7e0e8",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/dd6ca96227917e1e85b41c7c3cc6507b411e0927",
+                "reference": "dd6ca96227917e1e85b41c7c3cc6507b411e0927",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.2.7"
             },
             "require-dev": {
+                "psr/container": "^1.0",
                 "symfony/debug": "~2.7",
-                "symfony/phpunit-bridge": "~2.7"
+                "symfony/phpunit-bridge": "~3.3@dev"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.24-dev"
+                    "dev-master": "1.33-dev"
                 }
             },
             "autoload": {
@@ -1801,7 +1802,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2016-01-25 21:22:18"
+            "time": "2017-04-20T17:39:48+00:00"
         }
     ],
     "packages-dev": [],

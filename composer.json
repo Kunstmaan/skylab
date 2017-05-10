@@ -21,14 +21,14 @@
         "cilex/cilex":              "~1.1",
         "symfony/yaml":             "~2.1",
         "symfony/serializer":       "~2.1",
-        "roderik/pwgen-php":        "0.1.x",
-        "roderik/cilex-twig":       "1.0.x",
         "sgrodzicki/pingdom":       "dev-master",
         "stecman/symfony-console-completion": "~0.4.4",
         "raven/raven": "0.12.*",
         "cleentfaar/slack": "dev-master",
         "ckdarby/php-uptimerobot": "^0.1.0",
-        "padraic/phar-updater": "^1.0"
+        "padraic/phar-updater": "^1.0",
+        "kunstmaan/pwgen-php": "0.1.x",
+        "kunstmaan/cilex-twig": "1.0.x"
     },
     "autoload": {
         "psr-0": { "Kunstmaan": "src/" }
