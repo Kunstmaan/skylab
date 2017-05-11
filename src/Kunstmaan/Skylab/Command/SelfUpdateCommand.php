@@ -11,8 +11,8 @@ use Symfony\Component\Console\Input\InputOption;
 class SelfUpdateCommand extends AbstractCommand
 {
 
-    const VERSION_URL = 'https://s3-eu-west-1.amazonaws.com/kunstmaan-skylab/skylab.version';
-    const PHAR_URL = 'https://s3-eu-west-1.amazonaws.com/kunstmaan-skylab/skylab.phar';
+    const VERSION_URL = 'https://s3-eu-west-1.amazonaws.com/kumaskylab/skylab.version';
+    const PHAR_URL = 'https://s3-eu-west-1.amazonaws.com/kumaskylab/skylab.phar';
     const PACKAGE_NAME = 'kunstmaan/skylab';
     const FILE_NAME = 'skylab.phar';
 
