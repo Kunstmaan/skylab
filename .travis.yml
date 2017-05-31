@@ -33,7 +33,7 @@ deploy:
       secure: OqEEWH2WyMF/5HXPnPi+nSJ7Lz3dj7lOZnh7vQ+SWOw0EW6r4NGZtQZQLw8gOyLgU9wqnBuT95ke6Bo7b1HDW3N4Ffy6ODgEO8gBQjXP0j/QOxk9H4yzX/nYirfdYM1XmhlY1IJFQ4DtoCyS4rjGy22pm0TN02XGsx2WjOrZlJQ=
     secret_access_key:
       secure: SEpKEkPfMN5avhtbD7iVRXhlmdlxx/zF1z6ZEX6BAworPEoZ/j3K5VqTPV2kpKgA965kPzx+umAcdxJiSoPA1vZngUih+ZPpn1QUbuv/CnMKntVNCTH20WHvvpMeamBGsiwnsGV1urKKkl+GIx5SQ65LAU4AhBR1rMSQE9VVzVQ=
-    bucket: kumaskylab
+    bucket: kunstmaan-skylab
     skip_cleanup: true
     acl: public_read
     region: eu-west-1
