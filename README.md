@@ -34,7 +34,7 @@ $ mv skylab.phar /usr/local/bin/skylab
 
 ## Configuration
 
-You can override the [default configuration](./config.yml) by creating a file /etc/skylab.yml and give it a secure chmod
+You can override the [default configuration](./config/config.yml) by creating a file /etc/skylab.yml and give it a secure chmod
 ```
 sudo chmod 700 /etc/skylab.yml
 ```
