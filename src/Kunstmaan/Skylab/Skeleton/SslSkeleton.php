@@ -57,6 +57,20 @@ class SslSkeleton extends AbstractSkeleton
      */
     public function maintenance(\ArrayObject $project)
     {
+        if (isset($project["sslConfig"])) {
+            $sslConfig = $project["sslConfig"];
+            if (!isset($sslConfig["certsDir"]) || !isset($sslConfig["certFile"]) || !isset($sslConfig["certKeyFile"]) || !isset($sslConfig["caCertFile"])) {
+                $this->dialogProvider->logError("Required SSL configuration is missing");
+                return;
+            }
+
+            $this->processProvider->executeSudoCommand('mkdir -p ' . $sslConfig['webserverCertsDir']);
+
+            $sslFiles = array("certFile" => "webserverCertFile", "certKeyFile" => "webserverCertKeyFile", "caCertFile" => "webserverCaCertFile");
+            foreach ($sslFiles as $sslFile => $webserverSslFile) {
+                $this->processProvider->executeSudoCommand('cp ' . $sslConfig['certsDir'] . $sslConfig[$sslFile] . ' ' . $sslConfig['webserverCertsDir'] . $sslConfig[$webserverSslFile]);
+            }
+        }
     }
 
     /**

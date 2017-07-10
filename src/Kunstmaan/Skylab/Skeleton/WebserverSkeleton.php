@@ -347,7 +347,11 @@ class WebserverSkeleton extends AbstractSkeleton
                 if (!file_exists($path)){
                     $this->dialogProvider->logError("There is Apache config in a .dist file, or you mistyped the template path, check " . $config);
                 }
-                $content = $this->fileSystemProvider->renderString(file_get_contents($path), array());
+                $variables = array();
+                if (array_key_exists('sslConfig', $project)) {
+                    $variables['sslConfig'] = $project['sslConfig'];
+                }
+                $content = $this->fileSystemProvider->renderString(file_get_contents($path), $variables);
             } else {
                 $realPath = $config->getRealPath();
                 $content = file_get_contents($realPath);
