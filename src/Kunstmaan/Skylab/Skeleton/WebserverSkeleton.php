@@ -329,10 +329,15 @@ class WebserverSkeleton extends AbstractSkeleton
      */
     private function processConfigFiles(\ArrayObject $project, $configs)
     {
+        $env = 'local';
+        if (array_key_exists('env', $this->app['config'])) {
+            $env = $this->app['config']['env'];
+        }
+
         $ignoreList = array();
         foreach ($configs as $config) {
             /** @var SplFileInfo $config */
-            if ($config->getExtension() == "local") {
+            if ($config->getExtension() == $env) {
                 $ignoreList[] = $config->getBasename('.' . $config->getExtension());
             }
         }
@@ -356,8 +361,8 @@ class WebserverSkeleton extends AbstractSkeleton
                 $realPath = $config->getRealPath();
                 $content = file_get_contents($realPath);
             }
-            if ($config->getExtension() != "local" && in_array($config->getBasename('.'. $config->getExtension()),$ignoreList)){
-                $configcontent .= "\n#SKIPPED " . $realPath . " because there was a .local file\n\n";
+            if ($config->getExtension() != $env && in_array($config->getBasename('.'. $config->getExtension()),$ignoreList)){
+                $configcontent .= "\n#SKIPPED " . $realPath . " because there was a ." . $env . " file\n\n";
             } else {
                 $configcontent .= "\n#BEGIN " . $realPath . "\n\n";
                 $configcontent .= $this->projectConfigProvider->searchReplacer($content, $project) . "\n";
