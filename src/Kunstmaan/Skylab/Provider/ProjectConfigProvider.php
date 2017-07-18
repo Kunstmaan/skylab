@@ -327,24 +327,34 @@ class ProjectConfigProvider extends AbstractProvider
      */
     private function parseSslConfig($xmlConfig, $config)
     {
-        if (array_key_exists('dir', $xmlConfig)) {
-            $config['sslConfig']['certsDir'] = (string) $xmlConfig->{'dir'}['value'];
+        $foundSslConfig = false;
+        foreach ($xmlConfig as $item) {
+            if (!empty($this->app["config"]["env"]) && $item{'name'} == $this->app["config"]["env"]) {
+                if (array_key_exists('dir', $item)) {
+                    $config['sslConfig']['certsDir'] = (string) $item->{'dir'}['value'];
+                }
+                if (array_key_exists('certFile', $item)) {
+                    $config['sslConfig']['certFile'] = (string) $item->{'certFile'}['value'];
+                }
+                if (array_key_exists('certKeyFile', $item)) {
+                    $config['sslConfig']['certKeyFile'] = (string) $item->{'certKeyFile'}['value'];
+                }
+                if (array_key_exists('caCertFile', $item)) {
+                    $config['sslConfig']['caCertFile'] = (string) $item->{'caCertFile'}['value'];
+                }
+                if (array_key_exists('dir', $item) && array_key_exists('certFile', $item)) {
+                    $cname = $this->getCname((string) $item->{'dir'}['value'], (string) $item->{'certFile'}['value']);
+                    $config['sslConfig']['webserverCertsDir'] = "/etc/apache2/ssl-certs/".$cname.'/';
+                    $config['sslConfig']['webserverCertFile'] = $cname.'.crt';
+                    $config['sslConfig']['webserverCertKeyFile'] = $cname.'.key';
+                    $config['sslConfig']['webserverCaCertFile'] = $cname.'.ca-bundle';
+                }
+                $foundSslConfig = true;
+            }
         }
-        if (array_key_exists('certFile', $xmlConfig)) {
-            $config['sslConfig']['certFile'] = (string) $xmlConfig->{'certFile'}['value'];
-        }
-        if (array_key_exists('certKeyFile', $xmlConfig)) {
-            $config['sslConfig']['certKeyFile'] = (string) $xmlConfig->{'certKeyFile'}['value'];
-        }
-        if (array_key_exists('caCertFile', $xmlConfig)) {
-            $config['sslConfig']['caCertFile'] = (string) $xmlConfig->{'caCertFile'}['value'];
-        }
-        if (array_key_exists('dir', $xmlConfig) && array_key_exists('certFile', $xmlConfig)) {
-            $cname = $this->getCname((string) $xmlConfig->{'dir'}['value'], (string) $xmlConfig->{'certFile'}['value']);
-            $config['sslConfig']['webserverCertsDir'] = "/etc/apache2/ssl-certs/".$cname.'/';
-            $config['sslConfig']['webserverCertFile'] = $cname.'.crt';
-            $config['sslConfig']['webserverCertKeyFile'] = $cname.'.key';
-            $config['sslConfig']['webserverCaCertFile'] = $cname.'.ca-bundle';
+
+        if (!$foundSslConfig) {
+            $this->dialogProvider->logWarning("No SSL config found for project ". $config["name"] . "!");
         }
     }
 
