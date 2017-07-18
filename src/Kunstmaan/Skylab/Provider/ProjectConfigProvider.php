@@ -62,6 +62,9 @@ class ProjectConfigProvider extends AbstractProvider
                         $config["aliases"][] = (string) $alias["value"];
                     }
                     break;
+                case "project.sslConfig":
+                    $this->parseSslConfig($var, $config);
+                    break;
                 default:
                     $config[str_replace("project.", "", $tag)] = (string) $var["value"];
             }
@@ -318,4 +321,43 @@ class ProjectConfigProvider extends AbstractProvider
         $this->writeToFile($backup, $backupPath);
     }
 
+    /**
+     * @param $xmlConfig
+     * @param $config
+     */
+    private function parseSslConfig($xmlConfig, $config)
+    {
+        if (array_key_exists('dir', $xmlConfig)) {
+            $config['sslConfig']['certsDir'] = (string) $xmlConfig->{'dir'}['value'];
+        }
+        if (array_key_exists('certFile', $xmlConfig)) {
+            $config['sslConfig']['certFile'] = (string) $xmlConfig->{'certFile'}['value'];
+        }
+        if (array_key_exists('certKeyFile', $xmlConfig)) {
+            $config['sslConfig']['certKeyFile'] = (string) $xmlConfig->{'certKeyFile'}['value'];
+        }
+        if (array_key_exists('caCertFile', $xmlConfig)) {
+            $config['sslConfig']['caCertFile'] = (string) $xmlConfig->{'caCertFile'}['value'];
+        }
+        if (array_key_exists('dir', $xmlConfig) && array_key_exists('certFile', $xmlConfig)) {
+            $cname = $this->getCname((string) $xmlConfig->{'dir'}['value'], (string) $xmlConfig->{'certFile'}['value']);
+            $config['sslConfig']['webserverCertsDir'] = "/etc/apache2/ssl-certs/".$cname.'/';
+            $config['sslConfig']['webserverCertFile'] = $cname.'.crt';
+            $config['sslConfig']['webserverCertKeyFile'] = $cname.'.key';
+            $config['sslConfig']['webserverCaCertFile'] = $cname.'.ca-bundle';
+        }
+    }
+
+    private function getCname($projectSslDir, $certFileName)
+    {
+        $certContent = openssl_x509_parse(file_get_contents($projectSslDir.$certFileName));
+        if (isset($certContent["subject"]["CN"])) {
+            $cname = str_replace("*", "STAR", $certContent["subject"]["CN"]);
+            $cname = str_replace(".", "_", $cname);
+
+            return $cname;
+        }
+
+        return "generic_cname";
+    }
 }
