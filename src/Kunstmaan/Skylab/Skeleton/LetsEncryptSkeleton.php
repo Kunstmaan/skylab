@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bakie
- * Date: 7/26/17
- * Time: 1:37 PM
- */
 
 namespace Kunstmaan\Skylab\Skeleton;
 
