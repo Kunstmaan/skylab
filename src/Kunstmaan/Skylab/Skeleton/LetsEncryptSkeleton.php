@@ -37,6 +37,21 @@ class LetsEncryptSkeleton extends AbstractSkeleton
      */
     public function postMaintenance()
     {
+        if ($this->app["config"]["env"] == "prod") {
+            $le = $this;
+            $this->fileSystemProvider->projectsLoop(function ($project) use ($le) {
+                if ($le->skeletonProvider->hasSkeleton($project, $le)) {
+                    $urls = $project["aliases"];
+                    $urls[] = $project["url"];
+                    if ($le->processProvider->commandExists("letsencrypt")) {
+                        $le->dialogProvider->logTask("Running letsencrypt command for project " . $project["name"]);
+                        $le->processProvider->executeSudoCommand("letsencrypt --text --rsa-key-size 4096 --email it@kunstmaan.be --agree-tos --keep-until-expiring --apache --apache-le-vhost-ext .ssl.conf --redirect -d " . implode(",", $urls) );
+                    } else {
+                        $le->dialogProvider->logWarning("The command letsencrypt is not available");
+                    }
+                }
+            });
+        }
     }
 
     /**
@@ -46,15 +61,6 @@ class LetsEncryptSkeleton extends AbstractSkeleton
      */
     public function maintenance(\ArrayObject $project)
     {
-        if ($this->app["config"]["env"] == "prod") {
-            $urls = $project["aliases"];
-            $urls[] = $project["url"];
-            if ($this->processProvider->commandExists("letsencrypt")) {
-                $this->processProvider->executeSudoCommand("letsencrypt --text --rsa-key-size 4096 --email it@kunstmaan.be --agree-tos --keep-until-expiring --apache --apache-le-vhost-ext .ssl.conf --redirect -d " . implode(",", $urls) );
-            } else {
-                $this->dialogProvider->logWarning("The command letsencrypt is not available");
-            }
-        }
     }
 
     /**
