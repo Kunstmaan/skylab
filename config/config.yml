@@ -72,6 +72,7 @@ skeletons:
     ssl:         Kunstmaan\Skylab\Skeleton\SslSkeleton
     statuscake:  false
     monitoring:  Kunstmaan\Skylab\Skeleton\MonitoringSkeleton
+    letsencrypt: Kunstmaan\Skylab\Skeleton\LetsEncryptSkeleton
 
 debug: true
 develmode: true
