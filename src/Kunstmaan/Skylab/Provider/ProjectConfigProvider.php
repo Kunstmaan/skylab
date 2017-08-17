@@ -354,7 +354,7 @@ class ProjectConfigProvider extends AbstractProvider
         }
 
         if (!$foundSslConfig) {
-            $this->dialogProvider->logWarning("No SSL config found for project ". $config["name"] . "!");
+            $this->dialogProvider->logError("No SSL config found for project ". $config["name"] . " for env " . $this->app["config"]["env"] ."!");
         }
     }
 
