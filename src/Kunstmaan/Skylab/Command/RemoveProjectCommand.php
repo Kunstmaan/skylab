@@ -23,6 +23,7 @@ class RemoveProjectCommand extends AbstractCommand
             ->setDescription('Removes a Skylab project')
             ->addArgument('name', InputArgument::OPTIONAL, 'The name of the project.')
             ->addOption("force", null, InputOption::VALUE_NONE, 'Does not ask before removing')
+            ->addOption('no-backup', null, InputOption::VALUE_NONE, 'Removes the project without making a backup first')
             ->setHelp(<<<EOT
 The <info>remove</info> command will remove the project after creating a backup first.
 
@@ -48,14 +49,18 @@ EOT
 
         $this->dialogProvider->logStep("Removing project $projectname");
 
-        $command = $this->getApplication()->find('backup');
-        $arguments = array(
-            'command' => 'backup',
-            'project' => $projectname,
-            '--hideLogo' => true
-        );
-        $input = new ArrayInput($arguments);
-        $returnCode = $command->run($input, $this->output);
+        if (!$this->input->getOption('no-backup')) {
+            $command = $this->getApplication()->find('backup');
+            $arguments = array(
+                'command' => 'backup',
+                'project' => $projectname,
+                '--hideLogo' => true
+            );
+            $input = new ArrayInput($arguments);
+            $returnCode = $command->run($input, $this->output);
+        } else {
+            $returnCode = 0;
+        }
 
         if (!$returnCode) {
             $this->permissionsProvider->killProcesses($projectname);
