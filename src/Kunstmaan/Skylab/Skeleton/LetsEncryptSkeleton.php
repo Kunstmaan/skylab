@@ -46,6 +46,8 @@ class LetsEncryptSkeleton extends AbstractSkeleton
                     if ($le->processProvider->commandExists("letsencrypt")) {
                         $le->dialogProvider->logTask("Running letsencrypt command for project " . $project["name"]);
                         $le->processProvider->executeSudoCommand("letsencrypt --text --rsa-key-size 4096 --email it@kunstmaan.be --agree-tos --keep-until-expiring --apache --apache-le-vhost-ext .ssl.conf --redirect -d " . implode(",", $urls) );
+                        //Add the renew cronjob
+                        $le->processProvider->executeSudoCommand("crontab -l | grep '". implode(",", $urls) . "' || (crontab -l; echo '0 0 * * 0 letsencrypt --apache -n certonly -d " . implode(",", $urls) . "') | crontab -");
                     } else {
                         $le->dialogProvider->logWarning("The command letsencrypt is not available");
                     }
@@ -97,6 +99,9 @@ class LetsEncryptSkeleton extends AbstractSkeleton
      */
     public function postRemove(\ArrayObject $project)
     {
+        $urls = $project["aliases"];
+        $urls[] = $project["url"];
+        $this->processProvider->executeSudoCommand("crontab -l | grep -v '" . implode(",", $urls) . "' | crontab -");
     }
 
     /**
