@@ -37,7 +37,7 @@ class LetsEncryptSkeleton extends AbstractSkeleton
      */
     public function postMaintenance()
     {
-        if ($this->app["config"]["env"] == "prod") {
+        if (isset($this->app["config"]["env"]) && $this->app["config"]["env"] == "prod") {
             $le = $this;
             $this->fileSystemProvider->projectsLoop(function ($project) use ($le) {
                 if ($le->skeletonProvider->hasSkeleton($project, $le)) {
