@@ -37,6 +37,7 @@ class ExecuteCommand extends AbstractCommand
             ->setDescription('Executes a Skylab YAML file')
             ->addArgument('file', InputArgument::REQUIRED, 'The full path to the YAML file')
             ->addArgument('deploy-environment', InputArgument::OPTIONAL, 'The environment to deploy to')
+            ->addOption("--skip-build", null, InputOption::VALUE_NONE, 'If set, the build steps will be skipped')
             ->addOption("--skip-tests", null, InputOption::VALUE_NONE, 'If set, the test steps will be skipped')
             ->addOption("--skip-deploy", null, InputOption::VALUE_NONE, 'If set, the deploy steps will be skipped')
             ->addOption("--debug-yml", null, InputOption::VALUE_NONE, 'If set, the resulting yml will be shown without executing it')
@@ -164,10 +165,14 @@ EOT
         if (isset($yaml["deploy_matrix"][$deployEnv])) {
 
             //build
-            $this->notifySlack("Build started", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray);
-            $this->runStep("before_build", $yaml, $deployEnv);
-            $this->runStep("build", $yaml, $deployEnv, "after_build_success");
-            $this->notifySlack("Build successful", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray, "#FFCC00", true);
+            if (!$this->input->getOption('skip-build')) {
+                $this->notifySlack("Build started", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray);
+                $this->runStep("before_build", $yaml, $deployEnv);
+                $this->runStep("build", $yaml, $deployEnv, "after_build_success");
+                $this->notifySlack("Build successful", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray, "#FFCC00", true);
+            } else {
+                $this->dialogProvider->logNotice("Build is skipped");
+            }
 
             // test
             if (!$this->input->getOption('skip-tests')) {
