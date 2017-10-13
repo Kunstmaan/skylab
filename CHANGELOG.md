@@ -1,4 +1,26 @@
 
+2.1.1 / 2017-10-13
+==================
+
+  * Merge pull request #180 from Numkil/feature/skip-builds
+  * Allow skipping builds by giving a flag
+  * Merge pull request #179 from delboy1978uk/master
+  * Check $this->app["config"]["env"] isset()
+  * Merge pull request #177 from benoitgeerinck/master
+  * make log compatible when proxied
+  * Merge pull request #176 from bakie/feature/letsencrypt
+  * letsencrypt add cronjob to renew certificates
+  * Merge branch 'master' into feature/letsencrypt
+  * Merge pull request #175 from bakie/feature/remove_without_backup
+  * Option to remove a project without making a backup
+  * Merge pull request #174 from bakie/feature/ssl_config_check
+  * ssl config throw error if no config found
+  * Merge pull request #173 from bakie/feature/letsencrypt
+  * do letsencryt in postmainteance
+  * Merge pull request #172 from bakie/feature/letsencrypt
+  * remove doc
+  * letsencrypt skeleton
+
 1.0.22 / 2016-02-18
 ==================
 
