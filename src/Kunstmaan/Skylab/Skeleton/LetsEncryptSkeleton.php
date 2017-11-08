@@ -41,15 +41,21 @@ class LetsEncryptSkeleton extends AbstractSkeleton
             $le = $this;
             $this->fileSystemProvider->projectsLoop(function ($project) use ($le) {
                 if ($le->skeletonProvider->hasSkeleton($project, $le)) {
-                    $urls = $project["aliases"];
-                    $urls[] = $project["url"];
-                    if ($le->processProvider->commandExists("letsencrypt")) {
-                        $le->dialogProvider->logTask("Running letsencrypt command for project " . $project["name"]);
-                        $le->processProvider->executeSudoCommand("letsencrypt --text --rsa-key-size 4096 --email it@kunstmaan.be --agree-tos --keep-until-expiring --apache --apache-le-vhost-ext .ssl.conf --redirect -d " . implode(",", $urls) );
-                        //Add the renew cronjob
-                        $le->processProvider->executeSudoCommand("crontab -l | grep '". implode(",", $urls) . "' || (crontab -l; echo '0 0 * * 0 letsencrypt --apache -n certonly -d " . implode(",", $urls) . "') | crontab -");
+                    /** @var SslSkeleton $sslSkeleton */
+                    $sslSkeleton = $le->skeletonProvider->findSkeleton(SslSkeleton::NAME);
+                    if ($le->skeletonProvider->hasSkeleton($project, $sslSkeleton) && $sslSkeleton->hasRequiredSslConfiguration($project)) {
+                        $le->dialogProvider->logWarning("Skippgin letsencrypt for project " . $project["name"] . ": SSL skeleton is defined and configuration is available.");
                     } else {
-                        $le->dialogProvider->logWarning("The command letsencrypt is not available");
+                        $urls = $project["aliases"];
+                        $urls[] = $project["url"];
+                        if ($le->processProvider->commandExists("letsencrypt")) {
+                            $le->dialogProvider->logTask("Running letsencrypt command for project " . $project["name"]);
+                            $le->processProvider->executeSudoCommand("letsencrypt --text --rsa-key-size 4096 --email it@kunstmaan.be --agree-tos --keep-until-expiring --apache --apache-le-vhost-ext .ssl.conf --redirect -d " . implode(",", $urls) );
+                            //Add the renew cronjob
+                            $le->processProvider->executeSudoCommand("crontab -l | grep '". implode(",", $urls) . "' || (crontab -l; echo '0 0 * * 0 letsencrypt --apache -n certonly -d " . implode(",", $urls) . "') | crontab -");
+                        } else {
+                            $le->dialogProvider->logWarning("The command letsencrypt is not available");
+                        }
                     }
                 }
             });

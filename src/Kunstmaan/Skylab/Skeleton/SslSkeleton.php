@@ -59,8 +59,11 @@ class SslSkeleton extends AbstractSkeleton
     {
         if (isset($project["sslConfig"])) {
             $sslConfig = $project["sslConfig"];
-            if (!isset($sslConfig["certsDir"]) || !isset($sslConfig["certFile"]) || !isset($sslConfig["certKeyFile"]) || !isset($sslConfig["caCertFile"])) {
-                $this->dialogProvider->logError("Required SSL configuration is missing");
+            if (!$this->hasRequiredSslConfiguration($project)) {
+                if (!($this->app["config"]["env"] == "prod" && $this->skeletonProvider->hasSkeleton($project, $this->skeletonProvider->findSkeleton(LetsEncryptSkeleton::NAME)))) {
+                    $this->dialogProvider->logError("Required SSL configuration is missing");
+                }
+
                 return;
             }
 
@@ -115,6 +118,18 @@ class SslSkeleton extends AbstractSkeleton
     public function dependsOn()
     {
         return array("base", "apache");
+    }
+
+    /**
+     * @param $project
+     *
+     * @return bool
+     */
+    public function hasRequiredSslConfiguration($project)
+    {
+        $sslConfig = $project["sslConfig"];
+
+        return isset($sslConfig["certsDir"]) && isset($sslConfig["certFile"]) && isset($sslConfig["certKeyFile"]) && isset($sslConfig["caCertFile"]);
     }
 
 
