@@ -127,9 +127,13 @@ class SslSkeleton extends AbstractSkeleton
      */
     public function hasRequiredSslConfiguration($project)
     {
-        $sslConfig = $project["sslConfig"];
+        if (array_key_exists("sslConfig", $project)) {
+            $sslConfig = $project["sslConfig"];
 
-        return isset($sslConfig["certsDir"]) && isset($sslConfig["certFile"]) && isset($sslConfig["certKeyFile"]) && isset($sslConfig["caCertFile"]);
+            return isset($sslConfig["certsDir"]) && isset($sslConfig["certFile"]) && isset($sslConfig["certKeyFile"]) && isset($sslConfig["caCertFile"]);
+        }
+
+        return false;
     }
 
 

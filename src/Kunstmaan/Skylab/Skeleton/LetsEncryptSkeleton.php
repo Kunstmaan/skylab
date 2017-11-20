@@ -48,7 +48,7 @@ class LetsEncryptSkeleton extends AbstractSkeleton
                     } else {
                         $urls = $project["aliases"];
                         $urls[] = $project["url"];
-                        $leEmail = $project["letsencrypt.email"] ? $project["letsencrypt.email"] : "it@kunstmaan.be";
+                        $leEmail = array_key_exists("letsencrypt.email", $project) ? $project["letsencrypt.email"] : "it@kunstmaan.be";
                         if ($le->processProvider->commandExists("letsencrypt")) {
                             $le->dialogProvider->logTask("Running letsencrypt command for project " . $project["name"]);
                             $le->processProvider->executeSudoCommand("letsencrypt --text --rsa-key-size 4096 --email " . $leEmail ." --agree-tos --keep-until-expiring --apache --apache-le-vhost-ext .ssl.conf --expand --redirect -d " . implode(",", $urls) );
