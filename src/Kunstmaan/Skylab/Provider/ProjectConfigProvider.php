@@ -354,6 +354,10 @@ class ProjectConfigProvider extends AbstractProvider
         }
 
         if (!$foundSslConfig) {
+            if ($this->app["config"]["env"] == "prod" && array_key_exists("letsencrypt", $config['skeletons'])) {
+                return;
+            }
+
             $this->dialogProvider->logError("No SSL config found for project ". $config["name"] . " for env " . $this->app["config"]["env"] ."!");
         }
     }
