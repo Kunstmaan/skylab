@@ -51,7 +51,7 @@ class LetsEncryptSkeleton extends AbstractSkeleton
                         $leEmail = $project["letsencrypt.email"] ? $project["letsencrypt.email"] : "it@kunstmaan.be";
                         if ($le->processProvider->commandExists("letsencrypt")) {
                             $le->dialogProvider->logTask("Running letsencrypt command for project " . $project["name"]);
-                            $le->processProvider->executeSudoCommand("letsencrypt --text --rsa-key-size 4096 --email " . $leEmail ." --agree-tos --keep-until-expiring --apache --apache-le-vhost-ext .ssl.conf --redirect -d " . implode(",", $urls) );
+                            $le->processProvider->executeSudoCommand("letsencrypt --text --rsa-key-size 4096 --email " . $leEmail ." --agree-tos --keep-until-expiring --apache --apache-le-vhost-ext .ssl.conf --expand --redirect -d " . implode(",", $urls) );
                             //Add the renew cronjob
                             $le->processProvider->executeSudoCommand("crontab -l | grep '". implode(",", $urls) . "' || (crontab -l; echo '0 0 * * 0 letsencrypt --apache -n certonly -d " . implode(",", $urls) . "') | crontab -");
                         } else {
