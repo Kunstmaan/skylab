@@ -1,4 +1,19 @@
 
+2.1.2 / 2017-11-21
+==================
+
+  * Merge pull request #191 from bakie/hotfix/ssl_letsencrypt_fixes
+  * Merge pull request #190 from bakie/hotfix/letsencrypt_expand
+  * Fixes for Ssl and letsecnrypt
+  * Letsencrypt use --expand
+  * Merge pull request #186 from bakie/feature/letsenecrypt_email
+  * Make letsencrypt email configurable
+  * Merge pull request #182 from bakie/feature/ssl_letsencrypt
+  * Merge pull request #184 from bakie/hotfix/cleanup
+  * cleanup dont fail if file does not exist
+  * Use ssl configuration when available even when letsencrypt is enabled
+  * Update README.md
+
 2.1.1 / 2017-10-13
 ==================
 
