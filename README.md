@@ -96,7 +96,7 @@ You can specify different SSL configuration that has to be used per environment.
 </var>
 ```
 
-Example (we assume three environments (dev.staging,prod)).
+Example (we assume three environments (dev,staging,prod)).
 ```
 <var name="project.sslConfig">
     <var name="dev">
@@ -120,7 +120,7 @@ Example (we assume three environments (dev.staging,prod)).
   </var>
 ```
 
-Which ssl configuration will be used depends on the value ```env``` in you skylab.ym file. Locally you should have ```env: dev``` in you skylab.yml configuration file. If you do then when running maintenance it will add the dev SSL config in apache.
+Which ssl configuration will be used depends on the value ```env``` in you skylab.yml file. Locally you should have ```env: dev``` in you skylab.yml configuration file. If you do then when running maintenance it will add the dev SSL config in apache.
 
 ###Letsencrypt skeleton
 The ```letsencrypt``` skeleton can be used to generate ssl certificates for your site using the Let's Encrypt service.
@@ -133,6 +133,7 @@ IMPORTANT NOTES:
 1. The letsencrypt skeleton will run the command only on a production server.
 1. Make sure the urls resolve to the IP where the command will run, otherwise it will fail.
 1. You can use the ```ssl``` and ```letsencrypt``` skeletong together, BUT when enabling both the skeletons you must remove the prod ssl config. If the prod ssl config is available it will use that config instead of running letsencrypt.
+1. The letsencrypt skeleton also creates a cronjob to renew the certs (e.g. 0 0 * * 0 letsencrypt --apache -n certonly -d myproject.com)
 
 ## Commands
 
@@ -263,4 +264,4 @@ Full details at [doc/SelfUpdateCommand.md](doc/SelfUpdateCommand.md)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/Kunstmaan/skylab/badges/quality-score.png?s=3d1f00bf9c2adbba818f274086db3ed4b2bcc4e2)](https://scrutinizer-ci.com/g/Kunstmaan/skylab/)
 
 
-*Documentation generated on 2017-11-23 11:37:31*
+*Documentation generated on 2017-11-23 12:51:45*
