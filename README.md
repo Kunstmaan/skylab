@@ -1,10 +1,10 @@
 # Skylab
 
 Skylab is a 100% backwards compatible PHP port of the Python based hosting scripts used at Kunstmaan. By using the Cilex,
-Symfony Components and lot's of good code samples from the Composer project we hope to create an application where
+Symfony Components and lots of good code samples from the Composer project we hope to create an application that
 everyone in our organisation can work with, and if issues or new needed features should arise, be able to work on.
 
-Kunstmaan wouldn't be Kunstmaan is we didn't open-source this, so here it is. [MIT licensed](./LICENSE).
+Kunstmaan wouldn't be Kunstmaan if we didn't open-source this, so here it is. [MIT licensed](./LICENSE).
 
 ## Installation
 
@@ -34,7 +34,7 @@ $ mv skylab.phar /usr/local/bin/skylab
 
 ## Configuration
 
-You can override the [default configuration](./config/config.yml) by creating a file /etc/skylab.yml and give it a secure chmod
+You can override the [default configuration](./config.yml) by creating a file /etc/skylab.yml and give it a secure chmod
 ```
 sudo chmod 700 /etc/skylab.yml
 ```
@@ -80,6 +80,60 @@ postgresql:
 debug: true
 develmode: true
 ```
+## Special Skeletons
+### SSL skeleton
+The ```ssl``` skeleton can be used to configure the SSL configurations in apache via the config.xml
+
+You start by adding ```<item value="ssl"/>``` to the skeletons in config.xml. Then you need to add ```<var name="project.sslConfig">``` to the config.xml to configure the SSL configuration.
+
+You can specify different SSL configuration that has to be used per environment. The syntax for each environment is the same
+```
+<var name="{environment}">
+  <dir value="{the location of the ssl files (cert, key, ca)}"/>
+  <certFile value="{the name of the cert file}"/>
+  <certKeyFile value="{the name of the key file}"/>
+  <caCertFile value="{the name of the ca cert file}"/>
+</var>
+```
+
+Example (we assume three environments (dev.staging,prod)).
+```
+<var name="project.sslConfig">
+    <var name="dev">
+      <dir value="/home/myproject/ssl/dev/"/>
+      <certFile value="myproject_dev_ssl.crt"/>
+      <certKeyFile value="myproject_dev_ssl.key"/>
+      <caCertFile value="myproject_dev_ssl.ca-bundle"/>
+    </var>
+    <var name="staging">
+      <dir value="/home/myproject/ssl/staging/"/>
+      <certFile value="myproject_staging_ssl.crt"/>
+      <certKeyFile value="myproject_staging_ssl.key"/>
+      <caCertFile value="myproject_staging_ssl.ca-bundle"/>
+    </var>
+    <var name="prod">
+      <dir value="/home/myproject/ssl/prod/"/>
+      <certFile value="myproject_prod_ssl.crt"/>
+      <certKeyFile value="myproject_prod_ssl.key"/>
+      <caCertFile value="myproject_prod_ssl.ca-bundle"/>
+    </var>
+  </var>
+```
+
+Which ssl configuration will be used depends on the value ```env``` in you skylab.ym file. Locally you should have ```env: dev``` in you skylab.yml configuration file. If you do then when running maintenance it will add the dev SSL config in apache.
+
+###Letsencrypt skeleton
+The ```letsencrypt``` skeleton can be used to generate ssl certificates for your site using the Let's Encrypt service.
+
+To enable the use of letsenecrypt you have to add ```<item value="letsenecrypt"/>``` to the config.xml.
+
+The skeleton will create a ssl certificate for the urls ```project.url``` and all the aliases in ```project.aliases```.
+
+IMPORTANT NOTES:
+1. The letsencrypt skeleton will run the command only on a production server.
+1. Make sure the urls resolve to the IP where the command will run, otherwise it will fail.
+1. You can use the ```ssl``` and ```letsencrypt``` skeletong together, BUT when enabling both the skeletons you must remove the prod ssl config. If the prod ssl config is available it will use that config instead of running letsencrypt.
+
 ## Commands
 
 ### NewProjectCommand
@@ -110,7 +164,7 @@ Full details at [doc/FetchCommand.md](doc/FetchCommand.md)
 
 Usage: ```php skylab.phar share [--hideLogo] [--no-interactive]```
 
-The ```share``` command show a table of all your locally installed projects together with the xip.io url.
+The ```share``` command shows a table of all your locally installed projects together with the xip.io url.
 
 ```php skylab.phar share```                         # Will show the xip.io table
 
@@ -151,7 +205,7 @@ Full details at [doc/BackupCommand.md](doc/BackupCommand.md)
 
 ### RemoveProjectCommand
 
-Usage: ```php skylab.phar remove [--hideLogo] [--no-interactive] [--force] [--] [<name>]```
+Usage: ```php skylab.phar remove [--hideLogo] [--no-interactive] [--force] [--no-backup] [--] [<name>]```
 
 The ```remove``` command will remove the project after creating a backup first.
 
@@ -175,7 +229,7 @@ Full details at [doc/ApplySkeletonCommand.md](doc/ApplySkeletonCommand.md)
 
 ### SelfUpdateCommand
 
-Usage: ```php skylab.phar self-update [--hideLogo] [--no-interactive]```
+Usage: ```php skylab.phar self-update [--hideLogo] [--no-interactive] [-d|--dev] [-N|--non-dev] [-p|--pre] [-s|--stable] [-r|--rollback] [-c|--check]```
 
 The ```self-update``` command will check if there is an updated skylab.phar released and updates if it is.
 
@@ -189,11 +243,9 @@ Full details at [doc/SelfUpdateCommand.md](doc/SelfUpdateCommand.md)
 1. First, make sure everything works and the Travis tests are green [![Build Status](https://travis-ci.org/Kunstmaan/skylab.png?branch=master)](https://travis-ci.org/Kunstmaan/skylab)
 1. Generate an updated changelog using ```git changelog``` from [git-extras](https://github.com/visionmedia/git-extras)
 1. Commit this new changelog
-1. Create a new release from the Github interface, add the new changelog part in the description
-1. download [box.par](https://github.com/box-project/box2) to create the new version
-1. Build a new version using box.phar ```box.phar build -v```. Note: make sure you have pulled in the latest tag!!
+1. Create a new release from the Github interface, add the new changelog part in the description and name the release for [the next brightst star in this list](http://en.wikipedia.org/wiki/List_of_brightest_stars)
+1. Compile a new version ```./compile --version 0.1.2```
 1. Add the new phar file to the release on GitHub
-1. Update [packagist](https://packagist.org/packages/kunstmaan/skylab)
 
 ## Modifying the documentation
 
@@ -211,4 +263,4 @@ Full details at [doc/SelfUpdateCommand.md](doc/SelfUpdateCommand.md)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/Kunstmaan/skylab/badges/quality-score.png?s=3d1f00bf9c2adbba818f274086db3ed4b2bcc4e2)](https://scrutinizer-ci.com/g/Kunstmaan/skylab/)
 
 
-*Documentation generated on 2015-08-09 17:44:15*
+*Documentation generated on 2017-11-23 11:37:31*

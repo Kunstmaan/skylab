@@ -85,6 +85,60 @@ postgresql:
 debug: true
 develmode: true
 ```
+## Special Skeletons
+### SSL skeleton
+The ```ssl``` skeleton can be used to configure the SSL configurations in apache via the config.xml
+
+You start by adding ```<item value="ssl"/>``` to the skeletons in config.xml. Then you need to add ```<var name="project.sslConfig">``` to the config.xml to configure the SSL configuration.
+
+You can specify different SSL configuration that has to be used per environment. The syntax for each environment is the same
+```
+<var name="{environment}">
+  <dir value="{the location of the ssl files (cert, key, ca)}"/>
+  <certFile value="{the name of the cert file}"/>
+  <certKeyFile value="{the name of the key file}"/>
+  <caCertFile value="{the name of the ca cert file}"/>
+</var>
+```
+
+Example (we assume three environments (dev.staging,prod)).
+```
+<var name="project.sslConfig">
+    <var name="dev">
+      <dir value="/home/myproject/ssl/dev/"/>
+      <certFile value="myproject_dev_ssl.crt"/>
+      <certKeyFile value="myproject_dev_ssl.key"/>
+      <caCertFile value="myproject_dev_ssl.ca-bundle"/>
+    </var>
+    <var name="staging">
+      <dir value="/home/myproject/ssl/staging/"/>
+      <certFile value="myproject_staging_ssl.crt"/>
+      <certKeyFile value="myproject_staging_ssl.key"/>
+      <caCertFile value="myproject_staging_ssl.ca-bundle"/>
+    </var>
+    <var name="prod">
+      <dir value="/home/myproject/ssl/prod/"/>
+      <certFile value="myproject_prod_ssl.crt"/>
+      <certKeyFile value="myproject_prod_ssl.key"/>
+      <caCertFile value="myproject_prod_ssl.ca-bundle"/>
+    </var>
+  </var>
+```
+
+Which ssl configuration will be used depends on the value ```env``` in you skylab.ym file. Locally you should have ```env: dev``` in you skylab.yml configuration file. If you do then when running maintenance it will add the dev SSL config in apache.
+
+###Letsencrypt skeleton
+The ```letsencrypt``` skeleton can be used to generate ssl certificates for your site using the Let's Encrypt service.
+
+To enable the use of letsenecrypt you have to add ```<item value="letsenecrypt"/>``` to the config.xml.
+
+The skeleton will create a ssl certificate for the urls ```project.url``` and all the aliases in ```project.aliases```.
+
+IMPORTANT NOTES:
+1. The letsencrypt skeleton will run the command only on a production server.
+1. Make sure the urls resolve to the IP where the command will run, otherwise it will fail.
+1. You can use the ```ssl``` and ```letsencrypt``` skeletong together, BUT when enabling both the skeletons you must remove the prod ssl config. If the prod ssl config is available it will use that config instead of running letsencrypt.
+
 ## Commands
 
 <?php
