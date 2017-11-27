@@ -62,6 +62,11 @@ class ProjectConfigProvider extends AbstractProvider
                         $config["aliases"][] = (string) $alias["value"];
                     }
                     break;
+                case "project.staging_aliases":
+                    foreach ($var->{'item'} as $alias) {
+                        $config["staging_aliases"][] = (string) $alias["value"];
+                    }
+                    break;
                 case "project.sslConfig":
                     $this->parseSslConfig($var, $config);
                     break;
@@ -354,7 +359,7 @@ class ProjectConfigProvider extends AbstractProvider
         }
 
         if (!$foundSslConfig) {
-            if ($this->app["config"]["env"] == "prod" && array_key_exists("letsencrypt", $config['skeletons'])) {
+            if (($this->app["config"]["env"] == "prod" || $this->app["config"]["env"] == "staging") && array_key_exists("letsencrypt", $config['skeletons'])) {
                 return;
             }
 
