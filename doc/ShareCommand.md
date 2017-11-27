@@ -6,7 +6,7 @@ share
 
   * `share [--hideLogo] [--no-interactive]`
 
-The <info>share</info> command show a table of all your locally installed projects together with the xip.io url.
+The <info>share</info> command shows a table of all your locally installed projects together with the xip.io url.
 
 <info>php skylab.phar share</info>                         # Will show the xip.io table
 
@@ -103,4 +103,4 @@ The <info>share</info> command show a table of all your locally installed projec
 * Description: Do not ask any interactive question
 * Default: `false`
 
-*Documentation generated on 2015-08-09 17:44:20*
+*Documentation generated on 2017-11-23 11:37:29*

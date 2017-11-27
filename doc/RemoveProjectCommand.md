@@ -4,7 +4,7 @@ remove
 * Description: Removes a Skylab project
 * Usage:
 
-  * `remove [--hideLogo] [--no-interactive] [--force] [--] [<name>]`
+  * `remove [--hideLogo] [--no-interactive] [--force] [--no-backup] [--] [<name>]`
 
 The <info>remove</info> command will remove the project after creating a backup first.
 
@@ -52,6 +52,16 @@ The <info>remove</info> command will remove the project after creating a backup 
 * Is value required: no
 * Is multiple: no
 * Description: Does not ask before removing
+* Default: `false`
+
+**no-backup:**
+
+* Name: `--no-backup`
+* Shortcut: <none>
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Description: Removes the project without making a backup first
 * Default: `false`
 
 **help:**
@@ -124,4 +134,4 @@ The <info>remove</info> command will remove the project after creating a backup 
 * Description: Do not ask any interactive question
 * Default: `false`
 
-*Documentation generated on 2015-08-09 17:44:20*
+*Documentation generated on 2017-11-23 11:37:30*

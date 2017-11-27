@@ -1,10 +1,10 @@
 self-update
 -----------
 
-* Description: Updates skylab.phar to the latest version.
+* Description: Update skylab.phar to most recent stable, pre-release or development build.
 * Usage:
 
-  * `self-update [--hideLogo] [--no-interactive]`
+  * `self-update [--hideLogo] [--no-interactive] [-d|--dev] [-N|--non-dev] [-p|--pre] [-s|--stable] [-r|--rollback] [-c|--check]`
 
 The <info>self-update</info> command will check if there is an updated skylab.phar released and updates if it is.
 
@@ -31,6 +31,66 @@ The <info>self-update</info> command will check if there is an updated skylab.ph
 * Is value required: no
 * Is multiple: no
 * Description: If set, no questions will be asked
+* Default: `false`
+
+**dev:**
+
+* Name: `--dev`
+* Shortcut: `-d`
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Description: Update to most recent development build of Skylab.
+* Default: `false`
+
+**non-dev:**
+
+* Name: `--non-dev`
+* Shortcut: `-N`
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Description: Update to most recent non-development (alpha/beta/stable) build of Skylab tagged on Github.
+* Default: `false`
+
+**pre:**
+
+* Name: `--pre`
+* Shortcut: `-p`
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Description: Update to most recent pre-release version of Skylab (alpha/beta/rc) tagged on Github.
+* Default: `false`
+
+**stable:**
+
+* Name: `--stable`
+* Shortcut: `-s`
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Description: Update to most recent stable version of Skylab tagged on Github.
+* Default: `false`
+
+**rollback:**
+
+* Name: `--rollback`
+* Shortcut: `-r`
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Description: Rollback to previous version of Skylab if available on filesystem.
+* Default: `false`
+
+**check:**
+
+* Name: `--check`
+* Shortcut: `-c`
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Description: Checks what updates are available across all possible stability tracks.
 * Default: `false`
 
 **help:**
@@ -103,4 +163,4 @@ The <info>self-update</info> command will check if there is an updated skylab.ph
 * Description: Do not ask any interactive question
 * Default: `false`
 
-*Documentation generated on 2015-08-09 17:44:21*
+*Documentation generated on 2017-11-23 11:37:31*
