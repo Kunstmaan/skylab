@@ -3,7 +3,9 @@ SSLEngine on
 {% if sslConfig is defined %}
 SSLCertificateFile {{ sslConfig.webserverCertsDir }}{{ sslConfig.webserverCertFile }}
 SSLCertificateKeyFile {{ sslConfig.webserverCertsDir }}{{ sslConfig.webserverCertKeyFile }}
+{%if sslConfig.webserverCaCertFile is defined %}
 SSLCertificateChainFile {{ sslConfig.webserverCertsDir }}{{ sslConfig.webserverCaCertFile }}
+{% endif %}
 {% endif %}
 
 # intermediate configuration, tweak to your needs
