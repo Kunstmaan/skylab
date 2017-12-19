@@ -46,7 +46,7 @@ class LetsEncryptSkeleton extends AbstractSkeleton
                     if ($le->skeletonProvider->hasSkeleton($project, $sslSkeleton) && $sslSkeleton->hasRequiredSslConfiguration($project)) {
                         $le->dialogProvider->logWarning("Skipping letsencrypt for project " . $project["name"] . ": SSL skeleton is defined and configuration is available.");
                     } else {
-                        $domains = $le->getDomains($project);
+                        $domains = implode(",", $le->getDomains($project));
                         $leEmail = array_key_exists("letsencrypt.email", $project) ? $project["letsencrypt.email"] : "it@kunstmaan.be";
                         if ($le->processProvider->commandExists("letsencrypt")) {
                             $le->dialogProvider->logTask("Running letsencrypt command for project " . $project["name"]);
@@ -60,9 +60,9 @@ class LetsEncryptSkeleton extends AbstractSkeleton
                                 return;
                             }
                             //Execute the letsencrypt command
-                            $le->processProvider->executeSudoCommand("letsencrypt --text --rsa-key-size 4096 --email " . $leEmail ." --agree-tos --keep-until-expiring " . $leInstallerAndAuthenticatorMethods . " --apache-le-vhost-ext .ssl.conf --expand --redirect -d " . implode(",", $domains));
+                            $le->processProvider->executeSudoCommand("letsencrypt --text --rsa-key-size 4096 --email " . $leEmail ." --agree-tos --keep-until-expiring " . $leInstallerAndAuthenticatorMethods . " --apache-le-vhost-ext .ssl.conf --expand --redirect -d " . $domains);
                             //Add the renew cronjob
-                            $le->processProvider->executeSudoCommand("crontab -l | grep '". implode(",", $domains) . "' || (crontab -l; echo '0 0 * * 0 letsencrypt " . $leInstallerAndAuthenticatorMethods . " -n certonly -d " . implode(",", $domains) . "') | crontab -");
+                            $le->processProvider->executeSudoCommand("crontab -l | grep '". $domains . "' || (crontab -l; echo '0 0 * * 0 letsencrypt " . $leInstallerAndAuthenticatorMethods . " -n certonly -d " . $domains . "') | crontab -");
                         } else {
                             $le->dialogProvider->logWarning("The command letsencrypt is not available");
                         }
@@ -138,7 +138,7 @@ class LetsEncryptSkeleton extends AbstractSkeleton
         $urls = [];
 
         if ($this->app["config"]["env"] == "prod") {
-            $urls[] = $project["aliases"];
+            $urls = $project["aliases"];
             $urls[] = $project["url"];
         } elseif ($this->app["config"]["env"] == "staging") {
             if (array_key_exists("staging_aliases", $project)) {
