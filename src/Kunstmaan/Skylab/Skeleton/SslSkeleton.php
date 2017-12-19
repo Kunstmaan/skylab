@@ -60,7 +60,7 @@ class SslSkeleton extends AbstractSkeleton
         if (isset($project["sslConfig"])) {
             $sslConfig = $project["sslConfig"];
             if (!$this->hasRequiredSslConfiguration($project)) {
-                if (!($this->app["config"]["env"] == "prod" && $this->skeletonProvider->hasSkeleton($project, $this->skeletonProvider->findSkeleton(LetsEncryptSkeleton::NAME)))) {
+                if (!(($this->app["config"]["env"] == "prod" || $this->app["config"]["env"] == "staging") && $this->skeletonProvider->hasSkeleton($project, $this->skeletonProvider->findSkeleton(LetsEncryptSkeleton::NAME)))) {
                     $this->dialogProvider->logError("Required SSL configuration is missing");
                 }
 
