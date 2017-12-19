@@ -245,8 +245,10 @@ Full details at [doc/SelfUpdateCommand.md](doc/SelfUpdateCommand.md)
 1. Generate an updated changelog using ```git changelog``` from [git-extras](https://github.com/visionmedia/git-extras)
 1. Commit this new changelog
 1. Create a new release from the Github interface, add the new changelog part in the description and name the release for [the next brightst star in this list](http://en.wikipedia.org/wiki/List_of_brightest_stars)
-1. Compile a new version ```./compile --version 0.1.2```
+1. download [box.par](https://github.com/box-project/box2) to create the new version
+1. Build a new version using box.phar box.phar build -v. Note: make sure you have pulled in the latest tag!!
 1. Add the new phar file to the release on GitHub
+1. Update [packagist](https://packagist.org/packages/kunstmaan/skylab)
 
 ## Modifying the documentation
 
@@ -264,4 +266,4 @@ Full details at [doc/SelfUpdateCommand.md](doc/SelfUpdateCommand.md)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/Kunstmaan/skylab/badges/quality-score.png?s=3d1f00bf9c2adbba818f274086db3ed4b2bcc4e2)](https://scrutinizer-ci.com/g/Kunstmaan/skylab/)
 
 
-*Documentation generated on 2017-11-23 12:51:45*
+*Documentation generated on 2017-12-19 12:42:37*
