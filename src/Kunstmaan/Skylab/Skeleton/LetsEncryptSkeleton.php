@@ -60,7 +60,7 @@ class LetsEncryptSkeleton extends AbstractSkeleton
                                 return;
                             }
                             //Execute the letsencrypt command
-                            $le->processProvider->executeSudoCommand("letsencrypt --text --rsa-key-size 4096 --email " . $leEmail ." --agree-tos --keep-until-expiring " . $leInstallerAndAuthenticatorMethods . " --apache-le-vhost-ext .ssl.conf --expand --redirect -d " . $domains);
+                            $le->processProvider->executeSudoCommand("letsencrypt --text --rsa-key-size 4096 --email " . $leEmail ." --agree-tos --keep-until-expiring " . $leInstallerAndAuthenticatorMethods . " --expand --no-redirect -d " . $domains);
                             //Add the renew cronjob
                             $le->processProvider->executeSudoCommand("crontab -l | grep '". $domains . "' || (crontab -l; echo '0 0 * * 0 letsencrypt " . $leInstallerAndAuthenticatorMethods . " -n certonly -d " . $domains . "') | crontab -");
                         } else {

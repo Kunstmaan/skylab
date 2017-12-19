@@ -360,6 +360,14 @@ class ProjectConfigProvider extends AbstractProvider
 
         if (!$foundSslConfig) {
             if (($this->app["config"]["env"] == "prod" || $this->app["config"]["env"] == "staging") && array_key_exists("letsencrypt", $config['skeletons'])) {
+                //Set dummy certs so Letsenecrypt will not fail
+                $config['sslConfig']['webserverCertsDir'] = "/etc/ssl/certs/";
+                $config['sslConfig']['webserverCertFile'] = 'dummy.crt';
+                $config['sslConfig']['webserverCertKeyFile'] = 'dummy.key';
+                if (!(file_exists("/etc/ssl/certs/dummy.crt") && file_exists("/etc/ssl/certs/dummy.key"))) {
+                    $this->processProvider->executeSudoCommand('openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/certs/dummy.key -out /etc/ssl/certs/dummy.crt -subj "/C=BE/ST=Vlaams-Brabant/L=Leuven/O=Kunstmaan/OU=Development/CN=dummy"');
+                }
+
                 return;
             }
 
