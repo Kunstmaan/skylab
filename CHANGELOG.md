@@ -1,4 +1,18 @@
 
+2.1.3 / 2017-12-19
+==================
+
+  * update docs
+  * Merge pull request #196 from bakie/hotfix/letsencrypt_domains_fix
+  * letsencrypt domain fix
+  * Merge pull request #194 from bakie/hotfix/letsencrypt_apache_config
+  * fix apache ssl config overwrite
+  * Merge pull request #192 from bakie/update_docs
+  * Merge pull request #193 from bakie/feature/letsencrypt_staging
+  * Letsencrypt for staging env
+  * doc fixes
+  * Update docs
+
 2.1.2 / 2017-11-21
 ==================
 
