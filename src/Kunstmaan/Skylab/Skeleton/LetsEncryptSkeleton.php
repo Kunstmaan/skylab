@@ -53,7 +53,8 @@ class LetsEncryptSkeleton extends AbstractSkeleton
                             if ($le->app["config"]["env"] == "prod") {
                                 $leInstallerAndAuthenticatorMethods = "--apache";
                             } elseif ($le->app["config"]["env"] == "staging") {
-                                $leInstallerAndAuthenticatorMethods = "-a webroot -i apache -w /home/projects/" . $project["name"] . "/data/current/web";
+                                $leDocumentRoot = array_key_exists("letsencrypt.documentroot", $project) ? $project["letsencrypt.documentroot"] : "/home/projects/" . $project["name"] . "/data/current/web";
+                                $leInstallerAndAuthenticatorMethods = "-a webroot -i apache -w " . $leDocumentRoot;
                             } else {
                                 $le->dialogProvider->logWarning("Unknown environment (". $le->app["config"]["env"] . ") for letsencrypt ");
 
