@@ -1,4 +1,10 @@
 
+2.1.4 / 2017-12-20
+==================
+
+  * Merge pull request #197 from bakie/hotfix/letsencrypt_documentroot
+  * ability to overwrite the letsencrypt documentroot
+
 2.1.3 / 2017-12-19
 ==================
 
