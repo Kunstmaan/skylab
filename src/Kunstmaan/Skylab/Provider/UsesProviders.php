@@ -6,9 +6,13 @@ use Cilex\Application;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Trait UsesProviders
+ *
+ * @package Kunstmaan\Skylab\Provider
+ */
 trait UsesProviders
 {
-
     /**
      * @var FileSystemProvider
      */
@@ -77,7 +81,7 @@ trait UsesProviders
      */
     public function setup(Application $app, InputInterface $input = null, OutputInterface $output = null, $setupClassVars = false)
     {
-        $providers = array(
+        $providers = [
             'filesystem' => 'fileSystemProvider',
             'projectconfig' => 'projectConfigProvider',
             'skeleton' => 'skeletonProvider',
@@ -85,7 +89,7 @@ trait UsesProviders
             'permission' => 'permissionsProvider',
             'dialog' => 'dialogProvider',
             'remote' => 'remoteProvider',
-        );
+        ];
         foreach ($providers as $service => $variable) {
             $this->$variable = $app[$service];
             if ($setupClassVars) {

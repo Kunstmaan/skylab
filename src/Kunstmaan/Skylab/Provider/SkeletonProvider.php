@@ -2,9 +2,9 @@
 
 namespace Kunstmaan\Skylab\Provider;
 
-use Cilex\Application;
 use Kunstmaan\Skylab\Skeleton\AbstractSkeleton;
 use Kunstmaan\Skylab\Utility\DependencySolver;
+use Pimple\Container;
 use RuntimeException;
 
 /**
@@ -16,17 +16,18 @@ class SkeletonProvider extends AbstractProvider
     /**
      * Registers services on the given app.
      *
-     * @param Application $app An Application instance
+     * @param Container $app An Application instance
      */
-    public function register(Application $app)
+    public function register(Container $app)
     {
         $app['skeleton'] = $this;
         $this->app = $app;
     }
 
     /**
-     * @param \ArrayObject $project The project
+     * @param \ArrayObject     $project  The project
      * @param AbstractSkeleton $skeleton The skeleton
+     *
      * @return bool
      */
     public function hasSkeleton(\ArrayObject $project, AbstractSkeleton $skeleton)
@@ -46,7 +47,7 @@ class SkeletonProvider extends AbstractProvider
         foreach ($dependencies->getLoadOrder() as $theSkeletonName) {
             $theSkeleton = $this->findSkeleton($theSkeletonName);
             if (!$this->hasSkeleton($project, $theSkeleton)) {
-                $this->dialogProvider->logTask("Running skeleton create for " . $theSkeleton->getName());
+                $this->dialogProvider->logTask("Running skeleton create for ".$theSkeleton->getName());
                 $theSkeleton->create($project);
                 $project["skeletons"][$theSkeleton->getName()] = $theSkeleton->getName();
             }
@@ -56,6 +57,7 @@ class SkeletonProvider extends AbstractProvider
     /**
      * @param  AbstractSkeleton                           $theSkeleton
      * @param  \Kunstmaan\Skylab\Utility\DependencySolver $dependencies
+     *
      * @return \ArrayObject
      */
     private function resolveDependencies(AbstractSkeleton $theSkeleton, DependencySolver $dependencies)
@@ -73,7 +75,8 @@ class SkeletonProvider extends AbstractProvider
     }
 
     /**
-     * @param  string                $skeletonname
+     * @param  string $skeletonname
+     *
      * @return AbstractSkeleton
      * @throws \RuntimeException
      */
@@ -87,7 +90,7 @@ class SkeletonProvider extends AbstractProvider
                 return new $skeleton($this->app);
             }
         }
-        throw new RuntimeException("Skeleton " . $skeletonname . " not found!");
+        throw new RuntimeException("Skeleton ".$skeletonname." not found!");
     }
 
     /**
@@ -113,7 +116,7 @@ class SkeletonProvider extends AbstractProvider
     }
 
     /**
-     * @param \Closure $callback
+     * @param \Closure     $callback
      * @param \ArrayObject $skeletons
      */
     public function skeletonLoop($callback, \ArrayObject $skeletons = null)

@@ -6,21 +6,35 @@ require_once __DIR__.'/vendor/autoload.php';
 
 const BASE_DIR = __DIR__;
 
-$app = new \Cilex\Application('skylab', '@app_version@', array('console.class' => 'Kunstmaan\Skylab\Application', 'skylab.starttime' => $startTime, 'php_version' => PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION));
+$app = new \Cilex\Application(
+    'skylab',
+    '@app_version@',
+    [
+        'console.class' => \Kunstmaan\Skylab\Application::class,
+        'skylab.starttime' => $startTime,
+        'php_version' => PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION,
+    ]
+);
 
 $app->register(new \Kunstmaan\Skylab\Provider\ProcessProvider());
-$app->register(new \Kunstmaan\Skylab\Provider\FallbackConfigServiceProvider(),
-    array('config.paths' => array(BASE_DIR."/config/config.yml","/etc/skylab.yml")
-));
+$app->register(
+    new \Kunstmaan\Skylab\Provider\FallbackConfigServiceProvider(),
+    [
+        'config.paths' => [BASE_DIR.'/config/config.yml', '/etc/skylab.yml'],
+    ]
+);
 $app->register(new \Kunstmaan\Skylab\Provider\FileSystemProvider());
 $app->register(new \Kunstmaan\Skylab\Provider\ProjectConfigProvider());
 $app->register(new \Kunstmaan\Skylab\Provider\SkeletonProvider());
 $app->register(new \Kunstmaan\Skylab\Provider\PermissionsProvider());
 $app->register(new \Kunstmaan\Skylab\Provider\DialogProvider());
 $app->register(new \Kunstmaan\Skylab\Provider\RemoteProvider());
-$app->register(new \Cilex\Provider\TwigServiceProvider(), array(
-    'twig.path' =>  '/',
-));
+$app->register(
+    new \Cilex\Provider\TwigServiceProvider(),
+    [
+        'twig.path' => '/',
+    ]
+);
 
 $app->command(new \Kunstmaan\Skylab\Command\NewProjectCommand());
 $app->command(new \Kunstmaan\Skylab\Command\SetPermissionsCommand());
@@ -35,11 +49,11 @@ $app->command(new \Kunstmaan\Skylab\Command\DnsCheckCommand());
 $app->command(new \Kunstmaan\Skylab\Command\FixCronCommand());
 $app->command(new \Kunstmaan\Skylab\Command\WebserverCommand());
 
-if (isset($app["config"]["slack_api_key"])) {
+if (isset($app['config']['slack_api_key'])) {
     $app->command(new \Kunstmaan\Skylab\Command\ExecuteCommand());
 }
 
-if ('phar:' === substr(__FILE__, 0, 5) || getenv("SU")) {
+if ('phar:' === substr(__FILE__, 0, 5) || getenv('SU')) {
     $app->command(new \Kunstmaan\Skylab\Command\SelfUpdateCommand());
     $app->command(new \Stecman\Component\Symfony\Console\BashCompletion\CompletionCommand());
 }

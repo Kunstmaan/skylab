@@ -1,10 +1,13 @@
 <?php
+
 namespace Kunstmaan\Skylab\Provider;
 
-use Cilex\ServiceProviderInterface;
+use Pimple\ServiceProviderInterface;
 
 /**
- * AbstractProvider
+ * Class AbstractProvider
+ *
+ * @package Kunstmaan\Skylab\Provider
  */
 abstract class AbstractProvider implements ServiceProviderInterface
 {
