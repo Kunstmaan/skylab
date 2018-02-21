@@ -8,10 +8,53 @@ backup
 
 The <info>backup</info> command will dump all your databases and create a tarball of one or all projects.
 
-<info>php skylab.phar backup</info>                         # Will backup all projects
-<info>php skylab.phar backup myproject</info>               # Will backup the myproject project
-<info>php skylab.phar backup myproject --quick</info>       # Will backup the myproject project, but not create the tar file.
+```
+php skylab.phar backup  # will backup all projects
+```                                     
+```
+php skylab.phar backup myproject  # will backup the myproject project
+```                          
+```
+php skylab.phar backup myproject --quick # will backup the myproject project, but not create the tar file.
+```
+```
+php skylab.phar backup myproject --quick --anonymize # will backup the myproject project, but not create the tar file, and anonymize the database with the edyan/neuralizer package.
+```       
 
+For the anonymize to work, you will have to create a anon.yml file in your .skylab folder. Example:
+
+Possible options are:
+- pre_queries: will run before the anonymization
+- post_queries: will run after the anonymization
+
+```
+guesser_version: 1.0.0b
+locale: nl_BE
+entities:
+    kuma_form_submission_fields:
+        cols:
+            efsf_value: { method: safeEmail }
+    foo_contact_addresss:
+        cols:
+            company: { method: company }
+            vat: { method: vat }
+            street: { method: streetName }
+            city: { method: city }
+            country: { method: countryCode }
+    foo_users:
+        cols:
+            username: { method: safeEmail }
+            username_canonical: { method: safeEmail }
+            email: { method: safeEmail }
+            email_canonical: { method: safeEmail }
+            first_name: { method: firstName }
+            last_name: { method: lastName }
+post_queries:
+    - "Update foo_users SET email_canonical = email"
+    - "Update foo_users SET username = email"
+    - "Update foo_users SET username_canonical = email"
+
+```
 
 ### Arguments:
 
@@ -53,6 +96,16 @@ The <info>backup</info> command will dump all your databases and create a tarbal
 * Is value required: no
 * Is multiple: no
 * Description: If set, no tar.gz file will be created, only the preBackup and postBackup hooks will be executed.
+* Default: `false`
+
+**anonymize:**
+
+* Name: `--anonymize`
+* Shortcut: <none>
+* Accept value: no
+* Is value required: no
+* Is multiple: no
+* Description: If set, the database will be anonymized when exporting. This uses the edyan/neuralizer package.
 * Default: `false`
 
 **help:**

@@ -198,9 +198,18 @@ Usage: ```php skylab.phar backup [--hideLogo] [--no-interactive] [--quick] [--] 
 
 The ```backup``` command will dump all your databases and create a tarball of one or all projects.
 
-```php skylab.phar backup```                         # Will backup all projects
-```php skylab.phar backup myproject```               # Will backup the myproject project
-```php skylab.phar backup myproject --quick```       # Will backup the myproject project, but not create the tar file.
+```
+php skylab.phar backup  # Will backup all projects
+```                                     
+```
+php skylab.phar backup myproject  # Will backup the myproject project
+```                          
+```
+php skylab.phar backup myproject --quick # Will backup the myproject project, but not create the tar file.
+```
+```
+php skylab.phar backup myproject --quick --anonymize # Will backup the myproject project, but not create the tar file, and anonymize the database with the edyan/neuralizer package.
+```       
 
 Full details at [doc/BackupCommand.md](doc/BackupCommand.md)
 
