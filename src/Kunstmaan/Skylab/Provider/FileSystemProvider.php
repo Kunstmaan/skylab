@@ -1,23 +1,25 @@
 <?php
+
 namespace Kunstmaan\Skylab\Provider;
 
+use Pimple\Container;
 use RuntimeException;
-use Cilex\Application;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
 /**
- * FileSystemProvider
+ * Class FileSystemProvider
+ *
+ * @package Kunstmaan\Skylab\Provider
  */
 class FileSystemProvider extends AbstractProvider
 {
-
     /**
      * Registers services on the given app.
      *
-     * @param Application $app An Application instance
+     * @param Container $app An Application instance
      */
-    public function register(Application $app)
+    public function register(Container $app)
     {
         $app['filesystem'] = $this;
         $this->app = $app;
@@ -34,15 +36,18 @@ class FileSystemProvider extends AbstractProvider
             ->sortByName()
             ->in($this->app["config"]["projects"]["path"])
             ->depth('== 0')
-            ->filter(function (\SplFileInfo $file) {
-                return file_exists($file->getRealPath() . "/conf/config.xml");
-            });
+            ->filter(
+                function (\SplFileInfo $file) {
+                    return file_exists($file->getRealPath().'/conf/config.xml');
+                }
+            );
 
         return iterator_to_array($finder);
     }
 
     /**
      * @param string $path
+     *
      * @return SplFileInfo[]
      */
     public function getDotDFiles($path)
@@ -55,6 +60,7 @@ class FileSystemProvider extends AbstractProvider
 
     /**
      * @param  string $projectname
+     *
      * @return bool
      */
     public function projectExists($projectname)
@@ -72,7 +78,7 @@ class FileSystemProvider extends AbstractProvider
      */
     public function getProjectConfigDirectory($projectname)
     {
-        return $this->getProjectDirectory($projectname) . "/conf";
+        return $this->getProjectDirectory($projectname)."/conf";
     }
 
     /**
@@ -82,7 +88,7 @@ class FileSystemProvider extends AbstractProvider
      */
     public function getProjectDirectory($projectname)
     {
-        return $this->app["config"]["projects"]["path"] . '/' . $projectname;
+        return $this->app["config"]["projects"]["path"].'/'.$projectname;
     }
 
     /**
@@ -91,22 +97,22 @@ class FileSystemProvider extends AbstractProvider
     public function createProjectDirectory($projectname)
     {
         $projectDirectory = $this->getProjectDirectory($projectname);
-        $this->processProvider->executeSudoCommand('mkdir -p ' . $projectDirectory);
+        $this->processProvider->executeSudoCommand('mkdir -p '.$projectDirectory);
     }
 
     /**
      * @param \ArrayObject $project The project
-     * @param string $path The relative path in the project folder
+     * @param string       $path    The relative path in the project folder
      */
     public function createDirectory(\ArrayObject $project, $path)
     {
         $projectDirectory = $this->getProjectDirectory($project["name"]);
-        $this->processProvider->executeSudoCommand('mkdir -p ' . $projectDirectory . '/' . $path);
+        $this->processProvider->executeSudoCommand('mkdir -p '.$projectDirectory.'/'.$path);
     }
 
     /**
      * @param \ArrayObject $project The project
-     * @param string $path The relative path in the project folder
+     * @param string       $path    The relative path in the project folder
      *
      * @return string
      */
@@ -114,7 +120,7 @@ class FileSystemProvider extends AbstractProvider
     {
         $projectDirectory = $this->getProjectDirectory($project["name"]);
 
-        return $projectDirectory . '/' . $path;
+        return $projectDirectory.'/'.$path;
     }
 
     /**
@@ -122,13 +128,15 @@ class FileSystemProvider extends AbstractProvider
      */
     public function runTar(\ArrayObject $project)
     {
-        $this->processProvider->executeSudoCommand('mkdir -p ' . $this->app["config"]["projects"]["backuppath"]);
+        $this->processProvider->executeSudoCommand('mkdir -p '.$this->app["config"]["projects"]["backuppath"]);
         $projectDirectory = $this->getProjectDirectory($project["name"]);
         $excluded = '';
         foreach ($project["backupexcludes"] as $backupexclude) {
-            $excluded = $excluded . " --exclude='" . $backupexclude . "'";
+            $excluded = $excluded." --exclude='".$backupexclude."'";
         }
-        $this->processProvider->executeSudoCommand('nice -n 19 tar --create --absolute-names ' . $excluded . ' --file ' . $this->app["config"]["projects"]["backuppath"] . '/' . $project["name"] . '.tar.gz --totals --gzip ' . $projectDirectory . '/ 2>&1');
+        $this->processProvider->executeSudoCommand(
+            'nice -n 19 tar --create -P '.$excluded.' --file '.$this->app["config"]["projects"]["backuppath"].'/'.$project["name"].'.tar.gz --totals --gzip '.$projectDirectory.'/ 2>&1'
+        );
     }
 
     /**
@@ -140,7 +148,7 @@ class FileSystemProvider extends AbstractProvider
             throw new RuntimeException("The project has no name");
         }
         $projectDirectory = $this->getProjectDirectory($project["name"]);
-        $this->processProvider->executeSudoCommand("rm -Rf " . $projectDirectory);
+        $this->processProvider->executeSudoCommand("rm -Rf ".$projectDirectory);
     }
 
     /**
@@ -156,7 +164,7 @@ class FileSystemProvider extends AbstractProvider
      */
     public function getConfigTemplateDir($skeletonName, $clean = false)
     {
-        return ($clean ? "/" . $skeletonName . "/apache.d/" : BASE_DIR . "/templates/" . $skeletonName . "/apache.d/");
+        return ($clean ? "/".$skeletonName."/apache.d/" : BASE_DIR."/templates/".$skeletonName."/apache.d/");
     }
 
     /**
@@ -164,7 +172,7 @@ class FileSystemProvider extends AbstractProvider
      */
     public function getCustomConfigTemplateDir($skeletonName, $clean = false)
     {
-        return ($clean ? "/" . $skeletonName . "/custom.d/" : BASE_DIR . "/templates/" . $skeletonName . "/custom.d/");
+        return ($clean ? "/".$skeletonName."/custom.d/" : BASE_DIR."/templates/".$skeletonName."/custom.d/");
     }
 
     /**
@@ -172,7 +180,7 @@ class FileSystemProvider extends AbstractProvider
      */
     public function getNginxConfigTemplateDir($clean = false)
     {
-        return ($clean ? "/nginx/nginx.d/" : BASE_DIR . "/templates/nginx/nginx.d/");
+        return ($clean ? "/nginx/nginx.d/" : BASE_DIR."/templates/nginx/nginx.d/");
     }
 
     /**
@@ -191,6 +199,7 @@ class FileSystemProvider extends AbstractProvider
 
     /**
      * @param  \ArrayObject $project
+     *
      * @return array
      */
     public function getProjectApacheConfigs(\ArrayObject $project)
@@ -198,7 +207,7 @@ class FileSystemProvider extends AbstractProvider
         $finder = new Finder();
         $finder->files()
             ->sortByName()
-            ->in($this->getProjectConfigDirectory($project["name"]) . "/apache.d/")
+            ->in($this->getProjectConfigDirectory($project["name"])."/apache.d/")
             ->ignoreVCS(true)
             ->ignoreDotFiles(true)
             ->notName("*~")
@@ -212,6 +221,7 @@ class FileSystemProvider extends AbstractProvider
 
     /**
      * @param  \ArrayObject $project
+     *
      * @return array
      */
     public function getProjectNginxConfigs(\ArrayObject $project)
@@ -219,7 +229,7 @@ class FileSystemProvider extends AbstractProvider
         $finder = new Finder();
         $finder->files()
             ->sortByName()
-            ->in($this->getProjectConfigDirectory($project["name"]) . "/nginx.d/")
+            ->in($this->getProjectConfigDirectory($project["name"])."/nginx.d/")
             ->ignoreVCS(true)
             ->ignoreDotFiles(true)
             ->notName("*~")
@@ -235,42 +245,43 @@ class FileSystemProvider extends AbstractProvider
      * @param $path
      * @param $content
      */
-    public function writeProtectedFile($path, $content, $append=false)
+    public function writeProtectedFile($path, $content, $append = false)
     {
         $tmpfname = tempnam(sys_get_temp_dir(), "skylab");
         file_put_contents($tmpfname, $content);
-        $this->processProvider->executeSudoCommand("cat " . $tmpfname . " | sudo tee " . ($append?"-a ":"") . $path);
-        $this->processProvider->executeSudoCommand("rm -f " . $tmpfname);
+        $this->processProvider->executeSudoCommand("cat ".$tmpfname." | sudo tee ".($append ? "-a " : "").$path);
+        $this->processProvider->executeSudoCommand("rm -f ".$tmpfname);
     }
 
     /**
-     * @param string $sourcePath
-     * @param string $destinationPath
+     * @param string   $sourcePath
+     * @param string   $destinationPath
      * @param string[] $variables
      */
-    public function render($sourcePath, $destinationPath, $variables = array())
+    public function render($sourcePath, $destinationPath, $variables = [])
     {
-        $this->dialogProvider->logConfig("Rendering " . $sourcePath . " to " . $destinationPath);
-        $this->processProvider->executeSudoCommand('mkdir -p ' . dirname($destinationPath));
-        $content = $this->renderString(file_get_contents(BASE_DIR . "/templates" . $sourcePath), $variables);
+        $this->dialogProvider->logConfig("Rendering ".$sourcePath." to ".$destinationPath);
+        $this->processProvider->executeSudoCommand('mkdir -p '.dirname($destinationPath));
+        $content = $this->renderString(file_get_contents(BASE_DIR."/templates".$sourcePath), $variables);
         $this->writeProtectedFile($destinationPath, $content);
     }
 
     /**
-     * @param string $sourcePath
-     * @param string $destinationPath
+     * @param string   $sourcePath
+     * @param string   $destinationPath
      * @param string[] $variables
      */
     public function renderDist($sourcePath, $destinationPath)
     {
-        $this->dialogProvider->logConfig("Dist rendering " . $sourcePath . " to " . $destinationPath);
-        $this->processProvider->executeSudoCommand('mkdir -p ' . dirname($destinationPath));
+        $this->dialogProvider->logConfig("Dist rendering ".$sourcePath." to ".$destinationPath);
+        $this->processProvider->executeSudoCommand('mkdir -p '.dirname($destinationPath));
         $this->writeProtectedFile($destinationPath, $sourcePath);
     }
 
     /**
      * @param $content
      * @param $variables
+     *
      * @return string
      */
     public function renderString($content, $variables)
@@ -279,28 +290,28 @@ class FileSystemProvider extends AbstractProvider
     }
 
     /**
-     * @param $cleanedLocation
-     * @param $target
+     * @param             $cleanedLocation
+     * @param             $target
      * @param SplFileInfo $config
      */
     public function renderSingleConfig($cleanedLocation, $target, $config)
     {
         $this->fileSystemProvider->render(
-            $cleanedLocation . $config->getFilename(),
-            $target . str_replace(".conf.twig", ".conf", $config->getFilename())
+            $cleanedLocation.$config->getFilename(),
+            $target.str_replace(".conf.twig", ".conf", $config->getFilename())
         );
     }
 
     /**
-     * @param $cleanedLocation
-     * @param $target
+     * @param             $cleanedLocation
+     * @param             $target
      * @param SplFileInfo $config
      */
     public function renderSingleDistConfig($cleanedLocation, $target, $config)
     {
         $this->fileSystemProvider->renderDist(
-            $cleanedLocation . $config->getFilename(),
-            $target . str_replace(".conf.twig", ".dist", $config->getFilename())
+            $cleanedLocation.$config->getFilename(),
+            $target.str_replace(".conf.twig", ".dist", $config->getFilename())
         );
     }
 

@@ -2,11 +2,13 @@
 
 namespace Kunstmaan\Skylab\Provider;
 
-use Cilex\Application;
 use Kunstmaan\Skylab\Entity\PermissionDefinition;
+use Pimple\Container;
 
 /**
- * ProjectConfigProvider
+ * Class ProjectConfigProvider
+ *
+ * @package Kunstmaan\Skylab\Provider
  */
 class ProjectConfigProvider extends AbstractProvider
 {
@@ -14,16 +16,17 @@ class ProjectConfigProvider extends AbstractProvider
     /**
      * Registers services on the given app.
      *
-     * @param Application $app An Application instance
+     * @param Container $app An Application instance
      */
-    public function register(Application $app)
+    public function register(Container $app)
     {
         $app['projectconfig'] = $this;
         $this->app = $app;
     }
 
     /**
-     * @param  string       $projectname The project name
+     * @param  string $projectname The project name
+     *
      * @return \ArrayObject
      */
     public function loadProjectConfig($projectname)
@@ -39,13 +42,14 @@ class ProjectConfigProvider extends AbstractProvider
 
     /**
      * @param string $projectname
-     * @param $config
+     * @param        $config
+     *
      * @return \ArrayObject
      */
     private function loadConfig($projectname, \ArrayObject $config)
     {
-        $configPath = $this->fileSystemProvider->getProjectConfigDirectory($projectname) . "/config.xml";
-        if (file_exists($configPath.".local")){
+        $configPath = $this->fileSystemProvider->getProjectConfigDirectory($projectname)."/config.xml";
+        if (file_exists($configPath.".local")) {
             $configPath = $configPath.".local";
         }
         $xml = simplexml_load_file($configPath);
@@ -79,13 +83,14 @@ class ProjectConfigProvider extends AbstractProvider
     }
 
     /**
-     * @param string $projectname
+     * @param string        $projectname
      * @param  \ArrayObject $config
+     *
      * @return \ArrayObject
      */
     private function loadOwnership($projectname, \ArrayObject $config)
     {
-        $configPath = $this->fileSystemProvider->getProjectConfigDirectory($projectname) . "/ownership.xml";
+        $configPath = $this->fileSystemProvider->getProjectConfigDirectory($projectname)."/ownership.xml";
         $xml = simplexml_load_file($configPath);
         foreach ($xml->{'var'} as $var) {
             $name = (string) $var["name"];
@@ -106,28 +111,31 @@ class ProjectConfigProvider extends AbstractProvider
     /**
      * @param  string       $value
      * @param  \ArrayObject $config
+     *
      * @return string
      */
     public function searchReplacer($value, \ArrayObject $config)
     {
-        $replaceDictionary = new \ArrayObject(array(
-            "config.superuser" => $this->app["config"]["users"]["superuser"],
-            "config.supergroup" => $this->app["config"]["users"]["supergroup"],
-            "config.wwwuser" => $this->app["config"]["users"]["wwwuser"],
-            "project.group" => $config["name"],
-            "project.user" => $config["name"],
-            "project.ip" => "*",
-            "project.url" => (isset($config["url"])?$config["url"]:""),
-            "project.admin" => $this->app["config"]["apache"]["admin"],
-            "project.dir" => $config["dir"],
-            "config.projectsdir" => $this->app["config"]["projects"]["path"],
-            "project.name" => $config["name"],
-            "project.statsurl" => (isset($config["url"])?"stats." . $config["url"]:""),
-            "project.port" => $this->app["config"]["nginx"]["port"],
-            "project.rootpath" => "",
-            "config.postgresuser" => $this->app["config"]["users"]["postgresuser"],
-            "config.hostmachine" => $this->app["config"]["webserver"]["hostmachine"],
-        ));
+        $replaceDictionary = new \ArrayObject(
+            [
+                "config.superuser" => $this->app["config"]["users"]["superuser"],
+                "config.supergroup" => $this->app["config"]["users"]["supergroup"],
+                "config.wwwuser" => $this->app["config"]["users"]["wwwuser"],
+                "project.group" => $config["name"],
+                "project.user" => $config["name"],
+                "project.ip" => "*",
+                "project.url" => (isset($config["url"]) ? $config["url"] : ""),
+                "project.admin" => $this->app["config"]["apache"]["admin"],
+                "project.dir" => $config["dir"],
+                "config.projectsdir" => $this->app["config"]["projects"]["path"],
+                "project.name" => $config["name"],
+                "project.statsurl" => (isset($config["url"]) ? "stats.".$config["url"] : ""),
+                "project.port" => $this->app["config"]["nginx"]["port"],
+                "project.rootpath" => "",
+                "config.postgresuser" => $this->app["config"]["users"]["postgresuser"],
+                "config.hostmachine" => $this->app["config"]["webserver"]["hostmachine"],
+            ]
+        );
 
         preg_match_all("/@(\w*?\.\w*?)@/", $value, $hits);
         foreach ($hits[0] as $index => $hit) {
@@ -138,13 +146,14 @@ class ProjectConfigProvider extends AbstractProvider
     }
 
     /**
-     * @param string $projectname
+     * @param string        $projectname
      * @param  \ArrayObject $config
+     *
      * @return \ArrayObject
      */
     private function loadPermissions($projectname, \ArrayObject $config)
     {
-        $configPath = $this->fileSystemProvider->getProjectConfigDirectory($projectname) . "/permissions.xml";
+        $configPath = $this->fileSystemProvider->getProjectConfigDirectory($projectname)."/permissions.xml";
         $xml = simplexml_load_file($configPath);
         foreach ($xml->{'var'} as $var) {
             $name = (string) $var["name"];
@@ -165,13 +174,14 @@ class ProjectConfigProvider extends AbstractProvider
     }
 
     /**
-     * @param string $projectname
+     * @param string        $projectname
      * @param  \ArrayObject $config
+     *
      * @return \ArrayObject
      */
     private function loadBackup($projectname, \ArrayObject $config)
     {
-        $configPath = $this->fileSystemProvider->getProjectConfigDirectory($projectname) . "/backup.xml";
+        $configPath = $this->fileSystemProvider->getProjectConfigDirectory($projectname)."/backup.xml";
         $xml = simplexml_load_file($configPath);
         foreach ($xml->{'var'}[0]->item as $item) {
             $value = (string) $item["value"];
@@ -198,8 +208,8 @@ class ProjectConfigProvider extends AbstractProvider
      */
     private function writeConfig(\ArrayObject $project)
     {
-        $configPath = $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/config.xml";
-        $this->dialogProvider->logConfig("Writing the project config to " . $configPath);
+        $configPath = $this->fileSystemProvider->getProjectConfigDirectory($project["name"])."/config.xml";
+        $this->dialogProvider->logConfig("Writing the project config to ".$configPath);
         $config = new \SimpleXMLElement('<?xml version="1.0" ?><config></config>');
         /* @var $skeletonProvider SkeletonProvider */
         $skeletonProvider = $this->app['skeleton'];
@@ -209,7 +219,7 @@ class ProjectConfigProvider extends AbstractProvider
             $this->addItem($skels, $skeletonname);
             $skeleton = $skeletonProvider->findSkeleton($skeletonname);
             if (!is_object($skeleton)) {
-                $this->dialogProvider->logConfig("Skipping config for " . $skeletonname . " on " . $project["name"]);
+                $this->dialogProvider->logConfig("Skipping config for ".$skeletonname." on ".$project["name"]);
                 continue;
             }
             $config = $skeleton->writeConfig($project, $config);
@@ -219,8 +229,9 @@ class ProjectConfigProvider extends AbstractProvider
 
     /**
      * @param  \SimpleXMLElement $node
-     *                                  @param string $name
+     * @param string             $name
      * @param  array             $items
+     *
      * @return \SimpleXMLElement
      *
      */
@@ -239,6 +250,7 @@ class ProjectConfigProvider extends AbstractProvider
     /**
      * @param  \SimpleXMLElement $var
      * @param  string            $value
+     *
      * @return \SimpleXMLElement
      */
     public function addItem(\SimpleXMLElement $var, $value)
@@ -250,7 +262,7 @@ class ProjectConfigProvider extends AbstractProvider
     }
 
     /**
-     * @param $xml
+     * @param        $xml
      * @param string $path
      */
     private function writeToFile($xml, $path)
@@ -266,8 +278,8 @@ class ProjectConfigProvider extends AbstractProvider
      */
     private function writeOwnership(\ArrayObject $project)
     {
-        $ownershipPath = $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/ownership.xml";
-        $this->dialogProvider->logConfig("Writing the project's ownership config to " . $ownershipPath);
+        $ownershipPath = $this->fileSystemProvider->getProjectConfigDirectory($project["name"])."/ownership.xml";
+        $this->dialogProvider->logConfig("Writing the project's ownership config to ".$ownershipPath);
         $ownership = new \SimpleXMLElement('<?xml version="1.0" ?><config></config>');
         /** @var PermissionDefinition $permission */
         foreach ($project["permissions"] as $permission) {
@@ -280,6 +292,7 @@ class ProjectConfigProvider extends AbstractProvider
      * @param  \SimpleXMLElement $node
      * @param  string            $name
      * @param  string            $value
+     *
      * @return \SimpleXMLElement
      */
     public function addVar(\SimpleXMLElement $node, $name, $value)
@@ -296,8 +309,8 @@ class ProjectConfigProvider extends AbstractProvider
      */
     private function writePermissions(\ArrayObject $project)
     {
-        $permissionsPath = $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/permissions.xml";
-        $this->dialogProvider->logConfig("Writing the project's permissions config to " . $permissionsPath);
+        $permissionsPath = $this->fileSystemProvider->getProjectConfigDirectory($project["name"])."/permissions.xml";
+        $this->dialogProvider->logConfig("Writing the project's permissions config to ".$permissionsPath);
         $permissions = new \SimpleXMLElement('<?xml version="1.0" ?><config></config>');
         /** @var PermissionDefinition $permission */
         foreach ($project["permissions"] as $permission) {
@@ -315,8 +328,8 @@ class ProjectConfigProvider extends AbstractProvider
      */
     private function writeBackup(\ArrayObject $project)
     {
-        $backupPath = $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/backup.xml";
-        $this->dialogProvider->logConfig("Writing the project's backup excludes config to " . $backupPath);
+        $backupPath = $this->fileSystemProvider->getProjectConfigDirectory($project["name"])."/backup.xml";
+        $this->dialogProvider->logConfig("Writing the project's backup excludes config to ".$backupPath);
         $backup = new \SimpleXMLElement('<?xml version="1.0" ?><config></config>');
         $var = $backup->addChild('var');
         $var->addAttribute("name", "backup.excludes");
@@ -359,19 +372,24 @@ class ProjectConfigProvider extends AbstractProvider
         }
 
         if (!$foundSslConfig) {
-            if (($this->app["config"]["env"] == "prod" || $this->app["config"]["env"] == "staging") && array_key_exists("letsencrypt", $config['skeletons'])) {
+            if (($this->app["config"]["env"] == "prod" || $this->app["config"]["env"] == "staging") && array_key_exists(
+                    "letsencrypt",
+                    $config['skeletons']
+                )) {
                 //Set dummy certs so Letsenecrypt will not fail
                 $config['sslConfig']['webserverCertsDir'] = "/etc/ssl/certs/";
                 $config['sslConfig']['webserverCertFile'] = 'dummy.crt';
                 $config['sslConfig']['webserverCertKeyFile'] = 'dummy.key';
                 if (!(file_exists("/etc/ssl/certs/dummy.crt") && file_exists("/etc/ssl/certs/dummy.key"))) {
-                    $this->processProvider->executeSudoCommand('openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/certs/dummy.key -out /etc/ssl/certs/dummy.crt -subj "/C=BE/ST=Vlaams-Brabant/L=Leuven/O=Kunstmaan/OU=Development/CN=dummy"');
+                    $this->processProvider->executeSudoCommand(
+                        'openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/certs/dummy.key -out /etc/ssl/certs/dummy.crt -subj "/C=BE/ST=Vlaams-Brabant/L=Leuven/O=Kunstmaan/OU=Development/CN=dummy"'
+                    );
                 }
 
                 return;
             }
 
-            $this->dialogProvider->logError("No SSL config found for project ". $config["name"] . " for env " . $this->app["config"]["env"] ."!");
+            $this->dialogProvider->logError("No SSL config found for project ".$config["name"]." for env ".$this->app["config"]["env"]."!");
         }
     }
 

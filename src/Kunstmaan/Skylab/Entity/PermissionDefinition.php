@@ -6,7 +6,6 @@ namespace Kunstmaan\Skylab\Entity;
  */
 class PermissionDefinition
 {
-
     /**
      * @var string
      */

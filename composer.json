@@ -2,13 +2,8 @@
     "name": "kunstmaan/skylab",
     "description": "Skylab is a 100% backwards compatible PHP port of the Python based hosting scripts used at Kunstmaan. By using the Cilex, Symfony Components and lot's of good code samples from the Composer project we hope to create an application where everyone in our organisation can work with, and if issues or new needed features should arise, be able to work on.",
     "license": "MIT",
-    "authors": [
+    "repositories": [
         {
-            "name": "Roderik van der Veer",
-            "email": "roderik.van.der.veer@kunstmaan.be"
-        }
-    ],
-    "repositories": [{
             "url": "https://github.com/Kunstmaan/pingdom.git",
             "type": "vcs"
         },
@@ -18,20 +13,34 @@
         }
     ],
     "require": {
-        "cilex/cilex":              "~1.1",
-        "symfony/yaml":             "~2.1",
-        "symfony/serializer":       "~2.1",
-        "sgrodzicki/pingdom":       "dev-master",
-        "stecman/symfony-console-completion": "~0.4.4",
+        "php": "^5.5.9|>=7.0.8",
+        "cilex/cilex": "~2.0",
+        "symfony/yaml": "v3.3.16",
+        "symfony/serializer": "~2.1",
+        "sgrodzicki/pingdom": "dev-master",
+        "stecman/symfony-console-completion": "^0.7",
         "raven/raven": "0.12.*",
-        "cleentfaar/slack": "dev-master",
+        "cleentfaar/slack": "0.20.*",
         "ckdarby/php-uptimerobot": "^0.1.0",
         "padraic/phar-updater": "^1.0",
         "kunstmaan/pwgen-php": "0.1.x",
-        "kunstmaan/cilex-twig": "1.0.x"
+        "kunstmaan/cilex-twig": "1.0.x",
+        "symfony/finder": "^3.0",
+        "symfony/console": "v3.3.15",
+        "symfony/debug": "v3.3.16",
+        "doctrine/annotations": "v1.4.0"
     },
     "autoload": {
-        "psr-0": { "Kunstmaan": "src/" }
+        "psr-0": {
+            "Kunstmaan": "src/"
+        }
     },
-    "bin": ["skylab"]
+    "config": {
+        "platform": {
+            "php": "5.6"
+        }
+    },
+    "bin": [
+        "skylab"
+    ]
 }
