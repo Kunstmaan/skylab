@@ -10,7 +10,6 @@ use Symfony\Component\Finder\SplFileInfo;
  */
 class WebserverSkeleton extends AbstractSkeleton
 {
-
     const NAME = "apache";
 
     /**

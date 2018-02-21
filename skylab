@@ -10,7 +10,7 @@ $app = new \Cilex\Application(
     'skylab',
     '@app_version@',
     [
-        'console.class' => \Kunstmaan\Skylab\Application::class,
+        'console.class' => '\Kunstmaan\Skylab\Application',
         'skylab.starttime' => $startTime,
         'php_version' => PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION,
     ]
