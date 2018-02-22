@@ -358,7 +358,7 @@ class ProjectConfigProvider extends AbstractProvider
             }
         }
 
-        if (!$foundSslConfig) {
+        if (!$foundSslConfig && isset($this->app['config']['env'])) {
             if (($this->app["config"]["env"] == "prod" || $this->app["config"]["env"] == "staging") && array_key_exists("letsencrypt", $config['skeletons'])) {
                 //Set dummy certs so Letsenecrypt will not fail
                 $config['sslConfig']['webserverCertsDir'] = "/etc/ssl/certs/";
