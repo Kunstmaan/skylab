@@ -22,6 +22,7 @@ class BackupCommand extends AbstractCommand
             ->setDescription('Run backup on all or one Skylab projects')
             ->addArgument('project', InputArgument::OPTIONAL, 'If set, the task will only backup the project named')
             ->addOption("--quick", null, InputOption::VALUE_NONE, 'If set, no tar.gz file will be created, only the preBackup and postBackup hooks will be executed.')
+            ->addOption("--anonymize", null, InputOption::VALUE_NONE, 'If set, the database backup will be anonymized')
             ->setHelp(<<<EOT
 The <info>backup</info> command will dump all your databases and create a tarball of one or all projects.
 
@@ -40,6 +41,7 @@ EOT
             if (isset($onlyprojectname) && $project["name"] != $onlyprojectname) {
                 return;
             }
+            $project['anonymize'] = $this->input->getOption('anonymize');
             $this->dialogProvider->logStep("Running backup on project " . $project["name"]);
             $this->skeletonProvider->skeletonLoop(function (AbstractSkeleton $theSkeleton) use ($project) {
                 $this->dialogProvider->logTask("Running preBackup for skeleton " . $theSkeleton->getName());

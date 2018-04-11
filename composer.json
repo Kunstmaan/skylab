@@ -2,36 +2,45 @@
     "name": "kunstmaan/skylab",
     "description": "Skylab is a 100% backwards compatible PHP port of the Python based hosting scripts used at Kunstmaan. By using the Cilex, Symfony Components and lot's of good code samples from the Composer project we hope to create an application where everyone in our organisation can work with, and if issues or new needed features should arise, be able to work on.",
     "license": "MIT",
-    "authors": [
+    "repositories": [
         {
-            "name": "Roderik van der Veer",
-            "email": "roderik.van.der.veer@kunstmaan.be"
-        }
-    ],
-    "repositories": [{
             "url": "https://github.com/Kunstmaan/pingdom.git",
             "type": "vcs"
         },
         {
             "url": "https://github.com/Kunstmaan/slack.git",
             "type": "vcs"
+        },
+        {
+            "url": "git@github.com:sandergo90/neuralyzer.git",
+            "type": "vcs"
         }
     ],
     "require": {
-        "cilex/cilex":              "~1.1",
-        "symfony/yaml":             "~2.1",
-        "symfony/serializer":       "~2.1",
-        "sgrodzicki/pingdom":       "dev-master",
+        "cilex/cilex": "~1.1",
+        "symfony/yaml": "~2.1",
+        "symfony/serializer": "~2.1",
+        "sgrodzicki/pingdom": "dev-master",
         "stecman/symfony-console-completion": "~0.4.4",
         "raven/raven": "0.12.*",
-        "cleentfaar/slack": "dev-master",
+        "cleentfaar/slack": "0.16.1",
         "ckdarby/php-uptimerobot": "^0.1.0",
         "padraic/phar-updater": "^1.0",
         "kunstmaan/pwgen-php": "0.1.x",
-        "kunstmaan/cilex-twig": "1.0.x"
+        "kunstmaan/cilex-twig": "1.0.x",
+        "edyan/neuralyzer": "dev-0.1x-maintenance",
+        "doctrine/annotations": "v1.2.7",
+        "doctrine/collections": "v1.3.0",
+        "symfony/debug": "2.8",
+        "symfony/filesystem": "2.8",
+        "symfony/dependency-injection": "2.8"
     },
     "autoload": {
-        "psr-0": { "Kunstmaan": "src/" }
+        "psr-0": {
+            "Kunstmaan": "src/"
+        }
     },
-    "bin": ["skylab"]
+    "bin": [
+        "skylab"
+    ]
 }

@@ -1,4 +1,9 @@
 
+2.1.5 / 2018-02-22
+==================
+
+  * [Skylab]: add option to backup command to anonymize data
+
 2.1.4 / 2017-12-20
 ==================
 
