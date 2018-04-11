@@ -4,7 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "11896822e0f5374bc7567a6198ddcc75",
+    "hash": "6c9a32278efbea24e747589b08459b9f",
+    "content-hash": "ba7ad4ac073b75f763de42a2dee3a224",
     "packages": [
         {
             "name": "cilex/cilex",
@@ -63,7 +64,7 @@
                 "cli",
                 "microframework"
             ],
-            "time": "2014-03-29T14:03:13+00:00"
+            "time": "2014-03-29 14:03:13"
         },
         {
             "name": "cilex/console-service-provider",
@@ -122,7 +123,7 @@
                 "service-provider",
                 "silex"
             ],
-            "time": "2012-12-19T10:50:58+00:00"
+            "time": "2012-12-19 10:50:58"
         },
         {
             "name": "ckdarby/php-uptimerobot",
@@ -161,7 +162,7 @@
             ],
             "description": "PHP Wrapper for UptimeRobot.com API",
             "homepage": "https://github.com/ckdarby/PHP-UptimeRobot/",
-            "time": "2014-10-25T00:06:52+00:00"
+            "time": "2014-10-25 00:06:52"
         },
         {
             "name": "cleentfaar/slack",
@@ -219,7 +220,7 @@
             "support": {
                 "source": "https://github.com/Kunstmaan/slack/tree/0.16.1"
             },
-            "time": "2015-05-16T17:54:51+00:00"
+            "time": "2015-05-16 17:54:51"
         },
         {
             "name": "composer/ca-bundle",
@@ -275,7 +276,7 @@
                 "ssl",
                 "tls"
             ],
-            "time": "2017-11-29T09:37:33+00:00"
+            "time": "2017-11-29 09:37:33"
         },
         {
             "name": "doctrine/annotations",
@@ -343,7 +344,7 @@
                 "docblock",
                 "parser"
             ],
-            "time": "2015-08-31T12:32:49+00:00"
+            "time": "2015-08-31 12:32:49"
         },
         {
             "name": "doctrine/collections",
@@ -409,7 +410,7 @@
                 "collections",
                 "iterator"
             ],
-            "time": "2015-04-14T22:21:58+00:00"
+            "time": "2015-04-14 22:21:58"
         },
         {
             "name": "doctrine/lexer",
@@ -463,7 +464,7 @@
                 "lexer",
                 "parser"
             ],
-            "time": "2014-09-09T13:34:57+00:00"
+            "time": "2014-09-09 13:34:57"
         },
         {
             "name": "edyan/neuralyzer",
@@ -571,7 +572,7 @@
                 "faker",
                 "fixtures"
             ],
-            "time": "2017-08-15T16:48:10+00:00"
+            "time": "2017-08-15 16:48:10"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -624,7 +625,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2018-01-15T07:18:01+00:00"
+            "time": "2018-01-15 07:18:01"
         },
         {
             "name": "guzzlehttp/ringphp",
@@ -675,7 +676,7 @@
                 }
             ],
             "description": "Provides a simple API and specification that abstracts away the details of HTTP into a single PHP function.",
-            "time": "2015-05-20T03:37:09+00:00"
+            "time": "2015-05-20 03:37:09"
         },
         {
             "name": "guzzlehttp/streams",
@@ -725,7 +726,7 @@
                 "Guzzle",
                 "stream"
             ],
-            "time": "2014-10-12T19:18:40+00:00"
+            "time": "2014-10-12 19:18:40"
         },
         {
             "name": "ircmaxell/password-compat",
@@ -767,7 +768,7 @@
                 "hashing",
                 "password"
             ],
-            "time": "2014-11-20T16:49:30+00:00"
+            "time": "2014-11-20 16:49:30"
         },
         {
             "name": "jms/metadata",
@@ -818,7 +819,7 @@
                 "xml",
                 "yaml"
             ],
-            "time": "2016-12-05T10:18:33+00:00"
+            "time": "2016-12-05 10:18:33"
         },
         {
             "name": "jms/parser-lib",
@@ -853,7 +854,7 @@
                 "Apache2"
             ],
             "description": "A library for easily creating recursive-descent parsers.",
-            "time": "2012-11-18T18:08:43+00:00"
+            "time": "2012-11-18 18:08:43"
         },
         {
             "name": "jms/serializer",
@@ -923,7 +924,7 @@
                 "serialization",
                 "xml"
             ],
-            "time": "2014-03-18T08:39:00+00:00"
+            "time": "2014-03-18 08:39:00"
         },
         {
             "name": "kunstmaan/cilex-twig",
@@ -969,7 +970,7 @@
                 "provider",
                 "twig"
             ],
-            "time": "2015-04-07T09:13:40+00:00"
+            "time": "2015-04-07 09:13:40"
         },
         {
             "name": "kunstmaan/pwgen-php",
@@ -1013,7 +1014,7 @@
                 "generator",
                 "password"
             ],
-            "time": "2016-02-27T21:46:56+00:00"
+            "time": "2016-02-27 21:46:56"
         },
         {
             "name": "padraic/humbug_get_contents",
@@ -1068,7 +1069,7 @@
                     "homepage": "http://blog.astrumfutura.com"
                 },
                 {
-                    "name": "Théo Fidry",
+                    "name": "Théo FIDRY",
                     "email": "theo.fidry@gmail.com"
                 }
             ],
@@ -1082,7 +1083,7 @@
                 "ssl",
                 "tls"
             ],
-            "time": "2018-02-12T18:47:17+00:00"
+            "time": "2018-02-12 18:47:17"
         },
         {
             "name": "padraic/phar-updater",
@@ -1134,7 +1135,7 @@
                 "self-update",
                 "update"
             ],
-            "time": "2018-02-20T01:18:59+00:00"
+            "time": "2018-02-20 01:18:59"
         },
         {
             "name": "phpcollection/phpcollection",
@@ -1182,7 +1183,7 @@
                 "sequence",
                 "set"
             ],
-            "time": "2015-05-17T12:39:23+00:00"
+            "time": "2015-05-17 12:39:23"
         },
         {
             "name": "phpoption/phpoption",
@@ -1232,7 +1233,7 @@
                 "php",
                 "type"
             ],
-            "time": "2015-07-25T16:39:46+00:00"
+            "time": "2015-07-25 16:39:46"
         },
         {
             "name": "pimple/pimple",
@@ -1278,7 +1279,7 @@
                 "container",
                 "dependency injection"
             ],
-            "time": "2013-11-22T08:30:29+00:00"
+            "time": "2013-11-22 08:30:29"
         },
         {
             "name": "psr/log",
@@ -1325,7 +1326,7 @@
                 "psr",
                 "psr-3"
             ],
-            "time": "2016-10-10T12:19:37+00:00"
+            "time": "2016-10-10 12:19:37"
         },
         {
             "name": "raven/raven",
@@ -1380,7 +1381,7 @@
                 "logging"
             ],
             "abandoned": "sentry/sentry",
-            "time": "2015-08-25T22:38:46+00:00"
+            "time": "2015-08-25 22:38:46"
         },
         {
             "name": "react/promise",
@@ -1426,7 +1427,7 @@
                 "promise",
                 "promises"
             ],
-            "time": "2017-03-25T12:08:31+00:00"
+            "time": "2017-03-25 12:08:31"
         },
         {
             "name": "sgrodzicki/pingdom",
@@ -1453,7 +1454,6 @@
                     "Pingdom\\Tests": "tests/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1470,6 +1470,9 @@
                 "api",
                 "pingdom"
             ],
+            "support": {
+                "source": "https://github.com/Kunstmaan/pingdom/tree/master"
+            },
             "time": "2015-08-22 15:39:10"
         },
         {
@@ -1509,7 +1512,7 @@
                 }
             ],
             "description": "Automatic BASH completion for Symfony Console Component based applications.",
-            "time": "2014-11-18T03:19:13+00:00"
+            "time": "2014-11-18 03:19:13"
         },
         {
             "name": "symfony/config",
@@ -1565,7 +1568,7 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "https://symfony.com",
-            "time": "2018-01-21T19:03:25+00:00"
+            "time": "2018-01-21 19:03:25"
         },
         {
             "name": "symfony/console",
@@ -1626,7 +1629,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2018-01-29T08:54:45+00:00"
+            "time": "2018-01-29 08:54:45"
         },
         {
             "name": "symfony/debug",
@@ -1683,7 +1686,7 @@
             ],
             "description": "Symfony Debug Component",
             "homepage": "https://symfony.com",
-            "time": "2015-11-27T05:45:55+00:00"
+            "time": "2015-11-27 05:45:55"
         },
         {
             "name": "symfony/dependency-injection",
@@ -1745,7 +1748,7 @@
             ],
             "description": "Symfony DependencyInjection Component",
             "homepage": "https://symfony.com",
-            "time": "2015-11-30T06:56:28+00:00"
+            "time": "2015-11-30 06:56:28"
         },
         {
             "name": "symfony/event-dispatcher",
@@ -1805,7 +1808,7 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
-            "time": "2018-01-03T07:36:31+00:00"
+            "time": "2018-01-03 07:36:31"
         },
         {
             "name": "symfony/filesystem",
@@ -1854,7 +1857,7 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "https://symfony.com",
-            "time": "2015-11-23T10:19:46+00:00"
+            "time": "2015-11-23 10:19:46"
         },
         {
             "name": "symfony/finder",
@@ -1903,7 +1906,7 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "https://symfony.com",
-            "time": "2018-01-29T08:54:45+00:00"
+            "time": "2018-01-29 08:54:45"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -1962,7 +1965,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2018-01-30T19:27:44+00:00"
+            "time": "2018-01-30 19:27:44"
         },
         {
             "name": "symfony/polyfill-php55",
@@ -2018,7 +2021,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2018-01-30T19:27:44+00:00"
+            "time": "2018-01-30 19:27:44"
         },
         {
             "name": "symfony/process",
@@ -2067,7 +2070,7 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
-            "time": "2018-01-29T08:54:45+00:00"
+            "time": "2018-01-29 08:54:45"
         },
         {
             "name": "symfony/serializer",
@@ -2131,7 +2134,7 @@
             ],
             "description": "Symfony Serializer Component",
             "homepage": "https://symfony.com",
-            "time": "2018-01-10T11:05:18+00:00"
+            "time": "2018-01-10 11:05:18"
         },
         {
             "name": "symfony/stopwatch",
@@ -2180,7 +2183,7 @@
             ],
             "description": "Symfony Stopwatch Component",
             "homepage": "https://symfony.com",
-            "time": "2018-01-03T07:36:31+00:00"
+            "time": "2018-01-03 07:36:31"
         },
         {
             "name": "symfony/yaml",
@@ -2229,7 +2232,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2018-01-03T07:36:31+00:00"
+            "time": "2018-01-03 07:36:31"
         },
         {
             "name": "twig/twig",
@@ -2294,7 +2297,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2017-09-27T18:06:46+00:00"
+            "time": "2017-09-27 18:06:46"
         }
     ],
     "packages-dev": [],
