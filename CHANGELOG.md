@@ -1,8 +1,10 @@
 
-2.1.5 / 2018-02-22
+2.1.5 / 2018-04-11
 ==================
 
-  * [Skylab]: add option to backup command to anonymize data
+  * add option to backup command to anonymize data
+  * check if env param exists in config
+  * apache 000 first host remove https conf
 
 2.1.4 / 2017-12-20
 ==================
