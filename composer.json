@@ -33,7 +33,8 @@
         "doctrine/collections": "v1.3.0",
         "symfony/debug": "2.8",
         "symfony/filesystem": "2.8",
-        "symfony/dependency-injection": "2.8"
+        "symfony/dependency-injection": "2.8",
+        "guzzlehttp/guzzle": "5.3.2"
     },
     "autoload": {
         "psr-0": {
