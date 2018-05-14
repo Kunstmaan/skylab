@@ -48,6 +48,14 @@ class AnacronSkeleton extends AbstractSkeleton
      */
     public function maintenance(\ArrayObject $project)
     {
+        $cronAllowFile = "/etc/cron.allow";
+        if (file_exists($cronAllowFile)) {
+            $grepOutput = $this->processProvider->executeSudoCommand("grep -wF -- " . $project["name"] . " " . $cronAllowFile, true);
+            if (empty($grepOutput)) {
+                $this->fileSystemProvider->writeProtectedFile($cronAllowFile, $project["name"] . "\n", true);
+            }
+        }
+
         $this->permissionsProvider->createGroupIfNeeded($project["name"]);
         $this->permissionsProvider->createUserIfNeeded($project["name"], $project["name"]);
 
@@ -131,6 +139,13 @@ class AnacronSkeleton extends AbstractSkeleton
     {
         // cleanup
         $this->processProvider->executeSudoCommand("crontab -r -u " . $project["name"], true);
+        $cronAllowFile = "/etc/cron.allow";
+        if (file_exists($cronAllowFile)) {
+            $grepOutput = $this->processProvider->executeSudoCommand("grep -wF -- " . $project["name"] . " " . $cronAllowFile, true);
+            if (!empty($grepOutput)) {
+                $this->processProvider->executeSudoCommand("sed -i \"\" -e '/^". $project["name"] . "$/d' " . $cronAllowFile);
+            }
+        }
     }
 
     /**
