@@ -67,8 +67,13 @@ class TomcatSkeleton extends AbstractSkeleton
                 $workers[] = '';
             }
         });
-        array_unshift($workers, 'worker.list='.implode(',', $workerlist));
-        $this->fileSystemProvider->writeProtectedFile($this->app["config"]["tomcat"]["workerspath"], implode("\n", $workers));
+        $workersFile = $this->app["config"]["tomcat"]["workerspath"];
+        if (file_exists($workersFile)) {
+            array_unshift($workers, 'worker.list='.implode(',', $workerlist));
+            $this->fileSystemProvider->writeProtectedFile($workersFile, implode("\n", $workers));
+        } elseif(!empty($workers)) {
+            $this->dialogProvider->logError("The file ".$workersFile." does not exist and the workers are not empty!");
+        }
     }
 
     /**
