@@ -37,39 +37,41 @@ class LetsEncryptSkeleton extends AbstractSkeleton
      */
     public function postMaintenance()
     {
-        if (isset($this->app["config"]["env"]) && ($this->app["config"]["env"] == "prod" || $this->app["config"]["env"] == "staging")) {
-            $le = $this;
-            $this->fileSystemProvider->projectsLoop(function ($project) use ($le) {
-                if ($le->skeletonProvider->hasSkeleton($project, $le)) {
-                    /** @var SslSkeleton $sslSkeleton */
-                    $sslSkeleton = $le->skeletonProvider->findSkeleton(SslSkeleton::NAME);
-                    if ($le->skeletonProvider->hasSkeleton($project, $sslSkeleton) && $sslSkeleton->hasRequiredSslConfiguration($project)) {
-                        $le->dialogProvider->logWarning("Skipping letsencrypt for project " . $project["name"] . ": SSL skeleton is defined and configuration is available.");
-                    } else {
-                        $domains = implode(",", $le->getDomains($project));
-                        $leEmail = array_key_exists("letsencrypt.email", $project) ? $project["letsencrypt.email"] : "it@kunstmaan.be";
-                        if ($le->processProvider->commandExists("letsencrypt")) {
-                            $le->dialogProvider->logTask("Running letsencrypt command for project " . $project["name"]);
-                            if ($le->app["config"]["env"] == "prod") {
-                                $leInstallerAndAuthenticatorMethods = "--apache";
-                            } elseif ($le->app["config"]["env"] == "staging") {
-                                $leDocumentRoot = array_key_exists("letsencrypt.documentroot", $project) ? $project["letsencrypt.documentroot"] : "/home/projects/" . $project["name"] . "/data/current/web";
-                                $leInstallerAndAuthenticatorMethods = "-a webroot -i apache -w " . $leDocumentRoot;
-                            } else {
-                                $le->dialogProvider->logWarning("Unknown environment (". $le->app["config"]["env"] . ") for letsencrypt ");
-
-                                return;
-                            }
-                            //Execute the letsencrypt command
-                            $le->processProvider->executeSudoCommand("letsencrypt --text --rsa-key-size 4096 --email " . $leEmail ." --agree-tos --keep-until-expiring " . $leInstallerAndAuthenticatorMethods . " --expand --no-redirect -d " . $domains);
-                            //Add the renew cronjob
-                            $le->processProvider->executeSudoCommand("crontab -l | grep '". $domains . "' || (crontab -l; echo '0 0 * * 0 letsencrypt " . $leInstallerAndAuthenticatorMethods . " -n certonly -d " . $domains . "') | crontab -");
+        if ($this->app["config"]["letsencrypt"]["allow"]) {
+            if ($this->app["config"]["letsencrypt"]["allow"] && isset($this->app["config"]["env"]) && ($this->app["config"]["env"] == "prod" || $this->app["config"]["env"] == "staging")) {
+                $le = $this;
+                $this->fileSystemProvider->projectsLoop(function ($project) use ($le) {
+                    if ($le->skeletonProvider->hasSkeleton($project, $le)) {
+                        /** @var SslSkeleton $sslSkeleton */
+                        $sslSkeleton = $le->skeletonProvider->findSkeleton(SslSkeleton::NAME);
+                        if ($le->skeletonProvider->hasSkeleton($project, $sslSkeleton) && $sslSkeleton->hasRequiredSslConfiguration($project)) {
+                            $le->dialogProvider->logWarning("Skipping letsencrypt for project " . $project["name"] . ": SSL skeleton is defined and configuration is available.");
                         } else {
-                            $le->dialogProvider->logWarning("The command letsencrypt is not available");
+                            $domains = implode(",", $le->getDomains($project));
+                            $leEmail = array_key_exists("letsencrypt.email", $project) ? $project["letsencrypt.email"] : "it@kunstmaan.be";
+                            if ($le->processProvider->commandExists("letsencrypt")) {
+                                $le->dialogProvider->logTask("Running letsencrypt command for project " . $project["name"]);
+                                if ($le->app["config"]["env"] == "prod") {
+                                    $leInstallerAndAuthenticatorMethods = "--apache";
+                                } elseif ($le->app["config"]["env"] == "staging") {
+                                    $leDocumentRoot = array_key_exists("letsencrypt.documentroot", $project) ? $project["letsencrypt.documentroot"] : "/home/projects/" . $project["name"] . "/data/current/web";
+                                    $leInstallerAndAuthenticatorMethods = "-a webroot -i apache -w " . $leDocumentRoot;
+                                } else {
+                                    $le->dialogProvider->logWarning("Unknown environment (". $le->app["config"]["env"] . ") for letsencrypt ");
+
+                                    return;
+                                }
+                                //Execute the letsencrypt command
+                                $le->processProvider->executeSudoCommand("letsencrypt --text --rsa-key-size 4096 --email " . $leEmail ." --agree-tos --keep-until-expiring " . $leInstallerAndAuthenticatorMethods . " --expand --no-redirect -d " . $domains);
+                                //Add the renew cronjob
+                                $le->processProvider->executeSudoCommand("crontab -l | grep '". $domains . "' || (crontab -l; echo '0 0 * * 0 letsencrypt " . $leInstallerAndAuthenticatorMethods . " -n certonly -d " . $domains . "') | crontab -");
+                            } else {
+                                $le->dialogProvider->logWarning("The command letsencrypt is not available");
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
         }
     }
 

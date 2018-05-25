@@ -76,3 +76,6 @@ skeletons:
 
 debug: true
 develmode: true
+
+letsencrypt:
+    allow: true
