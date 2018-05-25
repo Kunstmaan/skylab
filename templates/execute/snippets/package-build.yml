@@ -1,4 +1,4 @@
 steps:
   - GZIP="--rsyncable" tar -zcf %build_package_target% --exclude="./.bundle" --exclude="./.sass-cache" --exclude="./node_modules" --exclude="./web/uploads" --exclude="./uploads" --exclude="./.git/objects/*" --exclude="./.git/refs/tags/*" --exclude="./app/logs" --exclude="./var/logs" --exclude="./app/cache" --exclude="./var/cache" --exclude="./build" --exclude="./web/app_dev.php" --exclude="./web/app_test.php" --exclude="./index_dev.php" --exclude="./index_test.php" .
   - mkdir -p %shared_package_folder%
-  - cp %build_package_target% %shared_package_target%
+  - cp %build_package_target% %shared_package_target% 2>/dev/null || true

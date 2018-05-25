@@ -23,7 +23,7 @@
         "sgrodzicki/pingdom": "dev-master",
         "stecman/symfony-console-completion": "~0.4.4",
         "raven/raven": "0.12.*",
-        "cleentfaar/slack": "0.16.1",
+        "cleentfaar/slack": "dev-master",
         "ckdarby/php-uptimerobot": "^0.1.0",
         "padraic/phar-updater": "^1.0",
         "kunstmaan/pwgen-php": "0.1.x",

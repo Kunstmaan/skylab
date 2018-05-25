@@ -1,6 +1,6 @@
 steps:
-  - ssh %deploy_server% -p %deploy_port% "sudo chown -R %deploy_project%:%deploy_project% /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%"
-  - ssh %deploy_server% -p %deploy_port% "sudo setfacl -R -m group:admin:rwx /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%"
-  - ssh %deploy_server% -p %deploy_port% "sudo chmod -R g+w /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%"
-  - ssh %deploy_server% -p %deploy_port% "if [ -d /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/app/cache ]; then sudo chmod -R 0777 /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/app/cache; fi"
-  - ssh %deploy_server% -p %deploy_port% "if [ -d /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/var/cache ]; then sudo chmod -R 0777 /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/var/cache; fi"
+  - ssh %deploy_server% -p %deploy_port% "sudo chown -R %deploy_project%:%deploy_project% %projects_path%/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%"
+  - ssh %deploy_server% -p %deploy_port% "sudo setfacl -R -m user:%deploy_user%:rwx %projects_path%/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%"
+  - ssh %deploy_server% -p %deploy_port% "sudo chmod -R g+w %projects_path%/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%"
+  - ssh %deploy_server% -p %deploy_port% "if [ -d %projects_path%/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/app/cache ]; then sudo chmod -R 0777 %projects_path%/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/app/cache; fi"
+  - ssh %deploy_server% -p %deploy_port% "if [ -d %projects_path%/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/var/cache ]; then sudo chmod -R 0777 %projects_path%/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/var/cache; fi"
