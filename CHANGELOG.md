@@ -1,4 +1,25 @@
 
+2.2.0 / 2018-06-06
+==================
+
+  * Merge pull request #209 from bakie/feature/split_mysql_and_dir_config
+  * option to specify project dir and mysql settings per environment
+  * Merge pull request #208 from bakie/feature/remove_assetic_dump
+  * Merge pull request #207 from bakie/feature/enable_disable_letsencrypt
+  * Merge pull request #206 from bakie/feature/deploy_cluster
+  * remove assetic dump command
+  * option to enable/disable letsencrypt
+  * 2 servers deploy
+  * Merge pull request #204 from bakie/hotfix/cron.allow
+  * Merge pull request #205 from bakie/hotfix/workers.properties
+  * check if workers file exists
+  * add project user to cron.allow if present
+  * Merge pull request #203 from sandergo90/fix/anomy
+  * Update edyan neuralizer
+  * Merge pull request #202 from Devolicious/feature/php71-fixes
+  * added app_env to composer install command
+  * fix execute command
+
 2.1.5 / 2018-04-11
 ==================
 
