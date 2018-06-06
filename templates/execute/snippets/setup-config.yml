@@ -1,2 +1,3 @@
 steps:
-  - ssh %deploy_server% -p %deploy_port% "if ([ -d /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/.skylab/conf ]); then if [ -L /home/projects/%deploy_project%/conf ]; then sudo rm /home/projects/%deploy_project%/conf; else sudo mv -f /home/projects/%deploy_project%/conf /home/projects/%deploy_project%/conf__old_%deploy_timestamp%; fi && sudo ln -s /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/.skylab/conf /home/projects/%deploy_project%/conf; fi"
+  - ssh %deploy_server% -p %deploy_port% "sudo rm -rf %projects_path%/%deploy_project%/conf"
+  - ssh %deploy_server% -p %deploy_port% "sudo ln -s %projects_path%/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/.skylab/conf %projects_path%/%deploy_project%/conf"

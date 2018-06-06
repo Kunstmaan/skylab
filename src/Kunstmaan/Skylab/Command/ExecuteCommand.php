@@ -188,6 +188,15 @@ EOT
                 $this->runStep("before_deploy", $yaml, $deployEnv);
                 $this->runStep("deploy", $yaml, $deployEnv, "after_deploy_success");
                 $this->notifySlack("Deploy successful", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray, "#7CD197", true);
+                // If failover is defined run the deploy process also on that server
+                if (isset($resolverArray['deploy_failover'])) {
+                    $this->dialogProvider->logWarning("Starting deploy to failover server " . $resolverArray['deploy_failover']);
+                    list($yaml, $resolverArray) = $this->parseYaml(true);
+                    $this->notifySlack("Deploy started on failover server", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray, "#FFCC00", true);
+                    $this->runStep("before_deploy", $yaml, $deployEnv);
+                    $this->runStep("deploy", $yaml, $deployEnv, "after_deploy_success");
+                    $this->notifySlack("Deploy successful on failover server", $yaml["deploy_matrix"][$deployEnv]["project"], $deployEnv, getenv("slack_user"), $resolverArray, "#FFCC00", true);
+                }
             } else {
                 $this->dialogProvider->logNotice("Deploy is skipped");
             }
@@ -200,11 +209,11 @@ EOT
      * @return array
      * @throws \Exception
      */
-    protected function parseYaml()
+    protected function parseYaml($useFailoverServer = false)
     {
         try {
             $mergedYaml = $this->buildMergedYaml();
-            $resolverArray = $this->buildResolverArray($mergedYaml);
+            $resolverArray = $this->buildResolverArray($mergedYaml, $useFailoverServer);
             $resolvedYaml = $this->resolveYaml($mergedYaml, $resolverArray);
             $mergedYaml["env"]["SHELL"] = "/bin/bash";
             return array($resolvedYaml, $resolverArray);
@@ -219,19 +228,19 @@ EOT
      * @param $mergedYaml
      * @return array
      */
-    protected function buildResolverArray($mergedYaml)
+    protected function buildResolverArray($mergedYaml, $useFailoverServer = false)
     {
         $resolverArray = array_merge($this->app["config"], $mergedYaml["env"]);
         $resolverArray["base_dir"] = BASE_DIR;
         $resolverArray["php_version"] = $this->app["php_version"];
         $deployEnv = $this->input->getArgument('deploy-environment');
         if (!empty($deployEnv) && isset($mergedYaml["deploy_matrix"][$deployEnv])) {
-            $resolverArray = $this->collectDeploySettings($mergedYaml["deploy_matrix"][$deployEnv], "deploy", $resolverArray);
+            $resolverArray = $this->collectDeploySettings($mergedYaml["deploy_matrix"][$deployEnv], "deploy", $resolverArray, $useFailoverServer);
         }
         if (isset($mergedYaml["database_source"])) {
             $dbSource = $mergedYaml["database_source"];
             if (isset($mergedYaml["deploy_matrix"][$dbSource])) {
-                $resolverArray = $this->collectDeploySettings($mergedYaml["deploy_matrix"][$dbSource], "dbsource", $resolverArray);
+                $resolverArray = $this->collectDeploySettings($mergedYaml["deploy_matrix"][$dbSource], "dbsource", $resolverArray, $useFailoverServer);
             }
             $resolverArray["fetch_mysql"] = "yes";
         } else {
@@ -250,10 +259,22 @@ EOT
         $resolverArray["buildtag"] = $deployEnv . "-" . $this->getRevision();
         $resolverArray["home"] = getenv("HOME");
         $resolverArray["job_name"] = getenv("JOB_NAME");
-        $resolverArray["build_package_target"] = $resolverArray["home"] . "/builds/".$resolverArray["job_name"]."-".$resolverArray["buildtag"].".tar.gz";
-        $resolverArray["shared_package_folder"] = "/home/projects/build/data/shared/web/uploads/";
-        $resolverArray["shared_package_target"] = "/home/projects/build/data/shared/web/uploads/".$resolverArray["job_name"]."-".$resolverArray["deploy_timestamp"] . "-" . $resolverArray["buildtag"].".tar.gz";
+        if (key_exists("build_dir", $resolverArray)) {
+            $resolverArray["build_package_target"] = $resolverArray["build_dir"] . "/".$resolverArray["job_name"]."-".$resolverArray["buildtag"].".tar.gz";
+            $resolverArray["shared_package_folder"] = $resolverArray["build_dir"];
+            $resolverArray["shared_package_target"] = $resolverArray["build_dir"]."/".$resolverArray["job_name"]."-".$resolverArray["deploy_timestamp"] . "-" . $resolverArray["buildtag"].".tar.gz";
+        } else {
+            $resolverArray["build_package_target"] = $resolverArray["home"] . "/builds/".$resolverArray["job_name"]."-".$resolverArray["buildtag"].".tar.gz";
+            $resolverArray["shared_package_folder"] = "/home/projects/build/data/shared/web/uploads/";
+            $resolverArray["shared_package_target"] = "/home/projects/build/data/shared/web/uploads/".$resolverArray["job_name"]."-".$resolverArray["deploy_timestamp"] . "-" . $resolverArray["buildtag"].".tar.gz";
+        }
         $resolverArray["shared_package_url"] = "http://build.kunstmaan.be/uploads/".$resolverArray["job_name"]."-".$resolverArray["deploy_timestamp"] . "-" . $resolverArray["buildtag"].".tar.gz";
+        $resolverArray["projects_path"] = $resolverArray["projects"]["path"];
+        if ($useFailoverServer) {
+            $resolverArray["remove_shared_package"] = "yes";
+        } else {
+            $resolverArray["remove_shared_package"] = isset($resolverArray["deploy_failover"]) ? "no" : "yes";
+        }
         return $resolverArray;
     }
 
@@ -337,9 +358,27 @@ EOT
         return $mergedYaml;
     }
 
-    protected function collectDeploySettings($deploySettings, $prefix, $resolverArray)
+    protected function collectDeploySettings($deploySettings, $prefix, $resolverArray, $useFailoverServer = false)
     {
-        $resolverArray[$prefix . "_server"] = $deploySettings["server"];
+        if ($prefix == 'deploy' && array_key_exists("deploy_user", $resolverArray)) {
+            $resolverArray[$prefix . "_user"] = $resolverArray["deploy_user"];
+            if ($useFailoverServer) {
+                $resolverArray[$prefix . "_server"] = $resolverArray["deploy_user"] . "@" . $deploySettings["failover"];
+            } else {
+                $resolverArray[$prefix . "_server"] = $resolverArray["deploy_user"] . "@" . $deploySettings["server"];
+            }
+        } else {
+            if ($useFailoverServer) {
+                $resolverArray[$prefix . "_server"] = $deploySettings["failover"];
+            } else {
+                $resolverArray[$prefix . "_server"] = $deploySettings["server"];
+            }
+        }
+        if ($useFailoverServer) {
+            $resolverArray[$prefix . "_ssh-keyscan_server"] = $deploySettings["failover"];
+        } else {
+            $resolverArray[$prefix . "_ssh-keyscan_server"] = $deploySettings["server"];
+        }
         if (isset($deploySettings["port"])) {
             $resolverArray[$prefix . "_port"] = $deploySettings["port"];
         } else {
@@ -357,6 +396,9 @@ EOT
             $resolverArray[$prefix . "_symfony_env"] = "prod";
         }
         $resolverArray[$prefix . "_timestamp"] = time();
+        if (isset($deploySettings["failover"])) {
+            $resolverArray[$prefix . "_failover"] = $deploySettings["failover"];
+        }
         return $resolverArray;
     }
 

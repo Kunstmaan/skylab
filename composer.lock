@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "ba7ad4ac073b75f763de42a2dee3a224",
+    "content-hash": "f92d88fbafcceb1991131c212b90ca35",
     "packages": [
         {
             "name": "cilex/cilex",
@@ -165,22 +165,22 @@
         },
         {
             "name": "cleentfaar/slack",
-            "version": "0.16.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Kunstmaan/slack.git",
-                "reference": "4c9582e112535ba03055ca5b8119223570c3645c"
+                "reference": "141e25f450571a065ccd589653daa0a9eab17771"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Kunstmaan/slack/zipball/4c9582e112535ba03055ca5b8119223570c3645c",
-                "reference": "4c9582e112535ba03055ca5b8119223570c3645c",
+                "url": "https://api.github.com/repos/Kunstmaan/slack/zipball/141e25f450571a065ccd589653daa0a9eab17771",
+                "reference": "141e25f450571a065ccd589653daa0a9eab17771",
                 "shasum": ""
             },
             "require": {
                 "doctrine/collections": "~1.2",
                 "ext-curl": "*",
-                "guzzlehttp/guzzle": ">=4.2",
+                "guzzlehttp/guzzle": "~5.3.0",
                 "jms/serializer": "~0.16",
                 "php": ">=5.4",
                 "symfony/event-dispatcher": "~2.2",
@@ -217,9 +217,9 @@
                 "slack api"
             ],
             "support": {
-                "source": "https://github.com/Kunstmaan/slack/tree/0.16.1"
+                "source": "https://github.com/Kunstmaan/slack/tree/master"
             },
-            "time": "2015-05-16T17:54:51+00:00"
+            "time": "2015-12-15T14:48:09+00:00"
         },
         {
             "name": "composer/ca-bundle",
@@ -521,7 +521,7 @@
             "support": {
                 "source": "https://github.com/sandergo90/neuralyzer/tree/0.1x-maintenance"
             },
-            "time": "2018-04-18 15:51:18"
+            "time": "2018-04-18T15:51:18+00:00"
         },
         {
             "name": "fzaninotto/faker",
@@ -1470,7 +1470,7 @@
                 "api",
                 "pingdom"
             ],
-            "time": "2015-08-22 15:39:10"
+            "time": "2015-08-22T15:39:10+00:00"
         },
         {
             "name": "stecman/symfony-console-completion",
@@ -2302,6 +2302,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "sgrodzicki/pingdom": 20,
+        "cleentfaar/slack": 20,
         "edyan/neuralyzer": 20
     },
     "prefer-stable": false,

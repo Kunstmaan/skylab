@@ -1,2 +1,2 @@
 steps:
-  - ssh %deploy_server% -p %deploy_port% "sudo ln -sfT /home/projects/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/ /home/projects/%deploy_project%/data/current"
+  - ssh %deploy_server% -p %deploy_port% "sudo ln -sfT %projects_path%/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/ %projects_path%/%deploy_project%/data/current"
