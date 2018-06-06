@@ -70,6 +70,12 @@ class ProjectConfigProvider extends AbstractProvider
                 case "project.sslConfig":
                     $this->parseSslConfig($var, $config);
                     break;
+                case "project.mysqlConfig":
+                    $this->parseMysqlConfig($var, $config);
+                    break;
+                case "project.dirConfig":
+                    $this->parseDirConfig($var, $config);
+                    break;
                 default:
                     $config[str_replace("project.", "", $tag)] = (string) $var["value"];
             }
@@ -372,6 +378,39 @@ class ProjectConfigProvider extends AbstractProvider
             }
 
             $this->dialogProvider->logError("No SSL config found for project ". $config["name"] . " for env " . $this->app["config"]["env"] ."!");
+        }
+    }
+
+    /**
+     * @param $xmlConfig
+     * @param $config
+     */
+    private function parseMysqlConfig($xmlConfig, $config)
+    {
+        foreach ($xmlConfig as $item) {
+            if (!empty($this->app["config"]["env"]) && $item{'name'} == $this->app["config"]["env"]) {
+                $config['mysqlserver'] = (string) $item->{'server'}['value'];
+                $config['mysqluser'] = (string) $item->{'user'}['value'];
+                $config['mysqlpass'] = (string) $item->{'pass'}['value'];
+                $config['mysqldbname'] = (string) $item->{'dbname'}['value'];
+
+                return;
+            }
+        }
+    }
+
+    /**
+     * @param $xmlConfig
+     * @param $config
+     */
+    private function parseDirConfig($xmlConfig, $config)
+    {
+        foreach ($xmlConfig as $item) {
+            if (!empty($this->app["config"]["env"]) && $item{'name'} == $this->app["config"]["env"]) {
+                $config['dir'] = (string) $item['value'];
+
+                return;
+            }
         }
     }
 
