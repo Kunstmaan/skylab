@@ -1,0 +1,2 @@
+steps:
+  - if [ -f "buildUI.sh" ]; then bash -el buildUI.sh; fi
