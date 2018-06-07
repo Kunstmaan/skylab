@@ -1,4 +1,10 @@
 
+2.2.1 / 2018-06-07
+==================
+
+  * Merge pull request #210 from bakie/feature/buildUI_snippet
+  * buildUI snippet
+
 2.2.0 / 2018-06-06
 ==================
 
