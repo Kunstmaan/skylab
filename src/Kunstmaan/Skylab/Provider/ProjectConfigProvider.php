@@ -354,7 +354,19 @@ class ProjectConfigProvider extends AbstractProvider
                     $config['sslConfig']['caCertFile'] = (string) $item->{'caCertFile'}['value'];
                 }
                 if (array_key_exists('dir', $item) && array_key_exists('certFile', $item)) {
+
                     $cname = $this->getCname((string) $item->{'dir'}['value'], (string) $item->{'certFile'}['value']);
+                
+                    // Extra check so we don't override the general STAR_dev_kunstmaan_be
+                    // with an expired one from a project.
+                    if("dev" == $this->app["config"]["env"] || "staging" == $this->app["config"]["env"]) {
+                        $expirationDate = $this->getExpirationDate((string) $item->{'dir'}['value'], (string) $item->{'certFile'}['value']);
+
+                        if ($expirationDate < time()) {
+                            $this->dialogProvider->logError("Tried to copy an expired ssl certificate for '".(string) $item->{'dir'}['value']."'. \nYou can fix this error by replacing it with a newer certificate.");
+                        }
+                    } 
+
                     $config['sslConfig']['webserverCertsDir'] = "/etc/apache2/ssl-certs/".$cname.'/';
                     $config['sslConfig']['webserverCertFile'] = $cname.'.crt';
                     $config['sslConfig']['webserverCertKeyFile'] = $cname.'.key';
@@ -425,5 +437,22 @@ class ProjectConfigProvider extends AbstractProvider
         }
 
         return "generic_cname";
+    }
+
+    /**
+     * @param \String $projectSslDir
+     * @param \String $certFileName
+     * 
+     * @return \Int $expirationDate
+     */
+    private function getExpirationDate($projectSslDir, $certFileName)
+    {
+        $certContent = openssl_x509_parse(file_get_contents($projectSslDir.$certFileName));
+        if (isset($certContent['validTo_time_t'])) {
+            $expirationDate = $certContent['validTo_time_t'];
+            return $expirationDate;
+        }
+
+        return 0;
     }
 }
