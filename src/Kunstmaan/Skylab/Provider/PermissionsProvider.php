@@ -34,7 +34,7 @@ class PermissionsProvider extends AbstractProvider
             $this->processProvider->executeSudoCommand('dscl . create /groups/' . $groupName . ' PrimaryGroupID 20');
         } else {
             if (!$this->isGroup($groupName)) {
-                $this->processProvider->executeSudoCommand('addgroup ' . $groupName);
+                $this->dialogProvider->logError("No group " . $groupName . " found. Add it to ansible and create the group!");
             }
         }
     }
@@ -75,7 +75,7 @@ class PermissionsProvider extends AbstractProvider
                 $this->processProvider->executeSudoCommand('dscl . append /Groups/' . $groupName . ' GroupMembership ' . $userName);
                 $this->processProvider->executeSudoCommand('defaults write /Library/Preferences/com.apple.loginwindow HiddenUsersList -array-add ' . $userName);
             } else {
-                $this->processProvider->executeSudoCommand('adduser --firstuid 1000 --lastuid 1999 --disabled-password --system --quiet --ingroup ' . $groupName . ' --home "'.$this->app["config"]["projects"]["path"] . "/" . $userName . '" --no-create-home --shell /bin/bash ' . $userName);
+                $this->dialogProvider->logError("No user " . $userName . " found. Add it to ansible and create the user!");
             }
         }
     }
