@@ -30,6 +30,7 @@ deploy:
   - resource: snippets/extract-tar.yml
   - resource: snippets/setup-config.yml
   - resource: snippets/symfony-folders.yml
+  - resource: snippets/nfs-folders-symlink.yml
   - resource: snippets/cachewarmup.yml
   - resource: snippets/deploypermissions.yml
 

@@ -1,0 +1,4 @@
+steps:
+  - if [ "yes" = "%nfs_share_available%" ]; then ssh %deploy_server% -p %deploy_port% "if [ ! -L %projects_path%/tmp ]; then sudo rm -rf %projects_path%/tmp; fi"; fi
+  - if [ "yes" = "%nfs_share_available%" ]; then ssh %deploy_server% -p %deploy_port% "if [ -d %nfs_share_path%/sessions ]; then sudo ln -nfs %nfs_share_path%/sessions %projects_path%/%deploy_project%/tmp; fi"; fi
+  - if [ "yes" = "%nfs_share_available%" ]; then ssh %deploy_server% -p %deploy_port% "if [ -d %nfs_share_path%/web/uploads ]; then sudo ln -nfs %nfs_share_path%/web/uploads %projects_path%/%deploy_project%/data/builds/%deploy_timestamp%-%buildtag%/web/uploads; fi"; fi
