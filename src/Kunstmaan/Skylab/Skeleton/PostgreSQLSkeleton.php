@@ -53,8 +53,8 @@ class PostgreSQLSkeleton extends AbstractSkeleton
      */
     public function maintenance(\ArrayObject $project)
     {
-        $this->permissionsProvider->createGroupIfNeeded($project["name"]);
-        $this->permissionsProvider->createUserIfNeeded($project["name"], $project["name"]);
+        $this->permissionsProvider->createGroupIfNeeded($project);
+        $this->permissionsProvider->createUserIfNeeded($project);
 
         try {
             new \PDO(

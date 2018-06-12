@@ -22,10 +22,11 @@ class PermissionsProvider extends AbstractProvider
     }
 
     /**
-     * @param string $groupName The group name
+     * @param \ArrayObject $project The project
      */
-    public function createGroupIfNeeded($groupName)
+    public function createGroupIfNeeded(\ArrayObject $project)
     {
+        $groupName = $project["name"];
         if (PHP_OS == "Darwin") {
             $this->processProvider->executeSudoCommand('dscl . create /groups/' . $groupName);
             $this->processProvider->executeSudoCommand('dscl . create /groups/' . $groupName . ' RealName ' . $groupName);
@@ -33,8 +34,10 @@ class PermissionsProvider extends AbstractProvider
             $this->processProvider->executeSudoCommand('dscl . create /groups/' . $groupName . ' passwd "*"');
             $this->processProvider->executeSudoCommand('dscl . create /groups/' . $groupName . ' PrimaryGroupID 20');
         } else {
-            if (!$this->isGroup($groupName)) {
+            if ($project["nfs_share_available"]) {
                 $this->dialogProvider->logError("No group " . $groupName . " found. Add it to ansible and create the group!");
+            } else if (!$this->isGroup($groupName)) {
+                $this->processProvider->executeSudoCommand('addgroup ' . $groupName);
             }
         }
     }
@@ -54,11 +57,12 @@ class PermissionsProvider extends AbstractProvider
     }
 
     /**
-     * @param string $userName  The user name
-     * @param string $groupName The group name
+     * @param \ArrayObject $project The project
      */
-    public function createUserIfNeeded($userName, $groupName)
+    public function createUserIfNeeded(\ArrayObject $project)
     {
+        $userName = $project["name"];
+        $groupName = $project["name"];
         if (!$this->isUser($userName)) {
             if (PHP_OS == "Darwin") {
                 $maxid = (int) $this->processProvider->executeSudoCommand("dscl . list /Users UniqueID | awk '{print $2}' | sort -ug | tail -1");
@@ -74,8 +78,10 @@ class PermissionsProvider extends AbstractProvider
                 $this->processProvider->executeSudoCommand('dscl . create /Users/' . $userName . ' UniqueID ' . $maxid);
                 $this->processProvider->executeSudoCommand('dscl . append /Groups/' . $groupName . ' GroupMembership ' . $userName);
                 $this->processProvider->executeSudoCommand('defaults write /Library/Preferences/com.apple.loginwindow HiddenUsersList -array-add ' . $userName);
+            } else if ($project["nfs_share_available"]) {
+                    $this->dialogProvider->logError("No user " . $userName . " found. Add it to ansible and create the user!");
             } else {
-                $this->dialogProvider->logError("No user " . $userName . " found. Add it to ansible and create the user!");
+                $this->processProvider->executeSudoCommand('adduser --firstuid 1000 --lastuid 1999 --disabled-password --system --quiet --ingroup ' . $groupName . ' --home "'.$this->app["config"]["projects"]["path"] . "/" . $userName . '" --no-create-home --shell /bin/bash ' . $userName);
             }
         }
     }

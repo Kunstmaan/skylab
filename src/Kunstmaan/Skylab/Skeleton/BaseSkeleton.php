@@ -212,8 +212,8 @@ class BaseSkeleton extends AbstractSkeleton
         if ($log) {
             $this->dialogProvider->logTask("Updating permissions and ownership");
         }
-        $this->permissionsProvider->createGroupIfNeeded($project["name"]);
-        $this->permissionsProvider->createUserIfNeeded($project["name"], $project["name"]);
+        $this->permissionsProvider->createGroupIfNeeded($project);
+        $this->permissionsProvider->createUserIfNeeded($project);
         $this->permissionsProvider->applyOwnership($project);
         $this->permissionsProvider->applyPermissions($project);
     }
