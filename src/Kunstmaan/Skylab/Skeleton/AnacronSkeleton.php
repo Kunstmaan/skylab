@@ -56,8 +56,8 @@ class AnacronSkeleton extends AbstractSkeleton
             }
         }
 
-        $this->permissionsProvider->createGroupIfNeeded($project["name"]);
-        $this->permissionsProvider->createUserIfNeeded($project["name"], $project["name"]);
+        $this->permissionsProvider->createGroupIfNeeded($project);
+        $this->permissionsProvider->createUserIfNeeded($project);
 
         $cronjobscript = $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/anacronjobs";
         $crontab = $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/anacrontab";
