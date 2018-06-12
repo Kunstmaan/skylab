@@ -33,6 +33,7 @@ class ProjectConfigProvider extends AbstractProvider
         $config = $this->loadOwnership($projectname, $config);
         $config = $this->loadPermissions($projectname, $config);
         $config = $this->loadBackup($projectname, $config);
+        $config = $this->loadNfs($projectname, $config);
 
         return $config;
     }
@@ -182,6 +183,25 @@ class ProjectConfigProvider extends AbstractProvider
         foreach ($xml->{'var'}[0]->item as $item) {
             $value = (string) $item["value"];
             $config["backupexcludes"][$value] = $value;
+        }
+
+        return $config;
+    }
+
+    /**
+     * @param string $projectname
+     * @param \ArrayObject $config
+     * @return \ArrayObject
+     */
+    private function loadNfs($projectname,  \ArrayObject $config)
+    {
+        $nfs_mount_path = $this->app["config"]["projects"]["nfs_mount_path"];
+        $nfsDirFound = $this->processProvider->executeSudoCommand("test -d " . $nfs_mount_path . "/" . $projectname . " && echo found", true);
+        if ( (bool) $nfsDirFound) {
+            $config["nfs_share_available"] = true;
+            $config["%nfs_share_path%"] = $nfs_mount_path . "/" . $projectname . "/";
+        } else {
+            $config["nfs_share_available"] = false;
         }
 
         return $config;

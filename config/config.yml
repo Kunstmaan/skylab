@@ -1,6 +1,7 @@
 projects:
-    path:       "/home/projects/"
-    backuppath: "/home/backupped-projects/"
+    path:           "/home/projects/"
+    backuppath:     "/home/backupped-projects/"
+    nfs_mount_path: "/nfs_mount/"
 
 remote_projects:
     path:       "/home/projects/"
