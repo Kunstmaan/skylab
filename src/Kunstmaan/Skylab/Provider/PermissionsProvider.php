@@ -34,10 +34,12 @@ class PermissionsProvider extends AbstractProvider
             $this->processProvider->executeSudoCommand('dscl . create /groups/' . $groupName . ' passwd "*"');
             $this->processProvider->executeSudoCommand('dscl . create /groups/' . $groupName . ' PrimaryGroupID 20');
         } else {
-            if ($project["nfs_share_available"]) {
-                $this->dialogProvider->logError("No group " . $groupName . " found. Add it to ansible and create the group!");
-            } else if (!$this->isGroup($groupName)) {
-                $this->processProvider->executeSudoCommand('addgroup ' . $groupName);
+            if (!$this->isGroup($groupName)) {
+                if ($project["nfs_share_available"]) {
+                    $this->dialogProvider->logError("No group " . $groupName . " found. Add it to ansible and create the group!");
+                } else {
+                    $this->processProvider->executeSudoCommand('addgroup ' . $groupName);
+                }
             }
         }
     }
