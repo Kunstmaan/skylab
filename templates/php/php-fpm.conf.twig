@@ -410,7 +410,7 @@ catch_workers_output = yes
 ;php_admin_flag[log_errors] = on
 ;php_admin_value[memory_limit] = 32M
 
-php_admin_value[session.save_path]={{ projectdir }}/tmp
+php_admin_value[session.save_path]={{ projectdir }}/sessions
 php_admin_value[upload_tmp_dir]={{ projectdir }}/tmp
 
 php_admin_value[newrelic.appname]="{{ projectname }}"
