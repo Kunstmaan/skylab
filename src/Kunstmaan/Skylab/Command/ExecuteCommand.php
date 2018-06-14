@@ -275,6 +275,8 @@ EOT
         } else {
             $resolverArray["remove_shared_package"] = isset($resolverArray["deploy_failover"]) ? "no" : "yes";
         }
+        $resolverArray["nfs_mount_path"] = $resolverArray["projects"]["nfs_mount_path"];
+
         return $resolverArray;
     }
 
