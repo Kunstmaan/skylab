@@ -1,4 +1,15 @@
 
+2.2.2 / 2018-06-15
+==================
+
+  * change fpm session path to projectdir/sessions
+  * symlink uploads folder and session to nfs_mount if available
+  * correct check for group creation
+  * better check for user/group create on linux os
+  * dont create user/group via skylab on linux os
+  * add nfs_mounts support
+  * add check for expired certificates on DEV and STAGING
+
 2.2.1 / 2018-06-07
 ==================
 
