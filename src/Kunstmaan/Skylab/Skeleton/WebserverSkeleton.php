@@ -413,7 +413,7 @@ class WebserverSkeleton extends AbstractSkeleton
         if ($finder->count() == 0) {
             $this->fileSystemProvider->writeProtectedFile($this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/nginx.d/05servername", $serverName);
         }
-        $configcontent = $this->processConfigFiles($project, $this->fileSystemProvider->getProjectNginxConfigs($project));
+        $configcontent = $this->processConfigFiles($project, $this->fileSystemProvider->getProjectConfigs($project, 'nginx.d'));
         $this->fileSystemProvider->writeProtectedFile($this->app["config"]["nginx"]["sitesavailable"] . "/" . $project["name"] . ".conf", $configcontent);
     }
 
@@ -430,7 +430,7 @@ class WebserverSkeleton extends AbstractSkeleton
         } else {
             $this->processProvider->executeSudoCommand("rm -f " . $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/apache.d/06devmode");
         }
-        $configcontent = $this->processConfigFiles($project, $this->fileSystemProvider->getProjectApacheConfigs($project));
+        $configcontent = $this->processConfigFiles($project, $this->fileSystemProvider->getProjectConfigs($project, 'apache.d'));
         if ($this->app["config"]["develmode"]) {
             $configcontent = str_replace("-Indexes", "+Indexes", $configcontent);
         }

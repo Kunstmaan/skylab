@@ -2,7 +2,6 @@
 namespace Kunstmaan\Skylab\Skeleton;
 
 use Kunstmaan\Skylab\Entity\PermissionDefinition;
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
 /**
@@ -70,7 +69,7 @@ class PHPSkeleton extends AbstractSkeleton
             "/php/fcron.d/01php.twig",
             $this->fileSystemProvider->getProjectConfigDirectory($project["name"]) . "/fcron.d/01php",
             array(
-                "projectdir" => $this->fileSystemProvider->getProjectDirectory($project["name"])
+                "projectdir" => $this->fileSystemProvider->getProjectDirectory($project["name"]),
             )
         );
     }
@@ -99,20 +98,34 @@ class PHPSkeleton extends AbstractSkeleton
      */
     public function maintenance(\ArrayObject $project)
     {
+        $variables = array(
+            "projectdir" => $this->fileSystemProvider->getProjectDirectory($project["name"]),
+            "projectname" => $project["name"],
+            "projectuser" => $project["name"],
+            "projectgroup" => $project["name"],
+            "develmode" => $this->app["config"]["develmode"],
+        );
+
         if ($this->app["php-fpm_installed"]) {
-            $phpFpmLocation = "/etc/php/" . $this->app['php_version'] . "/fpm/pool.d/";
-            $this->processProvider->executeSudoCommand("mkdir -p " . $phpFpmLocation);
+            $phpFpmLocation = "/etc/php/".$this->app['php_version']."/fpm/pool.d/";
+            $this->processProvider->executeSudoCommand("mkdir -p ".$phpFpmLocation);
             $this->fileSystemProvider->render(
                 "/php/php-fpm.conf.twig",
-                $phpFpmLocation . $project["name"] . ".conf",
-                array(
-                    "projectdir" => $this->fileSystemProvider->getProjectDirectory($project["name"]),
-                    "projectname" => $project["name"],
-                    "projectuser" => $project["name"],
-                    "projectgroup" => $project["name"],
-                    "develmode" => $this->app["config"]["develmode"]
-                )
+                $phpFpmLocation.$project["name"].".conf",
+                $variables
             );
+
+            $configs = $this->fileSystemProvider->getProjectConfigs($project, 'php.d');
+
+            if (!empty($configs)) {
+                /** @var SplFileInfo $config */
+                foreach ($configs as $config) {
+                    if ($config->getFilename() === 'php-fpm.conf.twig') {
+                        $content = $this->fileSystemProvider->renderString(file_get_contents($config->getRealPath()), $variables);
+                        $this->fileSystemProvider->writeProtectedFile($phpFpmLocation.$project['name'].'.conf', $content);
+                    }
+                }
+            }
         }
     }
 

@@ -191,44 +191,31 @@ class FileSystemProvider extends AbstractProvider
 
     /**
      * @param  \ArrayObject $project
+     * @param  string $type
      * @return array
      */
-    public function getProjectApacheConfigs(\ArrayObject $project)
+    public function getProjectConfigs(\ArrayObject $project, $type)
     {
-        $finder = new Finder();
-        $finder->files()
-            ->sortByName()
-            ->in($this->getProjectConfigDirectory($project["name"]) . "/apache.d/")
-            ->ignoreVCS(true)
-            ->ignoreDotFiles(true)
-            ->notName("*~")
-            ->notName("*.swp")
-            ->notName("*.bak")
-            ->notName("*-")
-            ->depth('== 0');
+        try {
+            $finder = new Finder();
+            $finder->files()
+                ->sortByName()
+                ->in(sprintf('%s/%s', $this->getProjectConfigDirectory($project["name"]), $type))
+                ->ignoreVCS(true)
+                ->ignoreDotFiles(true)
+                ->notName("*~")
+                ->notName("*.swp")
+                ->notName("*.bak")
+                ->notName("*-")
+                ->depth('== 0');
 
-        return iterator_to_array($finder);
-    }
+            return iterator_to_array($finder);
+        }
+        catch (\InvalidArgumentException $e) {
+            $this->dialogProvider->logNotice('Project has no ' . $type . ' config files.');
+        }
 
-    /**
-     * @param  \ArrayObject $project
-     * @return array
-     */
-    public function getProjectNginxConfigs(\ArrayObject $project)
-    {
-        $finder = new Finder();
-        $finder->files()
-            ->sortByName()
-            ->in($this->getProjectConfigDirectory($project["name"]) . "/nginx.d/")
-            ->ignoreVCS(true)
-            ->ignoreDotFiles(true)
-            ->notName("*~")
-            ->notName("*.swp")
-            ->notName("*.bak")
-            ->notName("*-")
-            ->depth('== 0');
-
-        return iterator_to_array($finder);
+        return array();
     }
 
     /**
